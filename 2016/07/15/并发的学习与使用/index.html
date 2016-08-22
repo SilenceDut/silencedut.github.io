@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>并发的学习与使用 | SilenceDut的代码世界</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。已完成：
+
+并发的一些基础概念（本篇）
+通过单例模式理解synchronized,volatile以及原子类AtomicReference
+你见过这样的单例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发的学习与使用">
+<meta property="og:url" content="http://silencedut.com/2016/07/15/并发的学习与使用/index.html">
+<meta property="og:site_name" content="SilenceDut的代码世界">
+<meta property="og:description" content="我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。已完成：
+
+并发的一些基础概念（本篇）
+通过单例模式理解synchronized,volatile以及原子类AtomicReference
+你见过这样的单例">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-a3faa31251c45104.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-08-22T09:48:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发的学习与使用">
+<meta name="twitter:description" content="我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。已完成：
+
+并发的一些基础概念（本篇）
+通过单例模式理解synchronized,volatile以及原子类AtomicReference
+你见过这样的单例">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1437930-a3faa31251c45104.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
+  
+  
+     
+      <link rel="icon" href="/favicon.ico">
+    
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/img/avatar.png" class="js-avatar show">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">SilenceDut</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不转载，只做原创</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="#" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/concurrent/" style="font-size: 10px;">并发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">SilenceDut</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img lazy-src="null/img/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">SilenceDut</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不转载，只做原创</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="#" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-并发的学习与使用" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/15/并发的学习与使用/" class="article-date">
+  	<time datetime="2016-07-15T13:47:23.000Z" itemprop="datePublished">2016-07-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      并发的学习与使用
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/">并发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java/">Java基础</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。<br>已完成：</p>
+<ul>
+<li>并发的一些基础概念（本篇）</li>
+<li><a href="https://github.com/SilenceDut/ConcurrentStudy/blob/master/Singleton_concurrent.md">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a></li>
+<li><a href="http://www.jianshu.com/p/d9c9c947678a">你见过这样的单例模式吗</a></li>
+<li><a href="http://www.jianshu.com/p/439edc2b557d">正确解读ThreadLocal</a></li>
+</ul>
+<a id="more"></a>
+<h2 id="java内存模型"><a href="#java内存模型" class="headerlink" title="java内存模型"></a>java内存模型</h2><p>简单的讲，Java 内存模型将内存分为共享内存和本地内存。共享内存又称为堆内存，指的就是线程之间共享的内存，包含所有的实例域、静态域和数组元素。每个线程都有一个私有的，只对自己可见的内存，称之为本地内存。java内存模型中的内存结构如下图所示<br><img src="http://upload-images.jianshu.io/upload_images/1437930-a3faa31251c45104.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="内存模型.png"><br>共享内存中共享变量虽然由所有的线程共享，但是为了提高效率，线程并不直接使用这些变量，每个线程都会在自己的本地内存中存储一个共享内存的副本，使用这个副本参与运算。由于这个副本的参与，导致了线程之间对共享内存的读写存在可见性问题。</p>
+<h2 id="重排序"><a href="#重排序" class="headerlink" title="重排序"></a>重排序</h2><p>在执行程序时，为了提高性能，编译器和处理器常常会对指令做重排序，<code>指令重排序</code>包括下面三种：</p>
+<ul>
+<li>编译器优化重排序，在不改变单线程程序语义的前提下。</li>
+<li>指令级并行的重排序，如果不存在数据依赖性，处理器可以改变语句对应机器指令的执行顺序。- 内存系统重排序，由于处理器可以使用缓存和读写缓冲区，这使得加载和存储操作看起来可能是乱序执行的。这些重排序可能会导致多线程出现的内存可见性问题。</li>
+<li>对于编译器，JMM的编译器重排序会禁止特定类型的重排序- 对于处理器重排序，JMM的处理器重排序规则会要求java编译器在生成执行序列时，插入特定类型的内存屏障(Menory Barriers)指令，通过内存屏障指令来禁止特定类型的处理器重排序。&gt;JMM属于语言级的内存模型，它确保在不同的编译器和不同的处理器平台上，通过禁止特定类型的编译器重排序和处理器重排序为程序员提供一致的内存可见性保证。</li>
+</ul>
+<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p>首先我们知道，即使是单核的cpu也支持多线程的程序，cpu通过不停的给每个线程分配时间片来实现这个机制，这个时间片就是cpu分配给各个线程的执行时间，由于这个时间片非常的短，所以我们感觉好像就是多个线程在同时执行一样，一般事件时间长为几十毫秒。当执行完一个时间片后需要切换到下一个任务，在切换之前cpu需要保持现在这个线程的状态，然后再去执行下一个线程，当cpu再次切换到原来的线程时，需要先读取之前的任务的一个状态，然后再继续执行，这样从保存到再加载就是一个上下文切换的过程。上下文的切换时需要开销的，所以并不见得多线程就比单个线程快，而是应该根据具体的任务与硬件的配置来控制多线程的数量。线程过多可能造成CPU利用率达到100%。如果能够减少上下文切换必然能提高程序的运行效率：</p>
+<ol>
+<li>无锁并发编程(比如：取模分段)</li>
+<li>CAS算法，Java的Atomic包采用此算法</li>
+<li>合理使用线程&gt;<a href="http://www.ibm.com/developerworks/cn/java/j-jtp04186">CAS（比较与交换，Compare and swap,是一种有名的无锁算法函数）</a> :对竞争资源不用加锁，而是假设没有冲突去完成某项操作，如果因为冲突失败就不断重试，直到成功为止。以此来减少上下文切换。上面所说的循环CAS操作就是上述所说的乐观锁。</li>
+</ol>
+<p>参考：<a href="https://segmentfault.com/a/1190000004487149">如何使用 volatile, synchronized, final 进行线程间通信</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="并发的学习与使用" data-title="并发的学习与使用" data-url="http://silencedut.com/2016/07/15/并发的学习与使用/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 SilenceDut
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: '/'
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+	(function(){
+		document.write('<scr'+'ipt type="text/javascript" src="'+document.location.protocol+'//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">'+'</sc'+'ript>');
+	})();
+</script>
+
+
+  </div>
+</body>
+</html>
