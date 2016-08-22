@@ -12,7 +12,7 @@
 <meta property="og:url" content="http://silencedut.com/2016/07/10/通过单例模式理解synchronized,volatile以及原子类/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
-<meta property="og:updated_time" content="2016-08-22T15:58:27.000Z">
+<meta property="og:updated_time" content="2016-08-22T16:02:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过单例模式理解synchronized,volatile以及原子类AtomicReference">
 <meta name="twitter:description" content="在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
@@ -217,9 +217,6 @@
 <p><code>volatile不能保证原子性</code>,原子性不是volatile来保证的,如果操作本来就具有原子性,volatile就会保证这个原子性不会被打破,理解为加上同步。比如上面例子中的get和set函数。<br>以及下面这段线程不安全的singleton（单例模式）实现，尽管使用了volatile：   </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnSafeSingleton</span> </span>&#123;   </div><div class="line">     </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> UnSafeSingleton       </div><div class="line">    sInstance = <span class="keyword">null</span>;     </div><div class="line">             </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">UnSafeSingleton</span><span class="params">()</span> </span>&#123;&#125;  </div><div class="line">               </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UnSafeSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;                     </div><div class="line">            sInstance = <span class="keyword">new</span> UnSafeSingleton();                </div><div class="line">        &#125;            </div><div class="line">        <span class="keyword">return</span> sInstance;       </div><div class="line">     &#125;    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>关于原子性的理解:只对<code>单个操作</code>就有原子性,比如i++这种就不是单个操作。</p>
-<blockquote>
-<p>但是,轻易不要用volatile来替代synchronized来避免并发问题,因为很多原子操作自己可能并没那么了解,除非你是并发专家。《java编程思想》的作者是这样建议的。</p>
-</blockquote>
 <h2 id="单例模式的应用"><a href="#单例模式的应用" class="headerlink" title="单例模式的应用"></a>单例模式的应用</h2><p><strong>先看一个”饿汉式”的模式</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123; </div><div class="line">     </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">new</span> Singleton();     </div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span> <span class="params">()</span></span>&#123;&#125;   </div><div class="line">       </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;            </div><div class="line">         <span class="keyword">return</span> instance;     </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这种方式比较常用，但容易产生垃圾对象。</p>
@@ -243,6 +240,9 @@
 </ul>
 <p>如果当前值 == 预期值，则以原子方式将该值设置为给定的更新值。<br>这种方式既能够保证延迟加载又能保证原子性及实例的唯一性，代码也相对比较简洁。</p>
 <p>通过<a href="http://www.jianshu.com/p/89c16c32ae45">并发的学习与使用</a>，线程的阻塞和上下文的切换会带来一定的性能开销，尤其在高并发的环境下。<br>而原子变量可以避免优先级倒置和死锁等危险，竞争比较便宜，协调发生在更细的粒度级别，允许更高程度的并行机制等等。这也是RxJava中选择这种单例方式的原因吧。</p>
+<blockquote>
+<p>但是,轻易不要用volatile或者Atomic相关类来替代synchronized来避免并发问题,因为很多原子操作自己可能并没那么了解,除非你是并发专家。《java编程思想》的作者是这样建议的。</p>
+</blockquote>
 
       
     </div>
