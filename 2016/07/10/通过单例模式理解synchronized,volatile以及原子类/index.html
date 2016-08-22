@@ -12,7 +12,7 @@
 <meta property="og:url" content="http://silencedut.com/2016/07/10/通过单例模式理解synchronized,volatile以及原子类/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
-<meta property="og:updated_time" content="2016-08-22T16:02:38.000Z">
+<meta property="og:updated_time" content="2016-08-22T16:08:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过单例模式理解synchronized,volatile以及原子类AtomicReference">
 <meta name="twitter:description" content="在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
@@ -241,7 +241,7 @@
 <p>如果当前值 == 预期值，则以原子方式将该值设置为给定的更新值。<br>这种方式既能够保证延迟加载又能保证原子性及实例的唯一性，代码也相对比较简洁。</p>
 <p>通过<a href="http://www.jianshu.com/p/89c16c32ae45">并发的学习与使用</a>，线程的阻塞和上下文的切换会带来一定的性能开销，尤其在高并发的环境下。<br>而原子变量可以避免优先级倒置和死锁等危险，竞争比较便宜，协调发生在更细的粒度级别，允许更高程度的并行机制等等。这也是RxJava中选择这种单例方式的原因吧。</p>
 <blockquote>
-<p>但是,轻易不要用volatile或者Atomic相关类来替代synchronized来避免并发问题,因为很多原子操作自己可能并没那么了解,除非你是并发专家。《java编程思想》的作者是这样建议的。</p>
+<p>但是,轻易不要用volatile或者Atomic相关类来替代synchronized来避免并发问题,因为很多原子操作自己可能并没那么了解,并且不同jdk或虚拟机上这些类可能有不同的表现。除非你很确定替换会有很好的效果，《java编程思想》的作者是这样建议的。</p>
 </blockquote>
 
       
