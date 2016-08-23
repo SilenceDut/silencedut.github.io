@@ -16,7 +16,7 @@ Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷
 <meta property="og:description" content="并发的学习与使用系列第三篇
 Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷就是：在执行完任务之后无法获取执行结果。如果需要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果，这样使用起来就比较麻烦。
 而自从Java 1.5开始，就提供了Callable和Future以及FutureTask，通过它们可以在任务执行完毕之后得到任务执行结果。">
-<meta property="og:updated_time" content="2016-08-23T06:13:04.000Z">
+<meta property="og:updated_time" content="2016-08-23T06:14:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Callable和Future、FutureTask的使用">
 <meta name="twitter:description" content="并发的学习与使用系列第三篇
@@ -245,9 +245,18 @@ useThread运行结果124750
     
 <nav id="article-nav">
   
+    <a href="/2016/07/15/通过单例模式理解synchronized,volatile以及原子类AtomicReference /" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          通过单例模式理解synchronized,volatile以及原子类AtomicReference
+        
+      </div>
+    </a>
   
-    <a href="/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">通过单例模式理解synchronized,volatile以及原子类AtomicReference</div>
+  
+    <a href="/2016/07/12/显示锁（Lock）和阻塞对列（BlockingQueue)/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">显示锁（Lock）及Condition的学习与使用</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
