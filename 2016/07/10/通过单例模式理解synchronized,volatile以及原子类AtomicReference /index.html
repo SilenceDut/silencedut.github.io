@@ -6,18 +6,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>通过单例模式理解synchronized,volatile以及原子类AtomicReference | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="并发的学习与使用系列第三篇
+  <meta name="description" content="并发的学习与使用系列第二篇
 在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="通过单例模式理解synchronized,volatile以及原子类AtomicReference">
-<meta property="og:url" content="http://silencedut.com/2016/07/15/通过单例模式理解synchronized,volatile以及原子类AtomicReference /index.html">
+<meta property="og:url" content="http://silencedut.com/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
-<meta property="og:description" content="并发的学习与使用系列第三篇
+<meta property="og:description" content="并发的学习与使用系列第二篇
 在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
-<meta property="og:updated_time" content="2016-08-23T16:27:36.000Z">
+<meta property="og:updated_time" content="2016-08-23T16:32:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过单例模式理解synchronized,volatile以及原子类AtomicReference">
-<meta name="twitter:description" content="并发的学习与使用系列第三篇
+<meta name="twitter:description" content="并发的学习与使用系列第二篇
 在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
@@ -159,8 +159,8 @@
       <div class="body-wrap"><article id="post-通过单例模式理解synchronized,volatile以及原子类AtomicReference " class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/07/15/通过单例模式理解synchronized,volatile以及原子类AtomicReference /" class="article-date">
-  	<time datetime="2016-07-15T13:45:23.000Z" itemprop="datePublished">2016-07-15</time>
+      <a href="/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /" class="article-date">
+  	<time datetime="2016-07-10T13:45:23.000Z" itemprop="datePublished">2016-07-10</time>
 </a>
     </div>
   
@@ -197,7 +197,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a>第三篇</p>
+        <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a>第二篇</p>
 <p>在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。</p>
 <a id="more"></a>
 <h2 id="synchronized-关键字"><a href="#synchronized-关键字" class="headerlink" title="synchronized 关键字"></a>synchronized 关键字</h2><p>synchronized关键字是用来控制线程同步的，就是在多线程的环境下，控制synchronized代码段不被多个线程同时执行。是一种阻塞性的锁,<br>synchronized既可以加在对象上，也可以加在方法上。</p>
@@ -261,9 +261,18 @@
     
 <nav id="article-nav">
   
+    <a href="/2016/07/12/显示锁（Lock）及Condition的学习与使用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          显示锁（Lock）及Condition的学习与使用
+        
+      </div>
+    </a>
   
-    <a href="/2016/07/12/Callable和Future、FutureTask的使用/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Callable和Future、FutureTask的使用</div>
+  
+    <a href="/2016/07/05/并发的学习与使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">并发的学习与使用</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -298,7 +307,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="通过单例模式理解synchronized,volatile以及原子类AtomicReference " data-title="通过单例模式理解synchronized,volatile以及原子类AtomicReference" data-url="http://silencedut.com/2016/07/15/通过单例模式理解synchronized,volatile以及原子类AtomicReference /"></div>
+	<div class="ds-thread" data-thread-key="通过单例模式理解synchronized,volatile以及原子类AtomicReference " data-title="通过单例模式理解synchronized,volatile以及原子类AtomicReference" data-url="http://silencedut.com/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
