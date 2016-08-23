@@ -290,10 +290,10 @@
 
 
   
-    <article id="post-通过单例模式理解synchronized,volatile以及原子类AtomicReference " class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-通过单例模式理解synchronized,volatile以及AtomicReference " class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /" class="article-date">
+      <a href="/2016/07/10/通过单例模式理解synchronized,volatile以及AtomicReference /" class="article-date">
   	<time datetime="2016-07-10T13:45:23.000Z" itemprop="datePublished">2016-07-10</time>
 </a>
     </div>
@@ -307,7 +307,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a>
+      <a class="article-title" href="/2016/07/10/通过单例模式理解synchronized,volatile以及AtomicReference /">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a>
     </h1>
   
 
@@ -336,7 +336,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference /#more">more >></a>
+          <a  href="/2016/07/10/通过单例模式理解synchronized,volatile以及AtomicReference /#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -382,13 +382,13 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。</p>
-<p><strong>不论什么时候，只要您将编写的变量接下来可能被另一个线程读取，或者<br>您将读取的变量最后是被另一个线程写入的，那么您必须进行同步。</strong></p>
+<p><strong>不论什么时候，只要您将编写的变量接下来可能被另一个线程读取，或者您将读取的变量最后是被另一个线程写入的，那么您必须进行同步。</strong></p>
 <p>接下来将对并发的知识进行学习：</p>
 <ul>
 <li>并发的一些基础概念（本篇）</li>
-<li><a href="https://silencedut.github.io/2016/07/10/通过单例模式理解synchronized,volatile以及原子类AtomicReference%20/">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a></li>
+<li><a href="https://silencedut.github.io/2016/07/10/通过单例模式理解synchronized,volatile以及AtomicReference/">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a></li>
 <li><a href="https://silencedut.github.io/2016/07/12/显示锁（Lock）及Condition的学习与使用/">显示锁（Lock）及Condition的学习与使用</a></li>
-<li><a href="https://silencedut.github.io/2016/07/15/Callable%E5%92%8CFuture%E3%80%81FutureTask%E7%9A%84%E4%BD%BF%E7%94%A8/">Callable和Future、FutureTask的使用</a></li>
+<li><a href="https://silencedut.github.io/2016/07/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a></li>
 <li><a href="">线程池基础</a></li>
 <li><a href="http://www.jianshu.com/p/439edc2b557d">正确解读ThreadLocal</a></li>
 <li><a href="">基于最新版本（相对写博客的时间）的AsyncTask详细解读</a></li>
