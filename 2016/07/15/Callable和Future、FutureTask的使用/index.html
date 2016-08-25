@@ -7,21 +7,20 @@
   <title>Callable和Future、FutureTask的使用 | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="并发的学习与使用系列 第四篇
-Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷就是：在执行完任务之后无法获取执行结果。如果需要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果，这样使用起来就比较麻烦。
-而自从Java 1.5开始，就提供了Callable和Future以及FutureTask，通过它们可以在任务执行完毕之后得到任务执行结果。">
+在Java中，开启一个线程的唯一方式是，是通过Thread的start方法，并且在线程中执行的Runnable的run方法。无论是线程池还是接下来要介绍的Callable，Future还是线程池，最核心最根本的还是调用到Thread.start()–&amp;gt;Runnuble.run()，其他的类的出现可以认为是更方便的使用Thread和Runnuble，以此为核心会更">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Callable和Future、FutureTask的使用">
 <meta property="og:url" content="http://silencedut.com/2016/07/15/Callable和Future、FutureTask的使用/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="并发的学习与使用系列 第四篇
-Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷就是：在执行完任务之后无法获取执行结果。如果需要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果，这样使用起来就比较麻烦。
-而自从Java 1.5开始，就提供了Callable和Future以及FutureTask，通过它们可以在任务执行完毕之后得到任务执行结果。">
-<meta property="og:updated_time" content="2016-08-25T06:28:10.000Z">
+在Java中，开启一个线程的唯一方式是，是通过Thread的start方法，并且在线程中执行的Runnable的run方法。无论是线程池还是接下来要介绍的Callable，Future还是线程池，最核心最根本的还是调用到Thread.start()–&amp;gt;Runnuble.run()，其他的类的出现可以认为是更方便的使用Thread和Runnuble，以此为核心会更">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f762nmu5r7j30my0bydhp.jpg">
+<meta property="og:updated_time" content="2016-08-25T09:31:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Callable和Future、FutureTask的使用">
 <meta name="twitter:description" content="并发的学习与使用系列 第四篇
-Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷就是：在执行完任务之后无法获取执行结果。如果需要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果，这样使用起来就比较麻烦。
-而自从Java 1.5开始，就提供了Callable和Future以及FutureTask，通过它们可以在任务执行完毕之后得到任务执行结果。">
+在Java中，开启一个线程的唯一方式是，是通过Thread的start方法，并且在线程中执行的Runnable的run方法。无论是线程池还是接下来要介绍的Callable，Future还是线程池，最核心最根本的还是调用到Thread.start()–&amp;gt;Runnuble.run()，其他的类的出现可以认为是更方便的使用Thread和Runnuble，以此为核心会更">
+<meta name="twitter:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f762nmu5r7j30my0bydhp.jpg">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
   
@@ -201,10 +200,21 @@ Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷
     <div class="article-entry" itemprop="articleBody">
       
         <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a> 第四篇</p>
-<p>Thread类、Runnable接口使得多线程编程简单直接。但有一个缺陷就是：在执行完任务之后无法获取执行结果。如果需要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果，这样使用起来就比较麻烦。</p>
-<p>而自从Java 1.5开始，就提供了Callable和Future以及FutureTask，通过它们可以在任务执行完毕之后得到任务执行结果。</p>
+<p>在Java中，开启一个线程的唯一方式是，是通过Thread的start方法，并且在线程中执行的Runnable的run方法。无论是线程池还是接下来要介绍的Callable，Future还是线程池，最核心最根本的还是调用到Thread.start()–&gt;Runnuble.run()，其他的类的出现可以认为是更方便的使用Thread和Runnuble，以此为核心会更容易理解Java的并发框架。</p>
+<p>虽然Thread和Runnuble类使得多线程编程简单直接，但有一个缺陷就是：在执行完任务之后无法获取执行结果。如果需要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果，这样使用起来就比较麻烦。因此从Jdk1.5开始，有了一系列的类的出现来解决这些问题，如Callable和Future,FutureTask以及下篇要讲到的线程池<a href="silencedut.com/2016/07/17/线程池的学习与使用">线程池基础</a>。</p>
 <a id="more"></a>
-<h2 id="Callable"><a href="#Callable" class="headerlink" title="Callable"></a>Callable</h2><p>Callable与Runnable的功能大致相似，Callable中有一个call()函数，<strong>但是call()函数有返回值</strong>，而Runnable的run()函数不能将结果返回给客户程序。Callable的声明如下 :</p>
+<p>而自从Java 1.5开始，就提供了Callable和Future以及FutureTask，通过它们可以在任务执行完毕之后得到任务执行结果。</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p><strong>Thread和Runnuble</strong></p>
+<h3 id="引用-Blockquotes"><a href="#引用-Blockquotes" class="headerlink" title="引用 Blockquotes"></a>引用 Blockquotes</h3><h4 id="引用-Blockquotes-1"><a href="#引用-Blockquotes-1" class="headerlink" title="引用 Blockquotes"></a>引用 Blockquotes</h4><h2 id="引用-Blockquotes-2"><a href="#引用-Blockquotes-2" class="headerlink" title="引用 Blockquotes"></a>引用 Blockquotes</h2><p>首先看Thread和Runnuble的实现多线程任务的原理。</p>
+<p>以下是简化后的代码，为了方便理解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Thread</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">	Runnuble target;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(Runnuble runnable)</span> </span>&#123;</div><div class="line">	</div><div class="line">		target = runnuble;</div><div class="line">		 </div><div class="line">		<span class="comment">//省略其他初始化线程的任务</span></div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">		 nativeCreate(<span class="keyword">this</span>, stackSize, daemon);<span class="comment">//native方法开启多线程，并调用run方法</span></div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">	    <span class="keyword">if</span> (target != <span class="keyword">null</span>) &#123;</div><div class="line">	        target.run();</div><div class="line">	    &#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<p>可以看出target是一个Runnble对象，通过一个典型的装饰模式来扩展Runnuble,如果不传入，默认为null，需要自己实现run方法来在新线程里执行任务，否则线程不会做任何事情就结束。所以无论怎么变化，最终都是Thread的start方法开启新线程，run方法在这个新开启的线程里执行任务，当然run方法也可以单独调用，但所在线程是调用者的线程。</p>
+<blockquote>
+<p>装饰者模式的典型特点：装饰后的类和被装饰的类（继承行为），类型不变，提供新的行为（方法），关于设计模式的详细细节，请到我的GitHub<a href="https://github.com/SilenceDut/DesignPatterns">常见的设计模式解读</a>了解。</p>
+</blockquote>
+<p><img src="http://ww2.sinaimg.cn/large/006tKfTcjw1f762nmu5r7j30my0bydhp.jpg" alt="整体关系图"></p>
+<p>从图中可以看出</p>
+<p>Callable与Runnable的功能大致相似，Callable中有一个call()函数，<strong>但是call()函数有返回值</strong>，而Runnable的run()函数不能将结果返回给客户程序。Callable的声明如下 :</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callable</span> </span>&#123; </div><div class="line">      </div><div class="line">    <span class="function">V <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</div><div class="line">     </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>通过Executors的静态函数callable(Runnable task,…)可将Runnable转换为Callable类型，该适配函数的实现如下 ：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span>  Callable <span class="title">callable</span><span class="params">(Runnable task, T result)</span> </span>&#123; </div><div class="line"> </div><div class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(); </div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RunnableAdapter(task, result); </div><div class="line">&#125;</div></pre></td></tr></table></figure>
