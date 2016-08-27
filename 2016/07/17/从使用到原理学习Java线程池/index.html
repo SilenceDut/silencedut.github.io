@@ -17,9 +17,9 @@
 线程池的技术背景在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
 所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
-<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tKfTcjw1f775k9z5g7j31440futc7.jpg">
-<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f77aszpnscj31ck0ryq7g.jpg">
-<meta property="og:updated_time" content="2016-08-27T10:41:05.000Z">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f78hxz9asbj30nm0dm76b.jpg">
+<meta property="og:updated_time" content="2016-08-27T10:49:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从使用到原理学习Java线程池">
 <meta name="twitter:description" content="并发的学习与使用系列 第五篇
@@ -284,7 +284,7 @@
 <li>管理线程</li>
 </ol>
 <h3 id="1-线程复用过程"><a href="#1-线程复用过程" class="headerlink" title="1.线程复用过程"></a>1.线程复用过程</h3><p>理解线程复用原理首先应了解线程生命周期。</p>
-<p><img src="http://ww1.sinaimg.cn/large/006tKfTcjw1f775k9z5g7j31440futc7.jpg" alt="Life Cycle.png"></p>
+<p><img src="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg" alt="Life Cycle.png"></p>
 <p>在线程的生命周期中，它要经过新建(New)、就绪（Runnable）、运行（Running）、阻塞(Blocked)和死亡(Dead)5种状态。</p>
 <p>Thread通过new来新建一个线程，这个过程是是初始化一些线程信息，如线程名，id,线程所属group等，可以认为只是个普通的对象。调用Thread的start()后Java虚拟机会为其创建方法调用栈和程序计数器，同时将hasBeenStarted为true,之后调用start方法就会有异常。</p>
 <p>处于这个状态中的线程并没有开始运行，只是表示该线程可以运行了。至于该线程何时开始运行，取决于JVM里线程调度器的调度。当线程获取cpu后，run()方法会被调用。不要自己去调用Thread的run()方法。之后根据CPU的调度在就绪——运行——阻塞间切换，直到run()方法结束或其他方式停止线程，进入dead状态。</p>
@@ -347,7 +347,7 @@
 <p>如果核心线程已满，通过addWorker(command, false)，尝试创建非核心线程，如果此时线程已达到最大如果添加失败，则进行拒绝策略处理。如果成功则和上面的过程一样。<br>这个过程里<strong>workQueue.offer(command)</strong>就是将Runnable放进阻塞队列workQueue里，等待其取出执行，所以非核心线程的任务<strong>可能</strong>不是立刻执行。为什么说可能呢？因为如果addWorker(command, false)创建成功了，也会立刻执行的。</p>
 <p>虽然每个Worker的任务是串行处理，但如果创建了多个Worker，因为共用一个workQueue，所以就会并行处理了。</p>
 <p>所以根据corePoolSize和maximumPoolSize来控制最大并发数。大致过程可用下图表示。</p>
-<p><img src="http://ww2.sinaimg.cn/large/006tKfTcjw1f77aszpnscj31ck0ryq7g.jpg" alt="原理图.png"></p>
+<p><img src="http://ww2.sinaimg.cn/large/006tKfTcjw1f78hxz9asbj30nm0dm76b.jpg" alt=""></p>
 <p>可以结合上面的讲解和图来理解这个过程。</p>
 <p>###3. 管理线程<br>通过线程池可以很好的管理线程的复用，控制并发数，以及销毁等过程。这个过程最好理解。线程的复用和控制并发上面已经讲了，这里通过shutdown和shutdownNow()来分析线程池的关闭过程。</p>
 
