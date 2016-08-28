@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="并发的学习与使用系列 第二篇
 在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
-<meta property="og:updated_time" content="2016-08-25T12:01:36.000Z">
+<meta property="og:updated_time" content="2016-08-28T04:47:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过单例模式理解synchronized,volatile以及原子类AtomicReference">
 <meta name="twitter:description" content="并发的学习与使用系列 第二篇
@@ -200,8 +200,9 @@
         <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a> 第二篇</p>
 <p>在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。</p>
 <a id="more"></a>
-<h2 id="synchronized-关键字"><a href="#synchronized-关键字" class="headerlink" title="synchronized 关键字"></a>synchronized 关键字</h2><p>synchronized关键字是用来控制线程同步的，就是在多线程的环境下，控制synchronized代码段不被多个线程同时执行。是一种阻塞性的锁,<br>synchronized既可以加在对象上，也可以加在方法上。</p>
-<p>synchronized会在进入同步块的前后分别形成monitorenter和monitorexit字节码指令。在执行monitorenter指令时会尝试获取对象的锁,如果此没对象没有被锁,或者此对象已经被当前线程锁住,那么锁的计数器加一,每当monitorexit被锁的对象的计数器减1。直到为0就释放该对象的锁。由此synchronized是可重入的,不会出现自己把自己锁死，所以无需（也不能）人工干预锁的获取和释放。</p>
+<h2 id="synchronized-关键字"><a href="#synchronized-关键字" class="headerlink" title="synchronized 关键字"></a>synchronized 关键字</h2><p>synchronized关键字是用来控制线程同步的，就是在多线程的环境下，控制synchronized代码段不被多个线程同时执行。是一种阻塞性的锁,<br>synchronized既可以加在<strong>对象</strong>上，也可以加在<strong>方法</strong>上。</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>synchronized会在进入同步块(对象)的前后分别形成monitorenter和monitorexit字节码指令。在执行monitorenter指令时会尝试获取对象的锁,如果此没对象没有被锁,或者此对象已经被当前线程锁住,那么锁的计数器加一,每当monitorexit被锁的对象的计数器减1。直到为0就释放该对象的锁。由此synchronized是可重入的,不会出现自己把自己锁死，所以无需（也不能）人工干预锁的获取和释放。</p>
+<p>而方法的同步并没有通过指令monitorenter和monitorexit来完成</p>
 <p>synchronized(this)及非static的synchronized方法，只能防止多个线程同时执行<code>同一个对象</code>的同步代码段。当synchronized锁住一个对象后，别的线程如果也想拿到这个对象的锁，就必须等待这个线程执行完成释放锁，才能再次给对象加锁，这样才达到线程同步的目的。即使两个不同的代码段，都要锁同一个对象，那么这两个代码段也不能在多线程环境下同时运行。</p>
 <p>所以我们在用synchronized关键字的时候，能缩小代码段的范围就尽量缩小，能在代码段上加同步就不要再整个方法上加同步。这叫减小锁的粒度，使代码更大程度的并发。原因是基于以上的思想，锁的代码段太长了，别的线程是不是要等很久。</p>
 <p>如果用synchronized加在<code>静态方法</code>上，就相当于用<code>××××.class</code>锁住整个方法内的代码块,此时是锁住该类的Class对象,相当于一个全局锁。</p>

@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f78hxz9asbj30nm0dm76b.jpg">
-<meta property="og:updated_time" content="2016-08-27T10:49:06.000Z">
+<meta property="og:updated_time" content="2016-08-28T04:49:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从使用到原理学习Java线程池">
 <meta name="twitter:description" content="并发的学习与使用系列 第五篇
@@ -276,14 +276,14 @@
 <p>submit(Callable callable)的实现，submit(Runnable runnable)同理。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Callable&lt;T&gt; task)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">    FutureTask&lt;T&gt; ftask = newTaskFor(task);</div><div class="line">    execute(ftask);</div><div class="line">    <span class="keyword">return</span> ftask;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>可以看出submit开启的是有返回结果的任务，会返回一个FutureTask对象，这样就能通过get()方法得到结果。submit最终调用的也是execute(Runnable runable)，submit只是将Callable对象或Runnable封装成一个FutureTask对象，因为FutureTask是个Runnable，所以可以在execute中执行。关于Callable对象和Runnable怎么封装成FutureTask对象，见<a href="2016/07/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a>。</p>
-<h2 id="线程池实现的原理"><a href="#线程池实现的原理" class="headerlink" title="线程池实现的原理"></a>线程池实现的原理</h2><p>如果只讲线程池的使用，那这篇博客没有什么大的价值，充其量也就是熟悉Executor相关API的过程。线程池的实现过程全部用到之前几篇讲到的各种并发控制工具:synchronized,volatile,Lock, Atomic相关类,FutureTask等等和并发控制的思想，可以很好的学习这些类是怎么用来控制线程的并发的。</p>
+<h2 id="线程池实现的原理"><a href="#线程池实现的原理" class="headerlink" title="线程池实现的原理"></a>线程池实现的原理</h2><p>如果只讲线程池的使用，那这篇博客没有什么大的价值，充其量也就是熟悉Executor相关API的过程。线程池的实现过程没有用到Synchronized关键字，用的都是volatile,Lock和同步(阻塞)队列,Atomic相关类，FutureTask等等，因为后者的性能更优。理解的过程可以很好的学习源码中并发控制的思想。</p>
 <p>在开篇提到过线程池的优点是可总结为以下三点：</p>
 <ol>
 <li>线程复用</li>
 <li>控制最大并发数</li>
 <li>管理线程</li>
 </ol>
-<h3 id="1-线程复用过程"><a href="#1-线程复用过程" class="headerlink" title="1.线程复用过程"></a>1.线程复用过程</h3><p>理解线程复用原理首先应了解线程生命周期。</p>
+<h4 id="1-线程复用过程"><a href="#1-线程复用过程" class="headerlink" title="1.线程复用过程"></a>1.线程复用过程</h4><p><strong>理解线程复用原理首先应了解线程生命周期。</strong></p>
 <p><img src="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg" alt="Life Cycle.png"></p>
 <p>在线程的生命周期中，它要经过新建(New)、就绪（Runnable）、运行（Running）、阻塞(Blocked)和死亡(Dead)5种状态。</p>
 <p>Thread通过new来新建一个线程，这个过程是是初始化一些线程信息，如线程名，id,线程所属group等，可以认为只是个普通的对象。调用Thread的start()后Java虚拟机会为其创建方法调用栈和程序计数器，同时将hasBeenStarted为true,之后调用start方法就会有异常。</p>
