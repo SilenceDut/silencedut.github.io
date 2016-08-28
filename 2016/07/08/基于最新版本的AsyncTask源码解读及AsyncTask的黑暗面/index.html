@@ -4,21 +4,21 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>并发的学习与使用 | SilenceDut的代码世界</title>
+  <title>基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面 | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="并发的学习与使用系列 第七篇
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发的学习与使用">
+<meta property="og:title" content="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面">
 <meta property="og:url" content="http://silencedut.com/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="并发的学习与使用系列 第七篇
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcgw1f79jvx6kmzj307v07274o.jpg">
-<meta property="og:updated_time" content="2016-08-28T12:20:47.000Z">
+<meta property="og:updated_time" content="2016-08-28T12:23:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="并发的学习与使用">
+<meta name="twitter:title" content="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面">
 <meta name="twitter:description" content="并发的学习与使用系列 第七篇
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg">
@@ -176,7 +176,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      并发的学习与使用
+      基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面
     </h1>
   
 
@@ -308,7 +308,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面" data-title="并发的学习与使用" data-url="http://silencedut.com/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/"></div>
+	<div class="ds-thread" data-thread-key="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面" data-title="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面" data-url="http://silencedut.com/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
