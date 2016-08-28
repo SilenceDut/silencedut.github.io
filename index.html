@@ -157,8 +157,8 @@
     <article id="post-Android视图框架Activity,Window,View,ViewRootImpl理解" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/08/05/Android视图框架Activity,Window,View,ViewRootImpl理解/" class="article-date">
-  	<time datetime="2016-08-05T13:34:17.000Z" itemprop="datePublished">2016-08-05</time>
+      <a href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/" class="article-date">
+  	<time datetime="2016-08-10T14:52:19.000Z" itemprop="datePublished">2016-08-10</time>
 </a>
     </div>
   
@@ -171,7 +171,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/05/Android视图框架Activity,Window,View,ViewRootImpl理解/">Android视图框架Activity,Window,View,ViewRootImpl理解</a>
+      <a class="article-title" href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/">Android视图框架Activity,Window,View,ViewRootImpl理解</a>
     </h1>
   
 
@@ -204,7 +204,79 @@
 
       
         <p class="article-more-link">
-          <a  href="/2016/08/05/Android视图框架Activity,Window,View,ViewRootImpl理解/#more">more >></a>
+          <a  href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Android 应用点击图标到Activity界面显示的过程分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/" class="article-date">
+  	<time datetime="2016-08-02T12:14:17.000Z" itemprop="datePublished">2016-08-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/">Android 应用点击图标到Activity界面显示的过程分析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：</p>
+<ol>
+<li>Application是什么时候创建的，每个应用程序有几个Application</li>
+<li>应用的资源路径什么时候初始化的</li>
+<li>应用中ContextImpl的个数</li>
+<li>Application.attach(),Activity.attach()的调用时机及作用</li>
+<li>Instrumentation的重要性及具体作用</li>
+<li>点击Launcher启动Activity和应用内部启动Activity的区别</li>
+</ol>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Framework/">Android Framework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sourceCode/">源码分析</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -227,7 +299,7 @@
   
     <div class="article-meta">
       <a href="/2016/07/25/理解Binder框架/" class="article-date">
-  	<time datetime="2016-07-25T13:34:17.000Z" itemprop="datePublished">2016-07-25</time>
+  	<time datetime="2016-07-25T15:45:27.000Z" itemprop="datePublished">2016-07-25</time>
 </a>
     </div>
   
@@ -269,78 +341,6 @@
       
         <p class="article-more-link">
           <a  href="/2016/07/25/理解Binder框架/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Android 应用点击图标到Activity界面显示的过程分析" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/07/25/Android 应用点击图标到Activity界面显示的过程分析/" class="article-date">
-  	<time datetime="2016-07-25T13:34:17.000Z" itemprop="datePublished">2016-07-25</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/25/Android 应用点击图标到Activity界面显示的过程分析/">Android 应用点击图标到Activity界面显示的过程分析</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：</p>
-<ol>
-<li>Application是什么时候创建的，每个应用程序有几个Application</li>
-<li>应用的资源路径什么时候初始化的</li>
-<li>应用中ContextImpl的个数</li>
-<li>Application.attach(),Activity.attach()的调用时机及作用</li>
-<li>Instrumentation的重要性及具体作用</li>
-<li>点击Launcher启动Activity和应用内部启动Activity的区别</li>
-</ol>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Framework/">Android Framework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sourceCode/">源码分析</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/07/25/Android 应用点击图标到Activity界面显示的过程分析/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
