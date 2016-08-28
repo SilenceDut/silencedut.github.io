@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f78hxz9asbj30nm0dm76b.jpg">
-<meta property="og:updated_time" content="2016-08-28T04:49:27.000Z">
+<meta property="og:updated_time" content="2016-08-28T04:52:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从使用到原理学习Java线程池">
 <meta name="twitter:description" content="并发的学习与使用系列 第五篇
@@ -235,9 +235,9 @@
 </li>
 <li><p><strong>workQueue</strong>：表示存放任务的BlockingQueue&lt;Runnable队列。</p>
 </li>
+<li><p><strong>BlockingQueue</strong>:阻塞队列（BlockingQueue）是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的,从BlockingQueue取东西的操作将会被阻断进入等待状态,直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的,任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。<br>阻塞队列常用于生产者和消费者的场景，生产者是往队列里添加元素的线程，消费者是从队列里拿元素的线程。阻塞队列就是生产者存放元素的容器，而消费者也只从容器里拿元素。具体的实现类有LinkedBlockingQueue,ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(<a href="2016/07/12/显示锁（Lock）及Condition的学习与使用/">显示锁（Lock）及Condition的学习与使用</a>)来实现阻塞和唤醒。</p>
+</li>
 </ul>
-<p><strong>BlockingQueue</strong></p>
-<p>阻塞队列（BlockingQueue）是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的,从BlockingQueue取东西的操作将会被阻断进入等待状态,直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的,任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。<br>阻塞队列常用于生产者和消费者的场景，生产者是往队列里添加元素的线程，消费者是从队列里拿元素的线程。阻塞队列就是生产者存放元素的容器，而消费者也只从容器里拿元素。具体的实现类有LinkedBlockingQueue,ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(<a href="2016/07/12/显示锁（Lock）及Condition的学习与使用/">显示锁（Lock）及Condition的学习与使用</a>)来实现阻塞和唤醒。</p>
 <p><strong>线程池的工作过程如下：</strong></p>
 <ol>
 <li><p>线程池刚创建时，里面没有一个线程。任务队列是作为参数传进来的。不过，就算队列里面有任务，线程池也不会马上执行它们。</p>
@@ -283,7 +283,7 @@
 <li>控制最大并发数</li>
 <li>管理线程</li>
 </ol>
-<h4 id="1-线程复用过程"><a href="#1-线程复用过程" class="headerlink" title="1.线程复用过程"></a>1.线程复用过程</h4><p><strong>理解线程复用原理首先应了解线程生命周期。</strong></p>
+<h3 id="1-线程复用过程"><a href="#1-线程复用过程" class="headerlink" title="1.线程复用过程"></a>1.线程复用过程</h3><p>理解线程复用原理首先应了解线程生命周期。</p>
 <p><img src="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg" alt="Life Cycle.png"></p>
 <p>在线程的生命周期中，它要经过新建(New)、就绪（Runnable）、运行（Running）、阻塞(Blocked)和死亡(Dead)5种状态。</p>
 <p>Thread通过new来新建一个线程，这个过程是是初始化一些线程信息，如线程名，id,线程所属group等，可以认为只是个普通的对象。调用Thread的start()后Java虚拟机会为其创建方法调用栈和程序计数器，同时将hasBeenStarted为true,之后调用start方法就会有异常。</p>
