@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>正确解读ThreadLocal | SilenceDut的代码世界</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="并发的学习与使用系列 第六篇
+在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正确解读ThreadLocal">
+<meta property="og:url" content="http://silencedut.com/2016/07/20/正确解读ThreadLocal/index.html">
+<meta property="og:site_name" content="SilenceDut的代码世界">
+<meta property="og:description" content="并发的学习与使用系列 第六篇
+在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-92f186e075c57a89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-328ea1d62255c9eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-b6ad63a97b07c233.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-d2ee1e1f2c843cb2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-22ea3f450380786b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-08-28T08:24:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正确解读ThreadLocal">
+<meta name="twitter:description" content="并发的学习与使用系列 第六篇
+在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1437930-92f186e075c57a89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
+  
+  
+     
+      <link rel="icon" href="/img/favicon.ico">
+    
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/img/avatar.png" class="js-avatar show">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">SilenceDut</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Talk is cheap , here&#39;s my blog</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">SilenceDut</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img lazy-src="null/img/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">SilenceDut</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Talk is cheap , here&#39;s my blog</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-正确解读ThreadLocal" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/20/正确解读ThreadLocal/" class="article-date">
+  	<time datetime="2016-07-20T13:34:17.000Z" itemprop="datePublished">2016-07-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      正确解读ThreadLocal
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java基础/">Java基础</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java/">Java基础</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a> 第六篇</p>
+<p>在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生误解或者迷惑。</p>
+<a id="more"></a>
+<p>首先，从最新的ThreadLocal源码看，ThreadLocal并未创建任何本地变量，也没有copy副本的存在，是直接用的Thread对象的成员变量，因此叫做<strong>“线程变量帮助类”</strong>其实更合适，它的作用就是拿到当前线程对象的Object[] value数组，然后进行存储和取值，因为这属于每个线程的内部变量数组，因此也不存在共享，所以也就没有线程安全的问题。<br>先看一个例子：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-92f186e075c57a89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ThreadLocal例子.png"></p>
+<p>例子可以看出不同的线程得到的值是不同的,说明ThreadLocal可以使同一个变量在不同的线程里有不同的值，为什么同一个变量在不同的线程的会表现出不同的值呢，源码说明一切：</p>
+<p>先看set方法：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-328ea1d62255c9eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="set(T value).png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-b6ad63a97b07c233.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="得到当前Thread对象的Values值.png"></p>
+<p>可以看出ThreadLocal的Values引用直接指向Thread的localValues值。看下put()方法的实现。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-d2ee1e1f2c843cb2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="put.png"></p>
+<p>很好理解，可以简单看做用单个数组来实现的简易hashmap的，hashmap的key是当前ThreadLocal对象的hash值与当前数组长度的求模运算，存入在数组的index位置，value就是当前的存入值，这个值总是放在index+1的位置，可以理解为index和index+1这两个位置就是hashmap的Entry。好像在jdk1.7之前就是用hashmap来实现的，原理都是一样的。这样是Thread类更加的轻量化。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-22ea3f450380786b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="get()"></p>
+<p>通过上面的分析get函数也很好理解了。先得到当前线程对象的Values对象，然后得到Values中的Object[] table数组，从数组中取出值。</p>
+<p>ThreadLocal 实例通常建议是用 private static 字段，至于原因想不太清楚。但这不是绝对的，在Android的事件机制Looper中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Looper&gt; sThreadLocal = <span class="keyword">new</span> ThreadLocal&lt;Looper&gt;();</div></pre></td></tr></table></figure>
+<p>这就不是一个private变量，至于静态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="meta">@Nullable</span> <span class="function">Looper <span class="title">myLooper</span><span class="params">()</span> </span>&#123;    </div><div class="line">    <span class="keyword">return</span> sThreadLocal.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为需要静态方法获取Looper对象，所以就必须是静态的的吧。看到一种说法是设置static 是因为ThreadLocal支持线程范围生命周期的变量，所以不属于类的属性。不知是否有些牵强。<br>关于内存泄露的问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** Weak reference to this thread local instance. */</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Reference&lt;ThreadLocal&lt;T&gt;&gt; reference = <span class="keyword">new</span> WeakReference&lt;ThreadLocal&lt;T&gt;&gt;(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
+<p>因为是软引用持有，所以不会存在内存泄露的问题。但确定不需要使用的时候最好调用remove()方法来释放内存。</p>
+<p>####简单总结<br>判断是否需要对资源进行同步的判断准则是，当前获取(get)资源是否会有其他线程进行修改(set)或者当前进行修改的资源是否会有其他线程可以获取。</p>
+<ul>
+<li>synchronized——串行访问</li>
+<li>volatile——主内存刷新，不存在线程副本</li>
+<li>ThreadLocal——线程空间内的全局变量</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/24/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          并发的学习与使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/18/从使用到原理学习Java线程池/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">从使用到原理学习Java线程池</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="正确解读ThreadLocal" data-title="正确解读ThreadLocal" data-url="http://silencedut.com/2016/07/20/正确解读ThreadLocal/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 SilenceDut
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: '/'
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+	(function(){
+		document.write('<scr'+'ipt type="text/javascript" src="'+document.location.protocol+'//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">'+'</sc'+'ript>');
+	})();
+</script>
+
+
+  </div>
+</body>
+</html>
