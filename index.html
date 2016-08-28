@@ -183,8 +183,9 @@
         <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a> 第七篇</p>
 <p>关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一个类似AsyncTask的库<a href="https://github.com/SilenceDut/AsyncTaskScheduler">AsyncTaskScheduler</a>，处理了上述的一些实际存在的问题。</p>
 <h1 id="AsyncTask源码解读"><a href="#AsyncTask源码解读" class="headerlink" title="AsyncTask源码解读"></a>AsyncTask源码解读</h1><hr>
-<h3 id="一些结论解读（基于android-23源码）："><a href="#一些结论解读（基于android-23源码）：" class="headerlink" title="一些结论解读（基于android-23源码）："></a>一些结论解读（基于android-23源码）：</h3><ul>
-<li><strong>API 16 以前必须在主线程加载 AsyncTask，API 16 以后就不用了。</strong>
+<p><strong>一些结论解读（基于android-23源码）：</strong></p>
+<ul>
+<li><p><strong>API 16 以前必须在主线程加载 AsyncTask，API 16 以后就不用了。</strong></p>
       
     </div>
     
