@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android 应用点击图标到Activity界面显示的过程分析 | SilenceDut的代码世界</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：
+
+Application是什么时候创建的，每个应用程序有几个Application
+应用的资源路径什么时候初始化的
+应用中ContextImpl的个数
+Application.attach(),Activity.at">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 应用点击图标到Activity界面显示的过程分析">
+<meta property="og:url" content="http://silencedut.com/2016/07/25/Android 应用点击图标到Activity界面显示的过程分析/index.html">
+<meta property="og:site_name" content="SilenceDut的代码世界">
+<meta property="og:description" content="分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：
+
+Application是什么时候创建的，每个应用程序有几个Application
+应用的资源路径什么时候初始化的
+应用中ContextImpl的个数
+Application.attach(),Activity.at">
+<meta property="og:updated_time" content="2016-08-28T16:31:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 应用点击图标到Activity界面显示的过程分析">
+<meta name="twitter:description" content="分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：
+
+Application是什么时候创建的，每个应用程序有几个Application
+应用的资源路径什么时候初始化的
+应用中ContextImpl的个数
+Application.attach(),Activity.at">
+  
+    <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
+  
+  
+     
+      <link rel="icon" href="/img/favicon.ico">
+    
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/img/avatar.png" class="js-avatar show">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">SilenceDut</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Talk is cheap , here&#39;s my blog</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/Framework/" style="font-size: 15px;">Android Framework</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/sourceCode/" style="font-size: 15px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">SilenceDut</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img lazy-src="null/img/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">SilenceDut</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Talk is cheap , here&#39;s my blog</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-Android 应用点击图标到Activity界面显示的过程分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/25/Android 应用点击图标到Activity界面显示的过程分析/" class="article-date">
+  	<time datetime="2016-07-25T13:34:17.000Z" itemprop="datePublished">2016-07-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 应用点击图标到Activity界面显示的过程分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Framework/">Android Framework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sourceCode/">源码分析</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：</p>
+<ol>
+<li>Application是什么时候创建的，每个应用程序有几个Application</li>
+<li>应用的资源路径什么时候初始化的</li>
+<li>应用中ContextImpl的个数</li>
+<li>Application.attach(),Activity.attach()的调用时机及作用</li>
+<li>Instrumentation的重要性及具体作用</li>
+<li>点击Launcher启动Activity和应用内部启动Activity的区别</li>
+</ol>
+<a id="more"></a>
+<h2 id="1-应用的安装过程"><a href="#1-应用的安装过程" class="headerlink" title="1.应用的安装过程"></a>1.应用的安装过程</h2><p>应用安装的时候,通过PMS解析apk的AndroidManifest.xml文件,提取出这个apk的信息写入到packages.xml文件中，这些信息包括：权限、应用包名、icon、APK的安装位置、版本、userID等等。packages.xml文件位于系统目录下/data/system/packages.xml。</p>
+<h2 id="2-启动过程"><a href="#2-启动过程" class="headerlink" title="2.启动过程"></a>2.启动过程</h2><p>系统的会在启动时也可以认为开机时启动常用的服务,如ActivityManagerService(AMS),PackageManagerService(PMS),WindowManagerService(WMS),以及ServiceManager(SM),用于管理各种服务,详细的管理方式见<a href="http://www.jianshu.com/p/9aa83e8b9ddb">理解Binder框架</a>。</p>
+<p>同时桌面Launcher会为安装过的应用生成不同的应用入口,对应桌面上的应用图标，下面分析点击应用图标的到应用启动的过程。这里主要是应用端的过程,服务端也就是AMS少量涉及,同时以大体框架为主,不深入代码细节。主要分为Launcher进程，AMS进程，应用程序进程。</p>
+<ul>
+<li><strong>Instrumentation：</strong> 用于管理应用程序和系统（主要与应用程序内的Activity）的交互过程，Instrumentation将在任何应用程序运行前初始化，每个进程只会存在一个Instrumentation对象，且每个Activity都有此对象的引用，可以通过它监测系统与应用程序之间的所有交互，主要是内部交互。</li>
+<li><strong>ActivityThread: </strong>App的真正入口,通过调用main()App开始真正运行，同时开启消息循环队列，虽然不是一个真正的线程,但一般所在的线程被称为UI线程或主线程。ActivityThread就是专门与AMS的进行外部交互。</li>
+<li><strong>ApplicationThread:</strong> 应用需要和远程服务AMS等通信,而Binder只能单项通信,而AMS等服务想控制应用需要应用程序提供一个Binder接口,ApplicationThread就是这个Binder接口,用于通过远程服务调用本地的方法。</li>
+<li><strong>ActivityManagerProxy:</strong> AMS远程服务在本地的代理。</li>
+<li><strong>ApplicationThreadProxy:</strong> ApplicationThread在远程服务AMS的代理。</li>
+</ul>
+<p><strong>其实Launcher本身也是一个Activity，我们不考虑Launcher的创建过程，只分析用户的应用程序的从点击到Activity启动的过程。上面的这些每个进程只存在一个，如果应用存在多个进程，就会有多个实例。</strong></p>
+<p>Launcher所在进程，Launcher通过Binder与ActivityManagerService与通信。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Launcher.startActivitySafely</div><div class="line">|</div><div class="line">Launcher.startActivity  </div><div class="line">|</div><div class="line">Activity.startActivity</div><div class="line">|   </div><div class="line">Activity.startActivityForResult</div><div class="line">| </div><div class="line">Instrumentation.execStartActivity</div><div class="line">|</div><div class="line">ActivityManagerNative.getDefault().startActivity</div><div class="line">|  </div><div class="line">ActivityManagerProxy.startActivity</div></pre></td></tr></table></figure>
+<p>上面的这些都是在一条调用链上，ActivityManagerProxy是AMS的本地代理，实际的工作是在远程AMS完成的，下面是AMS进程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">借助binder驱动</div><div class="line">ActivityManagerService.startActivity-&gt; (AMS)  </div><div class="line">...</div><div class="line"><span class="comment">//一系类AMS的调用链和一些与Launcher通过Binder的互相调用过程，此时仍然未创建应用程序的进程。</span></div><div class="line">...</div><div class="line">* AMS创建一个新的进程，用来启动一个ActivityThread实例， </div><div class="line">* 即将要启动的Activity就是在这个ActivityThread实例中运行 </div><div class="line">Process.start(<span class="string">"android.app.ActivityThread"</span>,...)-&gt;    </div><div class="line"><span class="comment">// 通过zygote机制创建一个新的进程    </span></div><div class="line">Process.startViaZygote-&gt;调用新进程的main()</div><div class="line">ActivityThread.main-&gt;</div></pre></td></tr></table></figure>
+<p>创建新进程的时候，AMS会保存一个ProcessRecord信息，Activity应用程序中的AndroidManifest.xml配置文件中，我们没有指定Application标签的process属性，系统就会默认使用package的名称。每一个应用程序都有自己的uid，因此，这里uid + process的组合就可以为每一个应用程序创建一个ProcessRecord。每次在新建新进程前的时候会先判断这个ProcessRecord是否已存在，如果已经存在就不会新建进程了,这就属于应用内打开Activity的过程了。</p>
+<p>AMS通过开启新的进程并调用ActivityThread.main后，接下来就是应用程序进程了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</div><div class="line">    Looper.prepareMainLooper();</div><div class="line">    <span class="comment">//新建一个ActivityThread并调用attach(false)</span></div><div class="line">    ActivityThread thread = <span class="keyword">new</span> ActivityThread();</div><div class="line">    thread.attach(<span class="keyword">false</span>);</div><div class="line">    <span class="keyword">if</span> (sMainThreadHandler == <span class="keyword">null</span>) &#123;    </div><div class="line">        sMainThreadHandler = thread.getHandler();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>thread.attach(false)主要是为了将ApplicationThread通过Binder驱动”传递”到远程AMS,也就是绑定，主要是为了让AMS能通过ApplicationThread的代理ApplicationThreadProxy来调用ApplicationThread的方法，而本地应用程序通过ActivityManagerProxy来调用远程ActivityManagerService的方法，相当于应用程序与AMS的通信窗口。</p>
+<p><strong>注意:</strong> 此时只创建了应用程序的ActivityThread和ApplicationThread,和开启了Handler消息循环机制，其他的都还未创建, ActivityThread.attach(false)又会最终到AMS的attachApplication，这个工程其实是将本地的ApplicationThread传递到AMS。然后AMS就可以通过ApplicationThread的代理ApplicationThreadProxy来调用应用程序ApplicationThread.bindApplication，通知应用程序的ApplicationThread已和AMS绑定，可以不借助其他进程帮助直接通信了。此时Launcher的任务也算是完成了。过程如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">应用进程：</div><div class="line">ActivityThread.attach</div><div class="line">|    </div><div class="line">IActivityManager.attachApplication(mAppThread)</div><div class="line">| </div><div class="line">ActivityManagerProxy.attachApplication(mAppThread)   </div><div class="line">    </div><div class="line">AMS进程:</div><div class="line">ActivityManagerService.attachApplication</div><div class="line">|</div><div class="line">ApplicationThreadProxy.bindApplication </div><div class="line"></div><div class="line">应用进程：</div><div class="line">    </div><div class="line">ApplicationThread.bindApplication</div><div class="line">| Handler通信</div><div class="line">AplicationThread.handlerBindApplication</div></pre></td></tr></table></figure>
+<p>ApplicationThreadProxy.bindApplication(…)会传来这个应用的一些信息，如ApplicationInfo，Configuration等,在ApplicationThread.bindApplication里会待信息封装成’AppBindData’,通过</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sendMessage(H.BIND_APPLICATION, data)</div></pre></td></tr></table></figure>
+<p><strong>将信息放到应用里的消息队列里，通过Handler消息机制，在ActivityThread.handleMeaasge里处理H.BIND_APPLICATION的信息，调用AplicationThread.handleBindApplication。</strong></p>
+<p><strong>AplicationThread.handleBindApplication</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">handleBindApplication(AppBindData data) &#123;</div><div class="line">    Process.setArgV0(data.processName);<span class="comment">//设置进程名</span></div><div class="line">    ...</div><div class="line">    <span class="comment">//初始化mInstrumentation</span></div><div class="line">    <span class="keyword">if</span>(data.mInstrumentation!=<span class="keyword">null</span>) &#123;</div><div class="line">        mInstrumentation = (Instrumentation)    cl.loadClass(data.instrumentationName.getClassName()).newInstance();</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        mInstrumentation = <span class="keyword">new</span> Instrumentation();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//创建Application，data.info是个LoadedApk对象。</span></div><div class="line">    Application app = data.info.makeApplication(data.restrictedBackupMode, <span class="keyword">null</span>);</div><div class="line">    mInitialApplication = app;</div><div class="line"></div><div class="line">    <span class="comment">//调用Application的onCreate()方法。</span></div><div class="line">    mInstrumentation.callApplicationOnCreate(app);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>LoadedApk</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Application <span class="title">makeApplication</span><span class="params">(<span class="keyword">boolean</span> forceDefaultAppClass,Instrumentation instrumentation)</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (mApplication != <span class="keyword">null</span>) &#123;   </div><div class="line">       <span class="keyword">return</span> mApplication;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    String appClass = mApplicationInfo.className;</div><div class="line">    java.lang.ClassLoader cl = getClassLoader();</div><div class="line">    </div><div class="line">    <span class="comment">//此时新建一个Application的ContextImpl对象，</span></div><div class="line">    ContextImpl appContext = ContextImpl.createAppContext(mActivityThread, <span class="keyword">this</span>);</div><div class="line">    </div><div class="line">    <span class="comment">//通过在handleBindApplication创建的mInstrumentation对象新建一个Application对象，同时进行attach。</span></div><div class="line">    app = mActivityThread.mInstrumentation.newApplication(cl, appClass, appContext);</div><div class="line">    appContext.setOuterContext(app);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>Instrumentation：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Application <span class="title">newApplication</span><span class="params">(ClassLoader cl, String className, Context context)</span> </span>&#123;    </div><div class="line">    <span class="keyword">return</span> newApplication(cl.loadClass(className), context);</div><div class="line">&#125;</div><div class="line"></div><div class="line">Instrumentation类：</div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> Application <span class="title">newApplication</span><span class="params">(Class&lt;?&gt; clazz, Context context)</span>  </span>&#123;</div><div class="line">    <span class="comment">//实例化Application</span></div><div class="line">    Application app = (Application)clazz.newInstance();     </div><div class="line">    </div><div class="line">    <span class="comment">// Application和context绑定</span></div><div class="line">    app.attach(context);    </div><div class="line">    <span class="keyword">return</span> app;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//attach就是将新建的ContextImpl赋值到mBase,这个ContextImpl对象就是所有Application内Context的具体</span></div><div class="line"><span class="comment">//实现，同时赋值一些其他的信息如mLoadedApk。</span></div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context)</span> </span>&#123;    </div><div class="line">    mBase = base;  </div><div class="line">    mLoadedApk = ContextImpl.getImpl(context).mPackageInfo;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>这时Application就创建好了</strong>，这点很重要，很多博客里说Application是在performLaunchActivity里创建的，因为performLaunchActivity也有mInstrumentation.newApplication这个调用,newApplication函数中可看出会先判断是否以及创建了Application，如果之前已经创建，就返回已创建的Application对象。</p>
+<p>ApplicationThreadProxy.bindApplication完成后，同时在AMS进程，调用realStartActivityLocked，接着就通过ApplicationThreadProxy调用到应用程序进程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//AMS进程：</span></div><div class="line">ActivityManagerService.realStartActivityLocked</div><div class="line">|</div><div class="line">ApplicationThreadProxy.scheduleLaunchActivity</div><div class="line">    </div><div class="line"><span class="comment">//应用程序进程</span></div><div class="line">ApplicationThread.scheduleLaunchActivity</div><div class="line">|  Handler通信</div><div class="line">sendMessage(H.LAUNCH_ACTIVITY, r);</div><div class="line">|  handleMassage</div><div class="line">ActivityThread.handleLaunchActivity</div><div class="line">|</div><div class="line">ActivityThread.performLaunchActivity &#123;</div><div class="line">    <span class="comment">//类似Application的创建过程，通过classLoader加载到activity.</span></div><div class="line">    activity = mInstrumentation.newActivity(classLoader, </div><div class="line">               component.getClassName(), r.intent);</div><div class="line">    <span class="comment">//因为Activity有界面，所以其Context是ContextThemeWrapper类型，但实现类仍是ContextImpl.</span></div><div class="line">    Context appContext = createBaseContextForActivity(r, activity);</div><div class="line"></div><div class="line">    activity.attach(context,mInstrumentation,application,...);</div><div class="line">    </div><div class="line">    <span class="comment">//attach后调用activity的activity方法。</span></div><div class="line">    mInstrumentation.callActivityOnCreate(activity,...)</div><div class="line">    </div><div class="line">&#125;</div><div class="line">    </div><div class="line">在ActivityThread.handleLaunchActivity里，接着调用</div><div class="line">|</div><div class="line">ActivityThread.performResumeActivity</div><div class="line">|</div><div class="line">activity.performResume</div><div class="line">|</div><div class="line">mInstrumentation.callActivityOnResume(<span class="keyword">this</span>);</div><div class="line">|</div><div class="line"><span class="keyword">this</span>.onResume;</div></pre></td></tr></table></figure>
+<p>activity.onResume就是和Window，View之类的绑定相关了，此时界面就显示出来了。</p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h2><p>现在来对开篇的问题进行总结。</p>
+<p>1 . Application是在ActivityThread.handleBindApplication中创建的，一个线程只会创建一个Application，但一个应用程序如果有多个进程将会创建多个Application对象。</p>
+<p>2 . 应用资源是在Application初始化的时候,也就是创建Application ContextImpl的时候，ContextImpl就包含这个路径，主要就是对就是ResourcesManager这个单例的引用。</p>
+<p>3 . 可以看出每次创建Application和Acitvity以及Service时就会有一个ContextImpl实例，ContentProvider和BroadcastReceiver的Context是其他地方传入的。所以Context数量=Application数量+Activity数量+Service数量，单进程情况下Application数量就是1。</p>
+<p>4 . attach是依附、贴上的意思，可以理解为将两种事物联系在一起，上面分析的过程主要涉及3个attach，ActivityThread.attach可以理解为将应用程序进程的ApplicationThread依附到AMS，和AMS联系起来，用于整个AMS和应用程序的通信，Application.attach和Activity.attach主要是将新创建的ContextImpl对象与Application，Activity，Service等组件联系起来，对组件中其中的Context mBase变量赋值，以及一些初始化工作，比如MainHandler的赋值，mWindow的初始化（如果存在）等。ContextImpl包含资源信息、对Context的一些函数的实现等。<br>可以很好的理解，attach需要在Application，Activity等组件调用onCreat之前调用，因为需要先完成组件的初始化工作。</p>
+<p>5 . 管理着组件Application,Activity，Service等的创建，生命周期调用，很重要的一个类。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建Application</span></div><div class="line">mActivityThread.mInstrumentation.newApplication(cl, appClass, appContext);</div><div class="line"><span class="comment">//调用Application的onCreate()方法。    </span></div><div class="line">mInstrumentation.callApplicationOnCreate(app);</div><div class="line"></div><div class="line"><span class="comment">//创建Activity,实际生命周期的管理。</span></div><div class="line">mInstrumentation.newActivity(classLoader, component.getClassName(), r.intent);</div><div class="line">mInstrumentation.callActivityOnCreate(activity);</div><div class="line">mInstrumentation.callActivityOnOnResume(activity);</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>6 . 点击Launcher时会创建一个新进程来开启Activity，而应用内打开Activity,如果Activity不指定新进程，将在原来进程打开，是否开启新进程实在AMS进行控制的，上面分析得到，每次开启新进程时会保存进程信息，默认为应用包名+应用UID,打开Activity时会检查请求方的信息来判断是否需要新开进程。Launcher打开Activity默认ACTIVITY_NEW_TASK，新开一个Activity栈来保存Activity的信息。</p>
+<p>参考：【<a href="http://blog.csdn.net/luoshengyang/article/details/6689748">Android应用程序启动过程源代码分析</a>】</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/25/理解Binder框架/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          理解Binder框架
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/18/正确解读ThreadLocal/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">正确解读ThreadLocal</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android 应用点击图标到Activity界面显示的过程分析" data-title="Android 应用点击图标到Activity界面显示的过程分析" data-url="http://silencedut.com/2016/07/25/Android 应用点击图标到Activity界面显示的过程分析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 SilenceDut
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: '/'
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+	(function(){
+		document.write('<scr'+'ipt type="text/javascript" src="'+document.location.protocol+'//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">'+'</sc'+'ript>');
+	})();
+</script>
+
+
+  </div>
+</body>
+</html>
