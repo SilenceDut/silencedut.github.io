@@ -7,24 +7,27 @@
   <title>从使用到原理学习Java线程池 | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="并发的学习与使用系列 第五篇
-线程池的技术背景在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
-所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资">
+线程池的技术背景
+在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
+所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从使用到原理学习Java线程池">
 <meta property="og:url" content="http://silencedut.com/2016/07/17/从使用到原理学习Java线程池/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="并发的学习与使用系列 第五篇
-线程池的技术背景在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
-所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资">
+线程池的技术背景
+在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
+所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f78hxz9asbj30nm0dm76b.jpg">
-<meta property="og:updated_time" content="2016-08-28T04:52:09.000Z">
+<meta property="og:updated_time" content="2016-08-28T05:57:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从使用到原理学习Java线程池">
 <meta name="twitter:description" content="并发的学习与使用系列 第五篇
-线程池的技术背景在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
-所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资">
+线程池的技术背景
+在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。
+所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化">
 <meta name="twitter:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
@@ -205,10 +208,12 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a> 第五篇</p>
-<h2 id="线程池的技术背景"><a href="#线程池的技术背景" class="headerlink" title="线程池的技术背景"></a>线程池的技术背景</h2><p>在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。</p>
+<h1 id="线程池的技术背景"><a href="#线程池的技术背景" class="headerlink" title="线程池的技术背景"></a>线程池的技术背景</h1><hr>
+<p>在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。</p>
 <p>所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资源”技术产生的原因。</p>
 <p>例如Android中常见到的很多通用组件一般都离不开”池”的概念<a id="more"></a>，如各种图片加载库，网络请求库，即使Android的消息传递机制中的Meaasge当使用Meaasge.obtain()就是使用的Meaasge池中的对象，因此这个概念很重要。本文将介绍的线程池技术同样符合这一思想。</p>
-<h2 id="线程池的优点"><a href="#线程池的优点" class="headerlink" title="线程池的优点"></a>线程池的优点</h2><ul>
+<p><strong>线程池的优点</strong>:</p>
+<ul>
 <li><p>重用线程池中的线程,减少因对象创建,销毁所带来的性能开销;</p>
 </li>
 <li><p>能有效的控制线程的最大并发数,提高系统资源利用率,同时避免过多的资源竞争,避免堵塞;</p>
@@ -216,7 +221,8 @@
 <li><p>能够多线程进行简单的管理,使线程的使用简单、高效。</p>
 </li>
 </ul>
-<h2 id="线程池框架Executor"><a href="#线程池框架Executor" class="headerlink" title="线程池框架Executor"></a>线程池框架Executor</h2><p>java中的线程池是通过Executor框架实现的，Executor 框架包括类：Executor，Executors，ExecutorService，ThreadPoolExecutor ，<a href="http://silencedut.com/2016/07/15/Callable%E5%92%8CFuture%E3%80%81FutureTask%E7%9A%84%E4%BD%BF%E7%94%A8/">Future和Callable </a>等。</p>
+<h1 id="线程池框架Executor"><a href="#线程池框架Executor" class="headerlink" title="线程池框架Executor"></a>线程池框架Executor</h1><hr>
+<p>java中的线程池是通过Executor框架实现的，Executor 框架包括类：Executor，Executors，ExecutorService，ThreadPoolExecutor ，<a href="http://silencedut.com/2016/07/15/Callable%E5%92%8CFuture%E3%80%81FutureTask%E7%9A%84%E4%BD%BF%E7%94%A8/">Future和Callable </a>等。</p>
 <p><img src="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg" alt="uml.png"></p>
 <p><strong>Executor</strong>: 所有线程池的接口,只有一个方法。 </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Executor</span> </span>&#123;        </div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span></span>;      </div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -255,7 +261,8 @@
 <li><p>当一个线程无事可做，超过一定的时间（keepAliveTime）时，线程池会判断，如果当前运行的线程数大于 corePoolSize，那么这个线程就被停掉。所以线程池的所有任务完成后，它最终会收缩到 corePoolSize 的大小。</p>
 </li>
 </ol>
-<h2 id="线程池的创建"><a href="#线程池的创建" class="headerlink" title="线程池的创建"></a>线程池的创建</h2><p>生成线程池采用了工具类Executors的静态方法，以下是几种常见的线程池。</p>
+<h1 id="线程池的创建和使用"><a href="#线程池的创建和使用" class="headerlink" title="线程池的创建和使用"></a>线程池的创建和使用</h1><hr>
+<p>生成线程池采用了工具类Executors的静态方法，以下是几种常见的线程池。</p>
 <p><strong>SingleThreadExecutor</strong>：单个后台线程  (其缓冲队列是无界的)  </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newSingleThreadExecutor</span><span class="params">()</span> </span>&#123;        </div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FinalizableDelegatedExecutorService (</div><div class="line">        <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">1</span>, <span class="number">1</span>,                                    </div><div class="line">        <span class="number">0L</span>, TimeUnit.MILLISECONDS,                                    </div><div class="line">        <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;()));   </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>创建一个单线程的线程池。这个线程池只有一个核心线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。</p>
@@ -268,7 +275,7 @@
 <p>ScheduledThreadPool：核心线程池固定，大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。   </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newScheduledThreadPool</span><span class="params">(<span class="keyword">int</span> corePoolSize)</span> </span>&#123;         </div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ScheduledThreadPool(corePoolSize, </div><div class="line">              Integer.MAX_VALUE,                                                  </div><div class="line">              DEFAULT_KEEPALIVE_MILLIS, MILLISECONDS,                                                    </div><div class="line">              <span class="keyword">new</span> DelayedWorkQueue());    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>创建一个周期性执行任务的线程池。如果闲置,非核心线程池会在DEFAULT_KEEPALIVEMILLIS时间内回收。</p>
-<h2 id="线程池的使用"><a href="#线程池的使用" class="headerlink" title="线程池的使用"></a>线程池的使用</h2><p>线程池最常用的提交任务的方法有两种：</p>
+<p>线程池最常用的提交任务的方法有两种：</p>
 <p><strong>execute</strong>:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ExecutorService.execute(Runnable runable)；</div></pre></td></tr></table></figure>
 <p><strong>submit</strong>:</p>
@@ -276,7 +283,8 @@
 <p>submit(Callable callable)的实现，submit(Runnable runnable)同理。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Callable&lt;T&gt; task)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">    FutureTask&lt;T&gt; ftask = newTaskFor(task);</div><div class="line">    execute(ftask);</div><div class="line">    <span class="keyword">return</span> ftask;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>可以看出submit开启的是有返回结果的任务，会返回一个FutureTask对象，这样就能通过get()方法得到结果。submit最终调用的也是execute(Runnable runable)，submit只是将Callable对象或Runnable封装成一个FutureTask对象，因为FutureTask是个Runnable，所以可以在execute中执行。关于Callable对象和Runnable怎么封装成FutureTask对象，见<a href="2016/07/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a>。</p>
-<h2 id="线程池实现的原理"><a href="#线程池实现的原理" class="headerlink" title="线程池实现的原理"></a>线程池实现的原理</h2><p>如果只讲线程池的使用，那这篇博客没有什么大的价值，充其量也就是熟悉Executor相关API的过程。线程池的实现过程没有用到Synchronized关键字，用的都是volatile,Lock和同步(阻塞)队列,Atomic相关类，FutureTask等等，因为后者的性能更优。理解的过程可以很好的学习源码中并发控制的思想。</p>
+<h1 id="线程池实现的原理"><a href="#线程池实现的原理" class="headerlink" title="线程池实现的原理"></a>线程池实现的原理</h1><hr>
+<p>如果只讲线程池的使用，那这篇博客没有什么大的价值，充其量也就是熟悉Executor相关API的过程。线程池的实现过程没有用到Synchronized关键字，用的都是volatile,Lock和同步(阻塞)队列,Atomic相关类，FutureTask等等，因为后者的性能更优。理解的过程可以很好的学习源码中并发控制的思想。</p>
 <p>在开篇提到过线程池的优点是可总结为以下三点：</p>
 <ol>
 <li>线程复用</li>
@@ -343,7 +351,7 @@
     t.start();
 }
 </code></pre>
-<p><strong>corePoolSize</strong>，当执行一个任务时如果当前的线程数小于核心线程数，则调用addWorker(command, true)，表示将要创建核心线程，在addWorker()中判断如果核心线程已经达到最大，则返回false,无法创建新的Worker也就是线程。如果创建成功则通过start()开启新线程，同时将firstTask作为这个Worker里的run()中执行的第一个任务,这也是核心线程创建时可以立刻执行任务的原因。</p>
+<p>当执行一个任务时如果当前的线程数小于核心线程数<strong>corePoolSize</strong>，则调用addWorker(command, true)，表示将要创建核心线程，在addWorker()中判断如果核心线程已经达到最大，则返回false,无法创建新的Worker也就是线程。如果创建成功则通过start()开启新线程，同时将firstTask作为这个Worker里的run()中执行的第一个任务,这也是核心线程创建时可以立刻执行任务的原因。</p>
 <p>如果核心线程已满，通过addWorker(command, false)，尝试创建非核心线程，如果此时线程已达到最大如果添加失败，则进行拒绝策略处理。如果成功则和上面的过程一样。<br>这个过程里<strong>workQueue.offer(command)</strong>就是将Runnable放进阻塞队列workQueue里，等待其取出执行，所以非核心线程的任务<strong>可能</strong>不是立刻执行。为什么说可能呢？因为如果addWorker(command, false)创建成功了，也会立刻执行的。</p>
 <p>虽然每个Worker的任务是串行处理，但如果创建了多个Worker，因为共用一个workQueue，所以就会并行处理了。</p>
 <p>所以根据corePoolSize和maximumPoolSize来控制最大并发数。大致过程可用下图表示。</p>
