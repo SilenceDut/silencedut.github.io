@@ -14,23 +14,14 @@
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="并发的学习与使用系列 第七篇
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-4fde6c98746ac856.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-79956345cac6a6c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-0edc7db732d629ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-59eb11a914c32b11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-e55c6a8b9fa5bb50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-913406e5fb620fcd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-7a1f9b4c1267da31.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-59b08e328e400c81.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-b2ccea4fc5e2ca7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcgw1f79jvx6kmzj307v07274o.jpg">
-<meta property="og:updated_time" content="2016-08-28T10:14:43.000Z">
+<meta property="og:updated_time" content="2016-08-28T11:59:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发的学习与使用">
 <meta name="twitter:description" content="并发的学习与使用系列 第七篇
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1437930-4fde6c98746ac856.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
   
@@ -212,22 +203,21 @@
         <p><a href="https://silencedut.github.io/2016/07/05/并发的学习与使用">并发的学习与使用系列</a> 第七篇</p>
 <p>关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一个类似AsyncTask的库<a href="https://github.com/SilenceDut/AsyncTaskScheduler">AsyncTaskScheduler</a>，处理了上述的一些实际存在的问题。</p>
 <h1 id="AsyncTask源码解读"><a href="#AsyncTask源码解读" class="headerlink" title="AsyncTask源码解读"></a>AsyncTask源码解读</h1><hr>
-<p><strong>一些结论解读（基于android-23源码）：</strong></p>
-<ul>
-<li><p><strong>API 16 以前必须在主线程加载 AsyncTask，API 16 以后就不用了。</strong></p>
-<a id="more"></a>
-<p>因为AsyncTask主要目的是在后台执行异步任务，然后和UI线程进行交互，所以需要得到UI线程的Handler,之前的AsyncTask加载时，是得到当前加载线程的Handler,而最新的源码中，总是得到UI线程的Looper来创建和UI交互的Handler。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-4fde6c98746ac856.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-</li>
-<li><p><strong>因为每个AsyncTask只能执行一次，多次调用同一个AsyncTask对象会出现异常。但如果要处理多个后台任务，你需要创建多个AsyncTask并执行execute()。</strong><br><img src="http://upload-images.jianshu.io/upload_images/1437930-79956345cac6a6c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-0edc7db732d629ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>从代码来看，AsyncTask有三种状态，就绪PENDING，运行RUNNING,结束FINISHED,所以只有就绪状态的可以正确执行。可知，每个AsyncTask只能执行一次，所有要想执行多个异步任务，只能新建一个AsyncTask对象。</p>
-</li>
-<li><strong>API 4-11 默认是AsnckTask任务并发执行，API11后默认是顺序执行，任务是顺序执行，必须等一个任务结束才能执行下一个。但是可以通过executeOnExecutor（AsyncTask.THREAD_POOL_EXECUTOR）来进行并行执行任务。</strong><br><img src="http://upload-images.jianshu.io/upload_images/1437930-59eb11a914c32b11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="官方注释很详细"><br><img src="http://upload-images.jianshu.io/upload_images/1437930-e55c6a8b9fa5bb50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="默认线程池"><br>THREAD_POOL_EXECUTOR是默认的并行执行任务的线程池，BlockingQueue队列的长度是128。以自己的8核手机为例，其核心线程数是9个，最大线程是17，所能最大加入的任务数是128+17=145，如果超出这个任务数，就会报出RejectExecutionException异常（经过测试）。关于线程池的知识更多可看<a href="2016/07/17/从使用到原理学习Java线程池">从使用到原理学习Java线程池</a>。<br>这也是为什么新的API将任务默认为串行的原因。</li>
-<li><strong>AsyncTask需要在UI线程调用execute()函数</strong><br><img src="http://upload-images.jianshu.io/upload_images/1437930-913406e5fb620fcd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="常用函数"><br>可以看出调用execute()函数时调用了onPreExecute()，而onPreExecute()需要在UI线程中执行，所以AsyncTask需要在UI线程调用execute()函数 。（但是如果你不适用onPreExecute在主线程做一些操作的话，execute()可以在任意线程调用）</li>
-</ul>
-<h3 id="AsyncTask执行任务的过程原理"><a href="#AsyncTask执行任务的过程原理" class="headerlink" title="AsyncTask执行任务的过程原理"></a>AsyncTask执行任务的过程原理</h3><p>AsyncTask的任务执行原理是新建一个有返回值的任务线程FuntureTask和一个Callabler任务，在任务中从doInBackground得到的结果Result通过Handler进行处理，调用onProgress和onPostResult(Result result)关于FuntureTask和Callable更多可看<a href="http://www.jianshu.com/p/a03859a25fda">Callable和FutureTask</a>。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-7a1f9b4c1267da31.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="初始化对象时建立相应的任务"><br><img src="http://upload-images.jianshu.io/upload_images/1437930-59b08e328e400c81.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="execute时执行该任务"></p>
+<h3 id="一些结论解读（基于android-23源码）："><a href="#一些结论解读（基于android-23源码）：" class="headerlink" title="一些结论解读（基于android-23源码）："></a>一些结论解读（基于android-23源码）：</h3><p><strong>1. API 16 以前必须在主线程加载 AsyncTask，API 16 以后就不用了。</strong><br><a id="more"></a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">InternalHandler</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InternalHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(Looper.getMainLooper());</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为AsyncTask主要目的是在后台执行异步任务，然后和UI线程进行交互，所以需要得到UI线程的Handler，之前的AsyncTask加载时，是得到当前加载线程的Handler，而最新的源码中，总是得到UI线程的Looper来创建和UI交互的Handler。</p>
+<p><strong>2. 因为每个AsyncTask只能执行一次，多次调用同一个AsyncTask对象会出现异常。但如果要处理多个后台任务，你需要创建多个AsyncTask并执行execute()。</strong><br>AsyncTask有三种状态，就绪PENDING，运行RUNNING,结束FINISHED,只有PENDING(就绪状态)的可以正确执行,执行后将状态置为Running,可知，每个AsyncTask只能执行一次，所有要想执行多个异步任务，只能新建多个AsyncTask对象。</p>
+<p><strong>3. API 4-11 默认是AsnckTask任务并发执行，API11后默认是顺序执行，任务是顺序执行，必须等一个任务结束才能执行下一个。但是可以通过executeOnExecutor（AsyncTask.THREAD_POOL_EXECUTOR）来进行并行执行任务，在并行执行任务时，有最大执行个数的限制</strong></p>
+<p>THREAD_POOL _EXECUTOR是默认的并行执行任务的线程池，BlockingQueue队列的长度是128。以自己的8核手机为例，其核心线程数是9个，最大线程是17，所能最大加入的任务数是128+17=145，如果超出这个任务数，就会报出RejectExecutionException异常（经过测试）。关于线程池的知识更多可看<a href="2016/07/18/从使用到原理学习Java线程池">从使用到原理学习Java线程池</a>。<br>这也是为什么新的API将任务默认为串行的原因。</p>
+<p><strong>4. AsyncTask需要在UI线程调用execute()函数</strong></p>
+<p>调用execute()函数时调用了onPreExecute()，而onPreExecute()需要在UI线程中执行，所以AsyncTask需要在UI线程调用execute()函数 。（但是如果你不适用onPreExecute在主线程做一些操作的话，execute()可以在任意线程调用）</p>
+<h3 id="AsyncTask执行任务的过程原理"><a href="#AsyncTask执行任务的过程原理" class="headerlink" title="AsyncTask执行任务的过程原理"></a>AsyncTask执行任务的过程原理</h3><p>提取核心部分，简化后的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">mWorker = <span class="keyword">new</span> WorkerRunnable&lt;Params, Result&gt;() &#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> Result <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		Result result = doInBackground(mParams);</div><div class="line">		Binder.flushPendingCommands();</div><div class="line">		<span class="keyword">return</span> postResult(result);</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">mFuture = <span class="keyword">new</span> FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">done</span><span class="params">()</span> </span>&#123;</div><div class="line">	    </div><div class="line">		postResultIfNotInvoked(get());</div><div class="line">	    </div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>AsyncTask的任务执行原理是新建一个有返回值的任务线程FuntureTask和一个Callabler任务WorkerRunnable，在任务中从doInBackground得到的结果Result通过Handler进行处理，调用onProgress和onPostResult(Result result)关于FuntureTask和Callable更多可看<a href="2016/07/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a>。</p>
 <h1 id="AsyncTask的黑暗面"><a href="#AsyncTask的黑暗面" class="headerlink" title="AsyncTask的黑暗面"></a>AsyncTask的黑暗面</h1><hr>
 <p>如果搜索关键词”AsyncTask的缺陷”，会有很多关于AsyncTask缺陷的文章，很多是基于以下几个问题，但这些问题真的是AsyncTask自身的问题还是使用不当导致的呢?这真的需要好好分析一下，不能人云亦云，强行甩锅。</p>
 <h3 id="不当使用带来的问题"><a href="#不当使用带来的问题" class="headerlink" title="不当使用带来的问题"></a>不当使用带来的问题</h3><ol>
-<li><p>生命周期和内存泄漏<br>“当Activity结束或者退出应用时AsyncTask会一直执行doInBackground()方法直到方法执行结束，这可能会导致在onPostExecute时view不存在而导致崩溃溃，以及可能的内存泄露”。<br>如果退出Activity时AsyncTask扔在执行，上面说的的却会发生，但这些问题需要由使用者来解决而不是AsyncTask来解决，因为AsyncTask只是执行后台任务，它怎么知道你什么时候要终止，要退出，确定使用Handler时不会出现这样问题？？？<br><img src="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg" alt=""><br>所以应该在相应的生命周期如onDestory调用cancel取消任务，上面的问题就不会发生了，所有这个锅不应该AsyncTask来背。</p>
+<li><p>生命周期和内存泄漏<br>“当Activity结束或者退出应用时AsyncTask会一直执行doInBackground()方法直到方法执行结束，这可能会导致在onPostExecute时view不存在而导致崩溃溃，以及可能的内存泄露”。<br>如果退出Activity时AsyncTask扔在执行，上面说的的却会发生，但这些问题需要由使用者来解决而不是AsyncTask来解决，因为AsyncTask只是执行后台任务，它怎么知道你什么时候要终止，要退出，确定使用Handler时不会出现这样问题？？？<br><img src="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg" style="display:block;margin:auto"/><br>所以应该在相应的生命周期如onDestory调用cancel取消任务，上面的问题就不会发生了，所有这个锅不应该AsyncTask来背。</p>
 </li>
 <li><p>cancel不能正常取消的问题<br>首先调用cancel终止AsyncTask的原理是对执行异步任务的线程调用interrupt()函数。<br>首先，每个线程内部都有一个boolean型变量表示线程的中断状态，true代表线程处于中断状态，false表示未处于中断状态。<br>而interrupt()方法的作用只是用来改变线程的中断状态(把线程的中断状态改为true,即被中断)。因此interrupt()方法代表着外界希望中断此线程，只是希望，具体怎么处理还是线程内部来做，一般情况下interrupt()方法可以使处于阻塞状态的线程抛出InterruptedException从而结束阻塞状态或则判断Thread.interrupted()来处理逻辑。所以如果你的AsyncTask后台任务有未做中断的处理肯定会一直执行这个线程。所以这需要你自己在doInbackground里进行中断处理，即使你认为这是个缺陷也应该是Thread类的缺陷，因为要用到线程处理异步任务，AsyncTask无法选择其他方式，而且调用cancel后onPostExecute也不会在执行了，不会导致UI线程的问题，所以这个锅也不应该AsyncTask来背。</p>
 </li>
@@ -235,14 +225,17 @@
 </li>
 </ol>
 <p>其实可能是我们的要求太多了，AsyncTask只是一个处理异步任务的工具，很多逻辑上的东西需要我们自己来处理，就像使用Handler和Thread，不正确处理同样会出现上述问题，这些总得来说就是异步带来的问题，这是一个时间和性能的选择问题，AsyncTask就是简化了包装了Handler的处理步骤而已。上面的这些更应该是一些重要的注意事项，而不是AsyncTask的问题</p>
-<h3 id="实际存在的问题"><a href="#实际存在的问题" class="headerlink" title="实际存在的问题"></a>实际存在的问题</h3><ol>
-<li><p>并行串行问题<br>上面的一些可能是由于使用不当导致的，但并行串行问题方面AsyncTask问题很大。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-b2ccea4fc5e2ca7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="使用建议"><br>看AsyncTask源码文档时看到这样建议”AsyncTasks should ideally be used for short operations (a few seconds at the most”，就是尽量执行一个短时间的任务，最对也就几秒的任务。当初还很疑惑，AsyncTask这玩意不就是用来处理后台任务的吗，又不是在主线程，为什么还限制短时间的任务，那要你何用啊。<br><img src="http://ww3.sinaimg.cn/large/006tKfTcgw1f79jvx6kmzj307v07274o.jpg" alt=""><br>上面分析过在api11后AsyncTask默认的是串行执行任务，基本现上市面上的设备上都将是串行执行。自己可以写个Demo试试看。<br>这些串行执行共用的AsyncTask的是一个线程池，这真的很严重。因为是顺序执行，导致你调用execute() 可能 没法立刻执行，也可能就执行不了，因为谁知道有没有其他的AsyncTask任务在执行啊，或者任务还是个很耗时的任务，或者就是个while(ture)循环或者for(;;)来一直处理一种后台任务，那么同一进程内的AsyncTask在这之后调用execute的都将无法执行。<br>想当初初学Android时觉得AsyncTask真是个方便的东西，手机写了个基于socket通信的应用，doInbackground处理，然后直接通知UI。在doInbackground函数里处理一些连接以及数据流的接收及发送，socket的等待连接和数据结束都是阻塞的啊，现在回想起来当初真是年轻😃。当然你可以立刻执行一个任务通过调用executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)通过AsyncTask的THREAD_POOL_EXECUTOR线程池或者传入其他的线程池来立刻执行任务，但THREAD_POOL_EXECUTOR有最大并发数的限制，具体分析见<a href="http://www.jianshu.com/p/de424983ba83">基于最新版本的AsyncTask详细解读</a>，但只执行一个任务时通过线程池来管理的也是无奈之举，而且这种方式不是默认方案啊，不一发现啊。</p>
-</li>
-<li><p>错误处理问题<br>AsyncTask没有对发生的一些异常进行处理，你只能在onBackground里进行一些判断，但之外的一些异常情况发生你都无法了解，比如线程异常退出等。</p>
-</li>
-<li><p>多个任务的管理问题<br>如果需要多个后台任务，需要新建多个AsyncTask来执行任务，在需要退出的时候你需要对每一个都进行一定的处理来避免内存泄露以及UI问题，这是一个很麻烦的事情。</p>
-</li>
-</ol>
+<h3 id="实际存在的问题"><a href="#实际存在的问题" class="headerlink" title="实际存在的问题"></a>实际存在的问题</h3><p><strong>1. 并行串行问题</strong></p>
+<p>上面的一些可能是由于使用不当导致的，但并行串行问题方面AsyncTask问题很大。看AsyncTask源码文档时看到这样建议”AsyncTasks should ideally be used for short operations (a few seconds at the most”，就是尽量执行一个短时间的任务，最对也就几秒的任务。当初还很疑惑，AsyncTask这玩意不就是用来处理后台任务的吗，又不是在主线程，为什么还限制短时间的任务，那要你何用啊。</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tKfTcgw1f79jvx6kmzj307v07274o.jpg" style="display:block;margin:auto"/></p>
+<p>上面分析过在api11后AsyncTask默认的是串行执行任务，基本现上市面上的设备上都将是串行执行。自己可以写个Demo试试看。</p>
+<p>这些串行执行共用的AsyncTask的是一个线程池，这真的很严重。因为是顺序执行，导致你调用execute() 可能 没法立刻执行，也可能就执行不了，因为谁知道有没有其他的AsyncTask任务在执行啊，或者任务还是个很耗时的任务，或者就是个while(ture)循环或者for(;;)来一直处理一种后台任务，那么同一进程内的AsyncTask在这之后调用execute的都将无法执行。</p>
+<p>想当初初学Android时觉得AsyncTask真是个方便的东西，手机写了个基于socket通信的应用，doInbackground处理，然后直接通知UI。在doInbackground函数里处理一些连接以及数据流的接收及发送，socket的等待连接和数据结束都是阻塞的啊，现在回想起来当初真是年轻😃。</p>
+<p>当然你可以立刻执行一个任务通过调用executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)通过AsyncTask的THREAD_POOL_EXECUTOR线程池或者传入其他的线程池来立刻执行任务，但THREAD_POOL_EXECUTOR有最大并发数的限制，但只执行一个任务时通过线程池来管理的也是无奈之举，而且这种方式不是默认方案啊，不容易发现啊。</p>
+<p><strong>2. 错误处理问题</strong></p>
+<p>AsyncTask没有对发生的一些异常进行处理，你只能在onBackground里进行一些判断，但之外的一些异常情况发生你都无法了解，比如线程异常退出等。</p>
+<p><strong>3. 多个任务的管理问题</strong></p>
+<p>如果需要多个后台任务，需要新建多个AsyncTask来执行任务，在需要退出的时候你需要对每一个都进行一定的处理来避免内存泄露以及UI问题，这是一个很麻烦的事情。</p>
 <p><strong>如果你使用AsyncTask默认的执行方式，出了问题都很难排查。你可以保证你能正确使用AsyncTask，但你没法保证别人也能正确使用啊，这就是别人给你挖的坑，但是你跳了进去啊，关键你可能都不知道到底哪个AsyncTask在执行，可能引用就发生在第三方库的也有可能啊。</strong></p>
 <h1 id="替代方案"><a href="#替代方案" class="headerlink" title="替代方案"></a>替代方案</h1><hr>
 <p>基于上述实际存在的问题尤其是并行串行问题，写了一个类似AsyncTask的库<a href="https://github.com/SilenceDut/AsyncTaskScheduler">AsyncTaskScheduler</a>，处理了上述的一些实际存在的问题。</p>
