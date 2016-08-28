@@ -22,7 +22,7 @@ Application是什么时候创建的，每个应用程序有几个Application
 应用的资源路径什么时候初始化的
 应用中ContextImpl的个数
 Application.attach(),Activity.at">
-<meta property="og:updated_time" content="2016-08-28T16:50:15.000Z">
+<meta property="og:updated_time" content="2016-08-28T16:52:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 应用点击图标到Activity界面显示的过程分析">
 <meta name="twitter:description" content="分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：
@@ -220,7 +220,7 @@ Application.attach(),Activity.at">
 </ol>
 <a id="more"></a>
 <h2 id="1-应用的安装过程"><a href="#1-应用的安装过程" class="headerlink" title="1.应用的安装过程"></a>1.应用的安装过程</h2><p>应用安装的时候,通过PMS解析apk的AndroidManifest.xml文件,提取出这个apk的信息写入到packages.xml文件中，这些信息包括：权限、应用包名、icon、APK的安装位置、版本、userID等等。packages.xml文件位于系统目录下/data/system/packages.xml。</p>
-<h2 id="2-启动过程"><a href="#2-启动过程" class="headerlink" title="2.启动过程"></a>2.启动过程</h2><p>系统的会在启动时也可以认为开机时启动常用的服务,如ActivityManagerService(AMS),PackageManagerService(PMS),WindowManagerService(WMS),以及ServiceManager(SM),用于管理各种服务,详细的管理方式见<a href="http://www.jianshu.com/p/9aa83e8b9ddb">理解Binder框架</a>。</p>
+<h2 id="2-启动过程"><a href="#2-启动过程" class="headerlink" title="2.启动过程"></a>2.启动过程</h2><p>系统的会在启动时也可以认为开机时启动常用的服务,如ActivityManagerService(AMS),PackageManagerService(PMS),WindowManagerService(WMS),以及ServiceManager(SM),用于管理各种服务,详细的管理方式见<a href="http://silencedut.com/2016/07/25/%E7%90%86%E8%A7%A3Binder%E6%A1%86%E6%9E%B6/">理解Binder框架</a>。</p>
 <p>同时桌面Launcher会为安装过的应用生成不同的应用入口,对应桌面上的应用图标，下面分析点击应用图标的到应用启动的过程。这里主要是应用端的过程,服务端也就是AMS少量涉及,同时以大体框架为主,不深入代码细节。主要分为Launcher进程，AMS进程，应用程序进程。</p>
 <ul>
 <li><strong>Instrumentation：</strong> 用于管理应用程序和系统（主要与应用程序内的Activity）的交互过程，Instrumentation将在任何应用程序运行前初始化，每个进程只会存在一个Instrumentation对象，且每个Activity都有此对象的引用，可以通过它监测系统与应用程序之间的所有交互，主要是内部交互。</li>

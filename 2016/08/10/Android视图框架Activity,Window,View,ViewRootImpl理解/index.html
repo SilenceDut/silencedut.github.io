@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2016-08-28T16:50:43.000Z">
+<meta property="og:updated_time" content="2016-08-28T16:51:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android视图框架Activity,Window,View,ViewRootImpl理解">
 <meta name="twitter:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
@@ -206,7 +206,7 @@
 <p>2 . Dialog和PopupWindow的区别在哪里?为什么Dialog传入application的Context会报错?</p>
 <p>3 . ViewRootImpl是什么,一个Activity有多少个ViewRootImpl对象?</p>
 <p>4 . 该怎样理解Window的作用?</p>
-<h2 id="Window的创建过程"><a href="#Window的创建过程" class="headerlink" title="Window的创建过程"></a>Window的创建过程</h2><p>之前一篇讲解了<a href="http://www.jianshu.com/p/9c96b68f5ee6">Android 应用点击图标到Activity界面显示的过程分析</a>,接着分析界面的显示过程来引入Activity中Window的创建,以及View的加载显示过程。</p>
+<h2 id="Window的创建过程"><a href="#Window的创建过程" class="headerlink" title="Window的创建过程"></a>Window的创建过程</h2><p>之前一篇讲解了<a href="http://silencedut.com/2016/08/02/Android%20%E5%BA%94%E7%94%A8%E7%82%B9%E5%87%BB%E5%9B%BE%E6%A0%87%E5%88%B0Activity%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA%E7%9A%84%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/">Android 应用点击图标到Activity界面显示的过程分析</a>,接着分析界面的显示过程来引入Activity中Window的创建,以及View的加载显示过程。</p>
 <p>在ActivityThread.performLaunchActivity中,创建Activity的实例,接着会调用Activity.attach()来初始化一些内容,而Window对象就是在attach里进行创建初始化赋值的。</p>
 <p><strong>Activity.attach：</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="keyword">void</span> attach（...） &#123; </div><div class="line">    ...    </div><div class="line">    mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>);    </div><div class="line">    mWindow.setWindowManager((WindowManager)context.getSystemService(Context.WINDOW_SERVICE), </div><div class="line">        mToken, mComponent.flattenToString(),</div><div class="line">        (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != <span class="number">0</span>);   </div><div class="line">    <span class="keyword">if</span> (mParent != <span class="keyword">null</span>) &#123;            </div><div class="line">        mWindow.setContainer(mParent.getWindow());        </div><div class="line">    &#125;</div><div class="line">    mWindowManager = mWindow.getWindowManager();    </div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
