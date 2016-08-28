@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android视图框架Activity,Window,View,ViewRootImpl理解 | SilenceDut的代码世界</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android视图框架Activity,Window,View,ViewRootImpl理解">
+<meta property="og:url" content="http://silencedut.com/2016/08/05/Android视图框架Activity,Window,View,ViewRootImpl理解/index.html">
+<meta property="og:site_name" content="SilenceDut的代码世界">
+<meta property="og:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-08-28T16:43:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android视图框架Activity,Window,View,ViewRootImpl理解">
+<meta name="twitter:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
+  
+  
+     
+      <link rel="icon" href="/img/favicon.ico">
+    
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/img/avatar.png" class="js-avatar show">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">SilenceDut</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Talk is cheap , here&#39;s my blog</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/Framework/" style="font-size: 15px;">Android Framework</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/sourceCode/" style="font-size: 15px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">SilenceDut</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img lazy-src="null/img/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">SilenceDut</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Talk is cheap , here&#39;s my blog</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/SilenceDut" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-Android视图框架Activity,Window,View,ViewRootImpl理解" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/05/Android视图框架Activity,Window,View,ViewRootImpl理解/" class="article-date">
+  	<time datetime="2016-08-05T13:34:17.000Z" itemprop="datePublished">2016-08-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android视图框架Activity,Window,View,ViewRootImpl理解
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Framework/">Android Framework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sourceCode/">源码分析</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：</p>
+<p>1 . 在Activity里调用  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WindowManager.LayoutParams wl = <span class="keyword">new</span> WindowManager.LayoutParams();  </div><div class="line">getWindowManager().addView(mView,wl)；</div></pre></td></tr></table></figure>
+<p>和  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">LayoutParams wmParams =...    </div><div class="line">addContentView(mView,wmParams); <span class="comment">//activity里的方法</span></div></pre></td></tr></table></figure>
+<p>这两种方式背后的实现是怎样的,有什么区别?</p>
+<a id="more"></a> 
+<p>2 . Dialog和PopupWindow的区别在哪里?为什么Dialog传入application的Context会报错?</p>
+<p>3 . ViewRootImpl是什么,一个Activity有多少个ViewRootImpl对象?</p>
+<p>4 . 该怎样理解Window的作用?</p>
+<h2 id="Window的创建过程"><a href="#Window的创建过程" class="headerlink" title="Window的创建过程"></a>Window的创建过程</h2><p>之前一篇讲解了<a href="http://www.jianshu.com/p/9c96b68f5ee6">Android 应用点击图标到Activity界面显示的过程分析</a>,接着分析界面的显示过程来引入Activity中Window的创建,以及View的加载显示过程。</p>
+<p>在ActivityThread.performLaunchActivity中,创建Activity的实例,接着会调用Activity.attach()来初始化一些内容,而Window对象就是在attach里进行创建初始化赋值的。</p>
+<p><strong>Activity.attach：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="keyword">void</span> attach（...） &#123; </div><div class="line">    ...    </div><div class="line">    mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>);    </div><div class="line">    mWindow.setWindowManager((WindowManager)context.getSystemService(Context.WINDOW_SERVICE), </div><div class="line">        mToken, mComponent.flattenToString(),</div><div class="line">        (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != <span class="number">0</span>);   </div><div class="line">    <span class="keyword">if</span> (mParent != <span class="keyword">null</span>) &#123;            </div><div class="line">        mWindow.setContainer(mParent.getWindow());        </div><div class="line">    &#125;</div><div class="line">    mWindowManager = mWindow.getWindowManager();    </div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>Window.setWindowManager:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWindowManager</span><span class="params">(WindowManager wm, IBinder appToken, String appName,<span class="keyword">boolean</span> hardwareAccelerated)</span> </span>&#123; </div><div class="line">    ...    </div><div class="line">    mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(<span class="keyword">this</span>);</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可看出Activity里新建一个PhoneWindow对象。在Android中,Window是个抽象的概念,Android中Window的具体实现类是PhoneWindow,Activity和Dialog中的Window对象都是PhoneWindow。</p>
+<p>同时得到一个WindowManager对象,WindowManager是一个抽象类,这个WindowManager的具体实现实在WindowManagerImpl中,对比Context和ContextImpl。</p>
+<p>每个Activity会有一个WindowManager对象,这个mWindowManager就是和WindowManagerService(WMS)进行通信,也是WMS识别View具体属于那个Activity的关键,创建时传入IBinder 类型的mToken。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mWindow.setWindowManager(...,mToken, ...,...)</div></pre></td></tr></table></figure>
+<p>这个Activity的mToken,这个mToken是一个IBinder,WMS就是通过这个IBinder来管理Activity里的View。</p>
+<p>接着在onCreate的setContentView中,</p>
+<p><strong>Activity.setContentView()：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(@LayoutRes <span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">    getWindow().setContentView(layoutResID);        </div><div class="line">    initWindowDecorActionBar();    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>PhoneWindow.setContentView()：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">    ...    </div><div class="line">    installDecor(); </div><div class="line">    ... </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>PhoneWindow.installDecor ：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">installDecor</span><span class="params">()</span> </span>&#123;    </div><div class="line"><span class="comment">//根据不同的Theme,创建不同的DecorView,DecorView是一个FrameLayout </span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这时只是创建了PhoneWindow,和DecorView,但目前二者也没有任何关系,产生利息的时刻是在ActivityThread.performResumeActivity中,再调用r.activity.performResume()，调用r.activity.makeVisible,将DecorView添加到当前的Window上。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">makeVisible</span><span class="params">()</span> </span>&#123;    </div><div class="line">    <span class="keyword">if</span> (!mWindowAdded) &#123;        </div><div class="line">        ViewManager wm = getWindowManager();        </div><div class="line">        wm.addView(mDecor, getWindow().getAttributes());        </div><div class="line">        mWindowAdded = <span class="keyword">true</span>;    </div><div class="line">    &#125;    </div><div class="line">    mDecor.setVisibility(View.VISIBLE);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>WindowManager的addView的具体实现在WindowManagerImpl中,而WindowManagerImpl的addView又会调用WindowManagerGlobal.addView。</p>
+<p><strong>WindowManagerGlobal.addView：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(View view, ViewGroup.LayoutParams params,            Display display, Window parentWindow)</span> </span>&#123;</div><div class="line">    ...</div><div class="line">    ViewRootImpl root = <span class="keyword">new</span> ViewRootImpl(view.getContext(), display);        </div><div class="line">    view.setLayoutParams(wparams);    </div><div class="line">    mViews.add(view);    </div><div class="line">    mRoots.add(root);    </div><div class="line">    mParams.add(wparams);        </div><div class="line">    root.setView(view, wparams, panelParentView);</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个过程创建一个ViewRootImpl,并将之前创建的DecoView作为参数闯入,以后DecoView的事件都由ViewRootImpl来管理了,比如DecoView上添加View,删除View。ViewRootImpl实现了ViewParent这个接口,这个接口最常见的一个方法是requestLayout(）。</p>
+<p>ViewRootImpl是个ViewParent，在DecoView添加的View时,就会将View中的ViewParent设为DecoView所在的ViewRootImpl,View的ViewParent相同时,理解为这些View在一个View链上。所以每当调用View的requestLayout(）时,其实是调用到ViewRootImpl，ViewRootImpl会控制整个事件的流程。可以看出一个ViewRootImpl对添加到DecoView的所有View进行事件管理。</p>
+<p>他们的关系可以用下面一张图来大概表示,</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Activity,Window,ViewRootImpl,View关系图"></p>
+<p>注意mView和DecoView是同级关系,由不同ViewRootImpl控制,不在同一个View链上,之间没有联系。这个类似于PopupWindow。</p>
+<h2 id="问题解读"><a href="#问题解读" class="headerlink" title="问题解读"></a>问题解读</h2><p><strong>第一个问题</strong><br>现在来看在Activity通过 getWindowManager().addView(mView,wl)和  addContentView(mView,wmParams)的区别。第一种情况会调用到WindowManagerGlobal.addView,这时会创建一个新的ViewRootImpl,和原来的DecoView不在一条View链上,所以它们之间的任何一个调用requestLayout(）不会影响到另一个。而addContentView(mView,wmParams)是直接将mView添加到DecoView中,会使ViewRootImpl链下的所以View重绘。</p>
+<p><strong>第二个问题</strong><br>Dialog在创建时会新建一个PhoneWindow,同时也会使用DecoView作为这个PhoneWindow的根View,相当于走了一遍Activity里创建PhoneWindow和DecoView的流程,而调用Dialog的show方法时,类似于ActivityThread.performResumeActivity,将DecoView添加到Window,同时创建管理DecoView链的RootViewImpl来管理DecoView。PopupWindow就和第一个问题中 getWindowManager().addView(mView,wl)类似了,只是创建一条新的View链和ViewRootImpl,并没有创建新的Window。而Dialog通过非Activity的Context,如Application 和 Service,这是因为Dialog通过传入的Context来得到context里的mWindowManager(也就是WindowManagerImpl)与mToken,这是为了表明Dialog所属的Activity,在Window.addView时,需要这个mToken(IBinder对象),而Application 和 Service传入的情况下Token是null。</p>
+<p><strong>第三个问题</strong><br>上面的分析可看出,ViewRootImpl是实际管理Window中所以View的类,每个Activity中ViewRootImpl数量取决于调用mWindowManager.addView的调用次数。</p>
+<p><strong>第四个问题</strong><br>Activity提供和WMS通信的Token(IBinder对象）,DecoView结合ViewRootImpl来管理同一View链（有相同的ParentView的View,ViewRootImpl也就是ParentView）的所以View的事件,绘制等。那Window的意义在哪?虽然Window也就是PhoneWindow没有具体做什么,但Window把Activity从View的一些创建,管理以及和ViewRootImpl的交互中脱离出来,让Activity与View尽量解耦,要不然这些工作都要放在Activity中午处理,Activity的任务就会变得更杂更重。为什么不能用一个ViewGroup比如DecoView来管理所有的View呢,因为一个Activity可能有不止一条View链,总要有一个进行管理的地方。View的意义就是将Activity和View的繁琐工作中脱离出来。</p>
+<p>###总结<br>一句话总结:<strong>Activity提供与AMS通信的Token(IBinder对象),创建Window为View提供显示的地方,而具体的View管理任务由ViewRootImpl来完成</strong>。</p>
+<p>读别人的博客有个很大的好处是可以快速定位到关键点,但具体想要真正的理解还需要自己趣深入研究。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/07/25/理解Binder框架/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">理解Binder框架</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android视图框架Activity,Window,View,ViewRootImpl理解" data-title="Android视图框架Activity,Window,View,ViewRootImpl理解" data-url="http://silencedut.com/2016/08/05/Android视图框架Activity,Window,View,ViewRootImpl理解/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 SilenceDut
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: '/'
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+	(function(){
+		document.write('<scr'+'ipt type="text/javascript" src="'+document.location.protocol+'//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">'+'</sc'+'ript>');
+	})();
+</script>
+
+
+  </div>
+</body>
+</html>
