@@ -16,7 +16,7 @@
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcgw1f79jvx6kmzj307v07274o.jpg">
-<meta property="og:updated_time" content="2016-08-28T12:23:26.000Z">
+<meta property="og:updated_time" content="2016-08-28T12:33:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面">
 <meta name="twitter:description" content="并发的学习与使用系列 第七篇
@@ -200,7 +200,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://silencedut.github.io/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第七篇</p>
+        <p><a href="http:silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第七篇</p>
 <p>关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一个类似AsyncTask的库<a href="https://github.com/SilenceDut/AsyncTaskScheduler">AsyncTaskScheduler</a>，处理了上述的一些实际存在的问题。</p>
 <a id="more"></a>
 <h1 id="AsyncTask源码解读"><a href="#AsyncTask源码解读" class="headerlink" title="AsyncTask源码解读"></a>AsyncTask源码解读</h1><hr>
@@ -209,12 +209,12 @@
 <p>因为AsyncTask主要目的是在后台执行异步任务，然后和UI线程进行交互，所以需要得到UI线程的Handler，之前的AsyncTask加载时，是得到当前加载线程的Handler，而最新的源码中，总是得到UI线程的Looper来创建和UI交互的Handler。</p>
 <p><strong>2. 因为每个AsyncTask只能执行一次，多次调用同一个AsyncTask对象会出现异常。但如果要处理多个后台任务，你需要创建多个AsyncTask并执行execute()。</strong><br>AsyncTask有三种状态，就绪PENDING，运行RUNNING,结束FINISHED,只有PENDING(就绪状态)的可以正确执行,执行后将状态置为Running,可知，每个AsyncTask只能执行一次，所有要想执行多个异步任务，只能新建多个AsyncTask对象。</p>
 <p><strong>3. API 4-11 默认是AsnckTask任务并发执行，API11后默认是顺序执行，任务是顺序执行，必须等一个任务结束才能执行下一个。但是可以通过executeOnExecutor（AsyncTask.THREAD_POOL_EXECUTOR）来进行并行执行任务，在并行执行任务时，有最大执行个数的限制</strong></p>
-<p>THREAD_POOL _EXECUTOR是默认的并行执行任务的线程池，BlockingQueue队列的长度是128。以自己的8核手机为例，其核心线程数是9个，最大线程是17，所能最大加入的任务数是128+17=145，如果超出这个任务数，就会报出RejectExecutionException异常（经过测试）。关于线程池的知识更多可看<a href="2016/06/25/从使用到原理学习Java线程池">从使用到原理学习Java线程池</a>。<br>这也是为什么新的API将任务默认为串行的原因。</p>
+<p>THREAD_POOL _EXECUTOR是默认的并行执行任务的线程池，BlockingQueue队列的长度是128。以自己的8核手机为例，其核心线程数是9个，最大线程是17，所能最大加入的任务数是128+17=145，如果超出这个任务数，就会报出RejectExecutionException异常（经过测试）。关于线程池的知识更多可看<a href="http:silencedut.com/2016/06/25/从使用到原理学习Java线程池">从使用到原理学习Java线程池</a>。<br>这也是为什么新的API将任务默认为串行的原因。</p>
 <p><strong>4. AsyncTask需要在UI线程调用execute()函数</strong></p>
 <p>调用execute()函数时调用了onPreExecute()，而onPreExecute()需要在UI线程中执行，所以AsyncTask需要在UI线程调用execute()函数 。（但是如果你不适用onPreExecute在主线程做一些操作的话，execute()可以在任意线程调用）</p>
 <h3 id="AsyncTask执行任务的过程原理"><a href="#AsyncTask执行任务的过程原理" class="headerlink" title="AsyncTask执行任务的过程原理"></a>AsyncTask执行任务的过程原理</h3><p>提取核心部分，简化后的代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">mWorker = <span class="keyword">new</span> WorkerRunnable&lt;Params, Result&gt;() &#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> Result <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">	</div><div class="line">		Result result = doInBackground(mParams);</div><div class="line">		Binder.flushPendingCommands();</div><div class="line">		<span class="keyword">return</span> postResult(result);</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">mFuture = <span class="keyword">new</span> FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">done</span><span class="params">()</span> </span>&#123;</div><div class="line">	    </div><div class="line">	    postResultIfNotInvoked(get());</div><div class="line">	    </div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>AsyncTask的任务执行原理是新建一个有返回值的任务线程FuntureTask和一个Callabler任务WorkerRunnable，在任务中从doInBackground得到的结果Result通过Handler进行处理，调用onProgress和onPostResult(Result result)关于FuntureTask和Callable更多可看<a href="2016/06/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a>。</p>
+<p>AsyncTask的任务执行原理是新建一个有返回值的任务线程FuntureTask和一个Callabler任务WorkerRunnable，在任务中从doInBackground得到的结果Result通过Handler进行处理，调用onProgress和onPostResult(Result result)关于FuntureTask和Callable更多可看<a href="http:silencedut.com/2016/06/15/Callable和Future、FutureTask的使用">Callable和Future、FutureTask的使用</a>。</p>
 <h1 id="AsyncTask的黑暗面"><a href="#AsyncTask的黑暗面" class="headerlink" title="AsyncTask的黑暗面"></a>AsyncTask的黑暗面</h1><hr>
 <p>如果搜索关键词”AsyncTask的缺陷”，会有很多关于AsyncTask缺陷的文章，很多是基于以下几个问题，但这些问题真的是AsyncTask自身的问题还是使用不当导致的呢?这真的需要好好分析一下，不能人云亦云，强行甩锅。</p>
 <h3 id="使用不当带来的问题"><a href="#使用不当带来的问题" class="headerlink" title="使用不当带来的问题"></a>使用不当带来的问题</h3><p><strong>1. 生命周期和内存泄漏</strong></p>

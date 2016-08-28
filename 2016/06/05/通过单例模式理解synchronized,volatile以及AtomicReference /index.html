@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="并发的学习与使用系列 第二篇
 在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。">
-<meta property="og:updated_time" content="2016-08-28T12:26:59.000Z">
+<meta property="og:updated_time" content="2016-08-28T12:31:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过单例模式理解synchronized,volatile以及原子类AtomicReference">
 <meta name="twitter:description" content="并发的学习与使用系列 第二篇
@@ -197,7 +197,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第二篇</p>
+        <p><a href="http:silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第二篇</p>
 <p>在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。</p>
 <a id="more"></a>
 <h1 id="synchronized-关键字"><a href="#synchronized-关键字" class="headerlink" title="synchronized 关键字"></a>synchronized 关键字</h1><hr>
@@ -254,7 +254,7 @@
 <li>通过CAS设置value。这保证了：当某线程池通过CAS函数(如compareAndSet函数)设置value时，它的操作是原子的，即线程在操作value时不会被中断。CAS是一种无阻塞的锁,采用不断比较设值的方式来避免并发问题,不会有锁的等待和上下文切换问题,性能消耗较小。</li>
 </ul>
 <p>如果当前值 == 预期值，则以原子方式将该值设置为给定的更新值。这种方式既能够保证延迟加载又能保证原子性及实例的唯一性，代码也相对比较简洁。</p>
-<p>通过<a href="silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a>，线程的阻塞和上下文的切换会带来一定的性能开销，尤其在高并发的环境下。而原子变量可以避免优先级倒置和死锁等危险，竞争比较便宜，协调发生在更细的粒度级别，允许更高程度的并行机制等等。这也是RxJava中选择这种单例方式的原因吧。</p>
+<p>通过<a href="http:silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a>，线程的阻塞和上下文的切换会带来一定的性能开销，尤其在高并发的环境下。而原子变量可以避免优先级倒置和死锁等危险，竞争比较便宜，协调发生在更细的粒度级别，允许更高程度的并行机制等等。这也是RxJava中选择这种单例方式的原因吧。</p>
 <blockquote>
 <p>但是,轻易不要用volatile或者Atomic相关类来替代synchronized来避免并发问题,因为很多原子操作自己可能并没那么了解,并且不同jdk或虚拟机上这些类可能有不同的表现。除非你很确定替换会有很好的效果，《java编程思想》的作者是这样建议的。</p>
 </blockquote>

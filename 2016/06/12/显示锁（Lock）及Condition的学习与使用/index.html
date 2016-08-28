@@ -24,7 +24,7 @@ synchronized是不错，但它并不完美。它有一些功能性的限制，�
 synchronized上是非公平的,新来的线程有可能立即获得监视器，而在等待区中等候已久的线程可能再次等待。
 
 而Lock的一些实">
-<meta property="og:updated_time" content="2016-08-28T12:25:25.000Z">
+<meta property="og:updated_time" content="2016-08-28T12:32:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="显示锁（Lock）及Condition的学习与使用">
 <meta name="twitter:description" content="并发的学习与使用系列 第三篇
@@ -212,7 +212,7 @@ synchronized上是非公平的,新来的线程有可能立即获得监视器，�
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第三篇</p>
+        <p><a href="http:silencedut.com//2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第三篇</p>
 <p>synchronized是不错，但它并不完美。它有一些功能性的限制，比如</p>
 <ul>
 <li>它无法中断一个正在等候获得锁的线程，也无法通过投票得到锁。多线程竞争一个锁时，其余未得到锁的线程只能不停的尝试获得锁，而不能中断。<br>高并发的情况下会导致性能下降。</li>
