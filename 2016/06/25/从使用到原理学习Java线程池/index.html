@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcgw1f79ope94y3j30nm0egdif.jpg">
-<meta property="og:updated_time" content="2016-08-28T16:16:08.000Z">
+<meta property="og:updated_time" content="2016-08-29T01:52:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从使用到原理学习Java线程池">
 <meta name="twitter:description" content="并发的学习与使用系列 第五篇
@@ -312,7 +312,7 @@
 }
 </code></pre>
 <p>这个workQueue就是初始化ThreadPoolExecutor时存放任务的BlockingQueue<Runnable>队列，这个队列里的存放的都是将要执行的Runnable任务。因为BlockingQueue是个阻塞队列，BlockingQueue.take()得到如果是空，则进入等待状态直到BlockingQueue有新的对象被加入时唤醒阻塞的线程。所以一般情况Thread的run()方法就不会结束,而是不断执行从workQueue里的Runnable任务，这就达到了线程复用的原理了。</p>
-<h3 id="2-控制最大并发数"><a href="#2-控制最大并发数" class="headerlink" title="2.控制最大并发数"></a>2.控制最大并发数</h3><p>那Runnable是什么时候放入workQueue？Worker又是什么时候创建，Worker里的Thread的又是什么时候调用start()开启新线程来执行Worker的run()方法的呢？有上面的分析看出Worker里的runWorker()执行任务时是一个接一个，串行进行的，那并发是怎么体现的呢？</p>
+<h2 id="2-控制最大并发数"><a href="#2-控制最大并发数" class="headerlink" title="2.控制最大并发数"></a>2.控制最大并发数</h2><p>那Runnable是什么时候放入workQueue？Worker又是什么时候创建，Worker里的Thread的又是什么时候调用start()开启新线程来执行Worker的run()方法的呢？有上面的分析看出Worker里的runWorker()执行任务时是一个接一个，串行进行的，那并发是怎么体现的呢？</p>
 <p>很容易想到是在execute(Runnable runnable)时会做上面的一些任务。看下execute里是怎么做的。</p>
 <p><strong>execute:</strong></p>
 <p>简化后的代码</p>
@@ -372,8 +372,7 @@
 <p><img src="http://ww4.sinaimg.cn/large/006tKfTcgw1f79ope94y3j30nm0egdif.jpg" style="display:block;margin:auto"/></p>
 <p>上面的讲解和图来可以很好的理解的这个过程。</p>
 <p>如果是做Android开发的，并且对Handler原理比较熟悉，你可能会觉得这个图挺熟悉，其中的一些过程和Handler，Looper，Meaasge使用中，很相似。Handler.send(Message)相当于execute(Runnuble)，Looper中维护的Meaasge队列相当于BlockingQueue，只不过需要自己通过同步来维护这个队列，Looper中的loop()函数循环从Meaasge队列取Meaasge和Worker中的runWork()不断从BlockingQueue取Runnable是同样的道理。</p>
-<p>###3. 管理线程</p>
-<p>通过线程池可以很好的管理线程的复用，控制并发数，以及销毁等过程,线程的复用和控制并发上面已经讲了，而线程的管理过程已经穿插在其中了，也很好理解。</p>
+<h2 id="3-管理线程"><a href="#3-管理线程" class="headerlink" title="3.管理线程"></a>3.管理线程</h2><p>通过线程池可以很好的管理线程的复用，控制并发数，以及销毁等过程,线程的复用和控制并发上面已经讲了，而线程的管理过程已经穿插在其中了，也很好理解。</p>
 <p>在ThreadPoolExecutor有个ctl的AtomicInteger变量。通过这一个变量保存了两个内容：</p>
 <ul>
 <li>所有线程的数量</li>
