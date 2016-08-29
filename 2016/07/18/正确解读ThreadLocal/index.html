@@ -15,7 +15,7 @@
 <meta property="og:description" content="并发的学习与使用系列 第七篇
 在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f7ae4u78mtj30yg0kw782.jpg">
-<meta property="og:updated_time" content="2016-08-29T03:18:55.000Z">
+<meta property="og:updated_time" content="2016-08-29T03:23:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正确解读ThreadLocal">
 <meta name="twitter:description" content="并发的学习与使用系列 第七篇
@@ -212,7 +212,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function">Values <span class="title">values</span><span class="params">(Thread current)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> current.localValues;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>每个线程里有一个Values对象，对象有个Object[]的数组table,这个Object[]数组就是用来存储属于当前线程的内容，这也是为什么叫ThreadLocal的原因，可以看出ThreadLocal的Values引用直接指向Thread的localValues值。set值时实际上是将T value直接存入每个线程的数组里。</p>
 <p>同时为了避免内存泄露问题，ThreadLocal通过弱引用所持有。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Reference&lt;ThreadLocal&lt;T&gt;&gt; reference </div><div class="line">	= <span class="keyword">new</span> WeakReference&lt;ThreadLocal&lt;T&gt;&gt;(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Reference&lt;ThreadLocal&lt;T&gt;&gt; reference = <span class="keyword">new</span> WeakReference&lt;ThreadLocal&lt;T&gt;&gt;(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
 <p>看下put()方法的实现。</p>
 <p><strong>Values.put():</strong></p>
 <p>简化后的代码：</p>
@@ -226,9 +226,8 @@
 <p>这就不是一个private变量，至于静态</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="meta">@Nullable</span> <span class="function">Looper <span class="title">myLooper</span><span class="params">()</span> </span>&#123;    </div><div class="line">    <span class="keyword">return</span> sThreadLocal.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>因为需要静态方法获取Looper对象，所以就必须是静态的的吧。看到一种说法是设置static 是因为ThreadLocal支持线程范围生命周期的变量，所以不属于类的属性。不知是否有些牵强。</p>
-<h3 id="关于内存泄露的问题"><a href="#关于内存泄露的问题" class="headerlink" title="关于内存泄露的问题"></a>关于内存泄露的问题</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** Weak reference to this thread local instance. */</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Reference&lt;ThreadLocal&lt;T&gt;&gt; reference = <span class="keyword">new</span> WeakReference&lt;ThreadLocal&lt;T&gt;&gt;(<span class="keyword">this</span>);</div></pre></td></tr></table></figure>
-<p>因为是软引用持有，所以不会存在内存泄露的问题。但确定不需要使用的时候最好调用remove()方法来释放内存。</p>
-<h2 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h2><p>判断是否需要对资源进行同步的判断准则是，当前获取(get)资源是否会有其他线程进行修改(set)或者当前进行修改的资源是否会有其他线程可以获取。</p>
+<h3 id="关于内存泄露的问题"><a href="#关于内存泄露的问题" class="headerlink" title="关于内存泄露的问题"></a>关于内存泄露的问题</h3><p>因为是Values数组持有的是ThreadLocal的若引用，所以不会存在内存泄露的问题。但确定不需要使用的时候最好调用remove()方法来释放内存。</p>
+<h2 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h2><p>判断是否需要对资源进行同步的判断准则是，当前获取(get)资源是否会有其他线程进行修改(set)或者当前进行修改的资源是否会有其他线程可以获取。几种并发工具类的关键点：</p>
 <ul>
 <li>synchronized——串行访问</li>
 <li>volatile——主内存刷新，不存在线程副本</li>
