@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2016-08-28T16:51:52.000Z">
+<meta property="og:updated_time" content="2016-08-29T01:32:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android视图框架Activity,Window,View,ViewRootImpl理解">
 <meta name="twitter:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
@@ -206,7 +206,7 @@
 <p>2 . Dialog和PopupWindow的区别在哪里?为什么Dialog传入application的Context会报错?</p>
 <p>3 . ViewRootImpl是什么,一个Activity有多少个ViewRootImpl对象?</p>
 <p>4 . 该怎样理解Window的作用?</p>
-<h2 id="Window的创建过程"><a href="#Window的创建过程" class="headerlink" title="Window的创建过程"></a>Window的创建过程</h2><p>之前一篇讲解了<a href="http://silencedut.com/2016/08/02/Android%20%E5%BA%94%E7%94%A8%E7%82%B9%E5%87%BB%E5%9B%BE%E6%A0%87%E5%88%B0Activity%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA%E7%9A%84%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/">Android 应用点击图标到Activity界面显示的过程分析</a>,接着分析界面的显示过程来引入Activity中Window的创建,以及View的加载显示过程。</p>
+<h1 id="Window的创建过程"><a href="#Window的创建过程" class="headerlink" title="Window的创建过程"></a>Window的创建过程</h1><p>之前一篇讲解了<a href="http://silencedut.com/2016/08/02/Android%20%E5%BA%94%E7%94%A8%E7%82%B9%E5%87%BB%E5%9B%BE%E6%A0%87%E5%88%B0Activity%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA%E7%9A%84%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/">Android 应用点击图标到Activity界面显示的过程分析</a>,接着分析界面的显示过程来引入Activity中Window的创建,以及View的加载显示过程。</p>
 <p>在ActivityThread.performLaunchActivity中,创建Activity的实例,接着会调用Activity.attach()来初始化一些内容,而Window对象就是在attach里进行创建初始化赋值的。</p>
 <p><strong>Activity.attach：</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="keyword">void</span> attach（...） &#123; </div><div class="line">    ...    </div><div class="line">    mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>);    </div><div class="line">    mWindow.setWindowManager((WindowManager)context.getSystemService(Context.WINDOW_SERVICE), </div><div class="line">        mToken, mComponent.flattenToString(),</div><div class="line">        (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != <span class="number">0</span>);   </div><div class="line">    <span class="keyword">if</span> (mParent != <span class="keyword">null</span>) &#123;            </div><div class="line">        mWindow.setContainer(mParent.getWindow());        </div><div class="line">    &#125;</div><div class="line">    mWindowManager = mWindow.getWindowManager();    </div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -234,11 +234,15 @@
 <p>他们的关系可以用下面一张图来大概表示,</p>
 <p><img src="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Activity,Window,ViewRootImpl,View关系图"></p>
 <p>注意mView和DecoView是同级关系,由不同ViewRootImpl控制,不在同一个View链上,之间没有联系。这个类似于PopupWindow。</p>
-<h2 id="问题解读"><a href="#问题解读" class="headerlink" title="问题解读"></a>问题解读</h2><p><strong>第一个问题</strong><br>现在来看在Activity通过 getWindowManager().addView(mView,wl)和  addContentView(mView,wmParams)的区别。第一种情况会调用到WindowManagerGlobal.addView,这时会创建一个新的ViewRootImpl,和原来的DecoView不在一条View链上,所以它们之间的任何一个调用requestLayout(）不会影响到另一个。而addContentView(mView,wmParams)是直接将mView添加到DecoView中,会使ViewRootImpl链下的所以View重绘。</p>
-<p><strong>第二个问题</strong><br>Dialog在创建时会新建一个PhoneWindow,同时也会使用DecoView作为这个PhoneWindow的根View,相当于走了一遍Activity里创建PhoneWindow和DecoView的流程,而调用Dialog的show方法时,类似于ActivityThread.performResumeActivity,将DecoView添加到Window,同时创建管理DecoView链的RootViewImpl来管理DecoView。PopupWindow就和第一个问题中 getWindowManager().addView(mView,wl)类似了,只是创建一条新的View链和ViewRootImpl,并没有创建新的Window。而Dialog通过非Activity的Context,如Application 和 Service,这是因为Dialog通过传入的Context来得到context里的mWindowManager(也就是WindowManagerImpl)与mToken,这是为了表明Dialog所属的Activity,在Window.addView时,需要这个mToken(IBinder对象),而Application 和 Service传入的情况下Token是null。</p>
-<p><strong>第三个问题</strong><br>上面的分析可看出,ViewRootImpl是实际管理Window中所以View的类,每个Activity中ViewRootImpl数量取决于调用mWindowManager.addView的调用次数。</p>
-<p><strong>第四个问题</strong><br>Activity提供和WMS通信的Token(IBinder对象）,DecoView结合ViewRootImpl来管理同一View链（有相同的ParentView的View,ViewRootImpl也就是ParentView）的所以View的事件,绘制等。那Window的意义在哪?虽然Window也就是PhoneWindow没有具体做什么,但Window把Activity从View的一些创建,管理以及和ViewRootImpl的交互中脱离出来,让Activity与View尽量解耦,要不然这些工作都要放在Activity中午处理,Activity的任务就会变得更杂更重。为什么不能用一个ViewGroup比如DecoView来管理所有的View呢,因为一个Activity可能有不止一条View链,总要有一个进行管理的地方。View的意义就是将Activity和View的繁琐工作中脱离出来。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一句话总结:<strong>Activity提供与AMS通信的Token(IBinder对象),创建Window为View提供显示的地方,而具体的View管理任务由ViewRootImpl来完成</strong>。</p>
+<h1 id="问题解读"><a href="#问题解读" class="headerlink" title="问题解读"></a>问题解读</h1><p><strong>第1个问题</strong></p>
+<p>现在来看在Activity通过 getWindowManager().addView(mView,wl)和  addContentView(mView,wmParams)的区别。第一种情况会调用到WindowManagerGlobal.addView,这时会创建一个新的ViewRootImpl,和原来的DecoView不在一条View链上,所以它们之间的任何一个调用requestLayout(）不会影响到另一个。而addContentView(mView,wmParams)是直接将mView添加到DecoView中,会使ViewRootImpl链下的所以View重绘。</p>
+<p><strong>第2个问题</strong></p>
+<p>Dialog在创建时会新建一个PhoneWindow,同时也会使用DecoView作为这个PhoneWindow的根View,相当于走了一遍Activity里创建PhoneWindow和DecoView的流程,而调用Dialog的show方法时,类似于ActivityThread.performResumeActivity,将DecoView添加到Window,同时创建管理DecoView链的RootViewImpl来管理DecoView。PopupWindow就和第一个问题中 getWindowManager().addView(mView,wl)类似了,只是创建一条新的View链和ViewRootImpl,并没有创建新的Window。而Dialog通过非Activity的Context,如Application 和 Service,这是因为Dialog通过传入的Context来得到context里的mWindowManager(也就是WindowManagerImpl)与mToken,这是为了表明Dialog所属的Activity,在Window.addView时,需要这个mToken(IBinder对象),而Application 和 Service传入的情况下Token是null。</p>
+<p><strong>第3个问题</strong></p>
+<p>上面的分析可看出,ViewRootImpl是实际管理Window中所以View的类,每个Activity中ViewRootImpl数量取决于调用mWindowManager.addView的调用次数。</p>
+<p><strong>第4个问题</strong></p>
+<p>Activity提供和WMS通信的Token(IBinder对象）,DecoView结合ViewRootImpl来管理同一View链（有相同的ParentView的View,ViewRootImpl也就是ParentView）的所以View的事件,绘制等。那Window的意义在哪?虽然Window也就是PhoneWindow没有具体做什么,但Window把Activity从View的一些创建,管理以及和ViewRootImpl的交互中脱离出来,让Activity与View尽量解耦,要不然这些工作都要放在Activity中午处理,Activity的任务就会变得更杂更重。为什么不能用一个ViewGroup比如DecoView来管理所有的View呢,因为一个Activity可能有不止一条View链,总要有一个进行管理的地方。View的意义就是将Activity和View的繁琐工作中脱离出来。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>一句话总结:<strong>Activity提供与AMS通信的Token(IBinder对象),创建Window为View提供显示的地方,而具体的View管理任务由ViewRootImpl来完成</strong>。</p>
 <p>读别人的博客有个很大的好处是可以快速定位到关键点,但具体想要真正的理解还需要自己趣深入研究。</p>
 
       
