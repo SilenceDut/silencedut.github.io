@@ -12,12 +12,12 @@
 <meta property="og:url" content="http://silencedut.com/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2016-08-29T01:54:55.000Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tKfTcjw1f7adzwlr45j30vi0eyaco.jpg">
+<meta property="og:updated_time" content="2016-08-29T02:04:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android视图框架Activity,Window,View,ViewRootImpl理解">
 <meta name="twitter:description" content="关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006tKfTcjw1f7adzwlr45j30vi0eyaco.jpg">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
   
@@ -232,7 +232,7 @@
 <p>这个过程创建一个ViewRootImpl,并将之前创建的DecoView作为参数闯入,以后DecoView的事件都由ViewRootImpl来管理了,比如DecoView上添加View,删除View。ViewRootImpl实现了ViewParent这个接口,这个接口最常见的一个方法是requestLayout(）。</p>
 <p>ViewRootImpl是个ViewParent，在DecoView添加的View时,就会将View中的ViewParent设为DecoView所在的ViewRootImpl,View的ViewParent相同时,理解为这些View在一个View链上。所以每当调用View的requestLayout(）时,其实是调用到ViewRootImpl，ViewRootImpl会控制整个事件的流程。可以看出一个ViewRootImpl对添加到DecoView的所有View进行事件管理。</p>
 <p>他们的关系可以用下面一张图来大概表示,</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1437930-f3d1fc6ba25292b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" style="display:block;margin:auto"/></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tKfTcjw1f7adzwlr45j30vi0eyaco.jpg" alt="Activity,ViewRootImpl.png"></p>
 <p>注意mView和DecoView是同级关系,由不同ViewRootImpl控制,不在同一个View链上,之间没有联系。这个类似于PopupWindow。</p>
 <h2 id="问题解读"><a href="#问题解读" class="headerlink" title="问题解读"></a>问题解读</h2><p><strong>第1个问题</strong></p>
 <p>现在来看在Activity通过 getWindowManager().addView(mView,wl)和  addContentView(mView,wmParams)的区别。第一种情况会调用到WindowManagerGlobal.addView,这时会创建一个新的ViewRootImpl,和原来的DecoView不在一条View链上,所以它们之间的任何一个调用requestLayout(）不会影响到另一个。而addContentView(mView,wmParams)是直接将mView添加到DecoView中,会使ViewRootImpl链下的所以View重绘。</p>
