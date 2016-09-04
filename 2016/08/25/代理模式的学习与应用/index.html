@@ -16,7 +16,7 @@
 本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/801b780agw1f7hoczgq54j20pu0fkta6.jpg">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/801b780agw1f7hq2twwocj20xi0iu410.jpg">
-<meta property="og:updated_time" content="2016-09-04T13:53:44.000Z">
+<meta property="og:updated_time" content="2016-09-04T13:56:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代理模式的学习与应用">
 <meta name="twitter:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
@@ -228,7 +228,7 @@
 <pre><code>SubjectHandlerImpl invoke
 RealSubject request
 </code></pre><p>通过例子和UMl图来看，Proxy是Jdk提供的类，调用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Proxy.newProxyInstance(Subject.class.getClassLoader(),</div><div class="line">        <span class="keyword">new</span> Class[] &#123;Subject.class&#125;，subjectHandlerImpl);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Proxy.newProxyInstance(Subject.class.getClassLoader(),<span class="keyword">new</span> Class[] &#123;Subject.class&#125;，subjectHandlerImpl);</div></pre></td></tr></table></figure>
 <p>动态生成的了一个Subject对象proxy，其中所有对proxy的调用都会被传入SubjectHandlerImpl的invoke中，看下invoke中参数的意义。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span></span></div></pre></td></tr></table></figure>
 <ul>
@@ -243,8 +243,7 @@ RealSubject request
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">newProxyInstance</span><span class="params">(ClassLoader loader,</div><div class="line">                                          Class&lt;?&gt;[] interfaces,</div><div class="line">                                          InvocationHandler h)</span></span></div></pre></td></tr></table></figure>
 <p>传入的三个参数分别为需要代理类的ClassLoader, interfaces是代理类和RealSubject需要共同实现的<code>所有</code>接口，这些接口也是由newProxyInstance最后生成的对象所实现的接口，看到有些博客中将这个interfaces传入的是realSubject.getClass().getInterfaces(),我觉得不是很妥当，因为realSubject可能实现了一些其他的接口，而这些接口和Subject无关，h就是需要自己实现了InvocationHandler的对象。</p>
 <p>以上面的例子来看最后生成的代理类是什么样的：</p>
-<pre><code class="java"><span class="comment">//为方便理解，省去equals,toString,hashCode等方法的代码，实现和request相同。</span>
-同时做一些小的调整，不改变原有逻辑
+<pre><code class="java"><span class="comment">//为方便理解，省去equals,toString,hashCode等方法的代码，实现和request相同。同时做一些小的调整，不改变原有逻辑</span>
 <span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxySubject</span> <span class="keyword">extends</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">Subject</span>
 </span>{
     <span class="keyword">private</span> <span class="keyword">static</span> Method m1;
