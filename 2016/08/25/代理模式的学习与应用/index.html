@@ -14,15 +14,14 @@
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
 本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
-<meta property="og:image" content="http://ww4.sinaimg.cn/large/801b780agw1f7hoczgq54j20pu0fkta6.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg">
-<meta property="og:image" content="http://ww2.sinaimg.cn/large/801b780agw1f7hq2twwocj20xi0iu410.jpg">
-<meta property="og:updated_time" content="2016-09-04T14:27:42.000Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hxd0b7oyj20fr08vwfc.jpg">
+<meta property="og:updated_time" content="2016-09-04T14:32:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代理模式的学习与应用">
 <meta name="twitter:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
 本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
-<meta name="twitter:image" content="http://ww4.sinaimg.cn/large/801b780agw1f7hoczgq54j20pu0fkta6.jpg">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
   
@@ -207,15 +206,14 @@
 <h2 id="代理模式是什么"><a href="#代理模式是什么" class="headerlink" title="代理模式是什么"></a>代理模式是什么</h2><p>由于一些原因，一个客户不想或者不能直接引用一个对象，此时可以通过一个称之为“代理”的第三者来实现间接引用。通过引入代理对象来间接访问一 个对象，这就是代理模式的模式动机。</p>
 <p><strong>定义:代理模式为另一个对象提供一个替身活占位符以控制这个对象的访问。</strong></p>
 <p>文字描述有些苍白，看下UMl图。</p>
-<p><img src="http://ww4.sinaimg.cn/large/801b780agw1f7hoczgq54j20pu0fkta6.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg" alt=""></p>
 <p>从UML图来看，代理模式和<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/structural_patterns/decorate/design_rules.md">Decorator</a>（装饰者模式）非常相似，有时很难区分，两者的差别主要在Decorator是对对象进行行为（方法）扩展，而代理主要是对对象的控制，这样就方便区分了。</p>
 <h5 id="Subject"><a href="#Subject" class="headerlink" title="Subject"></a>Subject</h5><p>Proxy和RealSubject都实现了SUbject接口，这允许客户都可以想使用RealSubject对象一样地处理proxy对象。</p>
 <h5 id="RealSubject"><a href="#RealSubject" class="headerlink" title="RealSubject"></a>RealSubject</h5><p>RealSubject通常是真正做事的对象，proxy会控制对RealSubject的访问。</p>
 <h5 id="Prxoy"><a href="#Prxoy" class="headerlink" title="Prxoy"></a>Prxoy</h5><p>Proxy持有RealSubject的引用，客户和RealSubject的交互必须通过Proxy。有些情况下Proxy控制了对RealSubject的访问，这些情况包括RealSubject是远程的对象、创建开销大或者需要安全保护。</p>
 <h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>静态代理很简单，和上面UMl图表现出的一样，不清楚的Google一下，这里不再详细展开。主要是解读Jdk中提供的实现动态代理的api的原理与实际中的应用，也是<a href="https://github.com/SilenceDut/Router">Router</a>最重要的部分。</p>
 <p>Java在java.lang.reflect包中有代理支持，利用这个包你可以在运行时动态地创建一个代理类，实现一个或多个接口，并将方法调用装发到你指定的类，因为实际的代理类是在运行时创建的，所以称之为动态代理。</p>
-<p><img src="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg" alt="屏幕快照 2016-09-04 下午3.15.50.png"></p>
-<p><img src="http://ww2.sinaimg.cn/large/801b780agw1f7hq2twwocj20xi0iu410.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/801b780agw1f7hxd0b7oyj20fr08vwfc.jpg" alt=""></p>
 <p>这是使用Jdk中使用代理的方式，其最终仍可转化成最上面的那个UML所表示的情况。<br>InvacationHandler是包java.lang.reflect中提供的一个接口，用来帮助动态的创建代理对象。现在Proxy和你实现InvocationHandler接口的类整体上形成一个代理。Proxy上的任何方法都会被传入InvocationHandlerImpl，InvocationHandlerImpl控制着对RealSubject方法的访问。</p>
 <p>现在看不明白这些没关系，结合下面的例子可以更好的理解。</p>
 <p>首先声明一个共同的接口Subject：</p>
