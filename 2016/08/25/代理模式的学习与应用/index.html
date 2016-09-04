@@ -16,7 +16,7 @@
 本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hxd0b7oyj20fr08vwfc.jpg">
-<meta property="og:updated_time" content="2016-09-04T14:32:00.000Z">
+<meta property="og:updated_time" content="2016-09-04T14:46:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代理模式的学习与应用">
 <meta name="twitter:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
@@ -272,7 +272,7 @@ RealSubject request
 </code></pre>
 <p>这个类的生成最终是在Proxy中是在通过native方法Proxy.generateProxy生成类的字节码，再经过ClassLoader加载，就像class文件就被加载的过程，然后用newInstance方式生成最终的Proxy对象，具体的细节可以自行查看源码或Google，不是本篇博客的重点。</p>
 <p>现在来看ProxySubject这个类，实现了Subject类，也就是newProxyInstance传入的第二个参数的类，所以会实现request()方法，当调用request()方法时，这个h也就是newProxyInstance第三个参数自行实现的的InvocationHandler，这时就调用到了InvocationHandler.invoke(Object proxy, Method method, Object[] args），这个proxy也就是最后生成的Proxy对象，method就是m3,m3对应的就是Subject的request。</p>
-<h3 id="动态代理的应用"><a href="#动态代理的应用" class="headerlink" title="动态代理的应用"></a>动态代理的应用</h3><p>通过上面的分析，对动态代理应该有了一些认识，但应该还是有些迷惑，说了这么多，到底实际中该怎么用，有哪些使用场景，</p>
+<h3 id="动态代理的应用"><a href="#动态代理的应用" class="headerlink" title="动态代理的应用"></a>动态代理的应用</h3><p>通过上面的分析，对动态代理应该有了一些认识，但应该还是有些迷惑，说了这么多，到底实际中该怎么用，有哪些使用场景,可以通过一种Android中的事件总线库——<a href="https://github.com/SilenceDut/Router">Router</a>来更详细的了解。</p>
 
       
     </div>
