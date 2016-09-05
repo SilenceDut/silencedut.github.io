@@ -98,7 +98,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 13.33px;">Android</a> <a href="/tags/Framework/" style="font-size: 16.67px;">Android Framework</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/sourceCode/" style="font-size: 16.67px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+						<a href="/tags/Android/" style="font-size: 13.33px;">Android</a> <a href="/tags/Framework/" style="font-size: 16.67px;">Android Framework</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 16.67px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
 					</div>
 				</section>
 				
@@ -153,6 +153,71 @@
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/" class="article-date">
+  	<time datetime="2016-07-08T10:27:12.000Z" itemprop="datePublished">2016-07-08</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/">基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第六篇</p>
+<p>关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一个类似AsyncTask的库<a href="https://github.com/SilenceDut/AsyncTaskScheduler">AsyncTaskScheduler</a>，处理了上述的一些实际存在的问题。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/">并发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-从使用到原理学习Java线程池" class="article article-type-post" itemscope itemprop="blogPost">
   
