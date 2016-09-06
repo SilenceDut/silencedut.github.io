@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>代理模式的学习与应用 | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
-本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
+  <meta name="description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。
+本篇主要讲静态代理和JDK的动态代理的原理，也是Router——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="代理模式的学习与应用">
 <meta property="og:url" content="http://silencedut.com/2016/08/12/代理模式的学习与应用/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
-<meta property="og:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
-本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
+<meta property="og:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。
+本篇主要讲静态代理和JDK的动态代理的原理，也是Router——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hxd0b7oyj20fr08vwfc.jpg">
-<meta property="og:updated_time" content="2016-09-05T11:23:13.000Z">
+<meta property="og:updated_time" content="2016-09-06T09:54:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代理模式的学习与应用">
-<meta name="twitter:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——Router。
-本篇主要讲静态代理和JDK的动态代理的原理，也是Router">
+<meta name="twitter:description" content="前段时间在研究插件化，其中主要看了任玉刚动态加载框架——dynamic-load-apk，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。
+本篇主要讲静态代理和JDK的动态代理的原理，也是Router——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/801b780agw1f7hx816vy4j20fr08at9a.jpg">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
@@ -200,8 +200,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前段时间在研究插件化，其中主要看了任玉刚动态加载框架——<a href="https://github.com/singwhatiwanna/dynamic-load-apk">dynamic-load-apk</a>，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理，并利用动态代理实现了一种Android中使用的高效、方便的实现事件总线——<a href="https://github.com/SilenceDut/Router">Router</a>。</p>
-<p>本篇主要讲静态代理和JDK的动态代理的原理，也是<a href="https://github.com/SilenceDut/Router">Router</a>实现的主要原理。</p>
+        <p>前段时间在研究插件化，其中主要看了任玉刚动态加载框架——<a href="https://github.com/singwhatiwanna/dynamic-load-apk">dynamic-load-apk</a>，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。</p>
+<p>本篇主要讲静态代理和JDK的动态代理的原理，也是<a href="https://github.com/SilenceDut/Router">Router</a>——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。</p>
 <a id="more"></a>
 <h2 id="代理模式是什么"><a href="#代理模式是什么" class="headerlink" title="代理模式是什么"></a>代理模式是什么</h2><p>由于一些原因，一个客户不想或者不能直接引用一个对象，此时可以通过一个称之为“代理”的第三者来实现间接引用。通过引入代理对象来间接访问一 个对象，这就是代理模式的模式动机。</p>
 <p><strong>定义:代理模式为另一个对象提供一个替身活占位符以控制这个对象的访问。</strong></p>
