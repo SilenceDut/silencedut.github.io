@@ -15,7 +15,7 @@
 <meta property="og:description" content="并发的学习与使用系列 第七篇
 在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/006tKfTcjw1f7ae4u78mtj30yg0kw782.jpg">
-<meta property="og:updated_time" content="2016-08-29T03:23:56.000Z">
+<meta property="og:updated_time" content="2016-09-07T11:56:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正确解读ThreadLocal">
 <meta name="twitter:description" content="并发的学习与使用系列 第七篇
@@ -229,9 +229,9 @@
 <h3 id="关于内存泄露的问题"><a href="#关于内存泄露的问题" class="headerlink" title="关于内存泄露的问题"></a>关于内存泄露的问题</h3><p>因为是Values数组持有的是ThreadLocal的若引用，所以不会存在内存泄露的问题。但确定不需要使用的时候最好调用remove()方法来释放内存。</p>
 <h2 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h2><p>判断是否需要对资源进行同步的判断准则是，当前获取(get)资源是否会有其他线程进行修改(set)或者当前进行修改的资源是否会有其他线程可以获取。几种并发工具类的关键点：</p>
 <ul>
-<li>synchronized——串行访问</li>
-<li>volatile——主内存刷新，不存在线程副本</li>
-<li>ThreadLocal——线程空间内的全局变量</li>
+<li>synchronized——主要是进行同步的控制，同时保证可见性。</li>
+<li>volatile——阻止指令重排序，保证可见性。</li>
+<li>ThreadLocal——线程空间内的全局变量，不存在同步问题。</li>
 </ul>
 
       
