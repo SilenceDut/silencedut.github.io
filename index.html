@@ -98,7 +98,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 13.33px;">Android</a> <a href="/tags/Framework/" style="font-size: 16.67px;">Android Framework</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 16.67px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+						<a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/Framework/" style="font-size: 15px;">Android Framework</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 15px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
 					</div>
 				</section>
 				
@@ -153,6 +153,76 @@
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-通用开源框架的源码解读套路" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/09/10/通用开源框架的源码解读套路/" class="article-date">
+  	<time datetime="2016-09-10T15:27:12.000Z" itemprop="datePublished">2016-09-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/10/通用开源框架的源码解读套路/">常用开源框架的源码解读套路</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点，</p>
+<ul>
+<li>明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的考虑的重点；</li>
+<li>厘清一个框架的核心点和辅助点；</li>
+<li>最重要的是总结相似框架的架构模式与习惯，慢慢的就会有一套自己的阅读套路。</li>
+</ul>
+<p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点记性解读。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/开源项目，源码分析/">开源项目，源码分析</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/09/10/通用开源框架的源码解读套路/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-Router—一个高效，使用方便，基于动态代理实现的Android事件总线库" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -490,74 +560,9 @@
 
 
   
-    <article id="post-正确解读ThreadLocal" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/07/18/正确解读ThreadLocal/" class="article-date">
-  	<time datetime="2016-07-18T13:34:17.000Z" itemprop="datePublished">2016-07-18</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/18/正确解读ThreadLocal/">正确解读ThreadLocal</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第七篇</p>
-<p>在Android的消息机制中，Handler是非常重要的一部分，而完全要理解Handler的机制，首先应该理解ThreadLocal,关于ThreadLocal，见到很多地方叫做线程本地变量，也有些地方叫做线程本地存储，其实意思差不多。可能很多人都知道ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量，这样的词容易让人产生误解或者迷惑。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/">并发</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Java/">Java基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/07/18/正确解读ThreadLocal/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </div>
