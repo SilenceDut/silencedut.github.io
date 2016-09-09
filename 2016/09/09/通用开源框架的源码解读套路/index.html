@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/72f96cbajw1f7m5xnhbbvj20er0cljs5.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006y8lVajw1f7n4qs9lixj30gi06gmxn.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006y8lVajw1f7n4qvghfhj30gg06fmy7.jpg">
-<meta property="og:updated_time" content="2016-09-09T10:23:29.000Z">
+<meta property="og:updated_time" content="2016-09-09T10:24:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用开源框架的源码解读套路">
 <meta name="twitter:description" content="在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:
@@ -264,15 +264,7 @@ Content-Type: text/html;charset=utf-8
 <p>对图片库来说，对于网络加载图片，这也是最常使用的，其原理是和上面的网络请求类似，只不过将得到数据流之后需要转化成Bitmap类型.</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">InputStream is = conn.getInputStream();</div><div class="line">bitmap = BitmapFactory.decodeStream(is);</div></pre></td></tr></table></figure>
 <p>对本地图片同理</p>
-<pre><code class="java">FileInputStream fis = <span class="keyword">new</span> FileInputStream(url);
-bitmap = BitmapFactory.decodeStream(fis);
-</code></pre>
-<p>而对于资源内的图片，直接可以加载。</p>
-<p>再就是利用上面提到的缓存LRU算法，对数据进行缓存。避免重复的获取和解析。</p>
-<p><strong>事件总线库</strong></p>
-<p>对时间总线库就是对之前注册的方法进行调用处理，在<a href="https://github.com/SilenceDut/Router">Router</a>中需要动态代理对象的创建过程。</p>
-<h4 id="任务的执行过程"><a href="#任务的执行过程" class="headerlink" title="任务的执行过程"></a>任务的执行过程</h4><p>任务的执行一般是两种情况，同步的和异步的。</p>
-<p>在当前线程执行，也就是同步任务，这个过程可能是阻塞性的，比如OkHttp中的</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">FileInputStream fis = new FileInputStream(url);</div><div class="line">bitmap = BitmapFactory.decodeStream(fis);</div><div class="line"></div><div class="line">```	</div><div class="line"></div><div class="line">而对于资源内的图片，直接可以加载。</div><div class="line"></div><div class="line">再就是利用上面提到的缓存LRU算法，对数据进行缓存。避免重复的获取和解析。</div><div class="line"></div><div class="line">**事件总线库**</div><div class="line"></div><div class="line">对时间总线库就是对之前注册的方法进行调用处理，在[Router](https://github.com/SilenceDut/Router)中需要动态代理对象的创建过程。</div><div class="line"></div><div class="line">#### 任务的执行过程</div><div class="line"></div><div class="line">任务的执行一般是两种情况，同步的和异步的。</div><div class="line"></div><div class="line">在当前线程执行，也就是同步任务，这个过程可能是阻塞性的，比如OkHttp中的</div><div class="line"></div><div class="line">```java</div><div class="line">Response = Call.execute();</div></pre></td></tr></table></figure>
 <p>直接在当前线程完成，EventBus和<a href="https://github.com/SilenceDut/Router">Router</a>中添加注解为POSTING时，也是在当前线程完成，不需要借助线程池。</p>
 <p>在非当前线程执行，一般是借助线程池来完成，关于线程池的细节和使用可以参考<a href="http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>。因为常用框架中会有大量的请求进行，线程池可以避免线程的重复创建，可以重复利用线程。这种情况下，需要阻塞队列来管理请求的添加与执行顺序，阻塞队列可以用JDK提供的API中的BloackingQueue，也可以自己实现和维护一个队列。对于在线程池执行的任务，从<a href="http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>可以看到，一定是个Runnable，一般是将业务逻辑任务封装成Runnable或者在Runnable处理具体的逻辑。</p>
 <h2 id="结果分发"><a href="#结果分发" class="headerlink" title="结果分发"></a>结果分发</h2><p>根据执行任务的情况，如果是在当前线程同步获取，可以直接得到结果，有些情况下可能是阻塞的。</p>
