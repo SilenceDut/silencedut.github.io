@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/72f96cbajw1f7m5xnhbbvj20er0cljs5.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006y8lVajw1f7n4qs9lixj30gi06gmxn.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006y8lVajw1f7n4qvghfhj30gg06fmy7.jpg">
-<meta property="og:updated_time" content="2016-09-09T10:07:03.000Z">
+<meta property="og:updated_time" content="2016-09-09T10:09:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用开源框架的源码解读套路">
 <meta name="twitter:description" content="在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点，
@@ -194,7 +194,7 @@
 
         
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/开源项目，源码分析/">开源项目，源码分析</a>
+	<a class="article-category-link" href="/categories/OpenSourceProject/">开源项目</a><a class="article-category-link" href="/categories/OpenSourceProject/源码分析/">源码分析</a>
 	</div>
 
 
@@ -210,7 +210,7 @@
 <li>厘清一个框架的核心点和辅助点；</li>
 <li>最重要的是总结相似框架的架构模式与习惯，慢慢的就会有一套自己的阅读套路。</li>
 </ul>
-<p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点记性解读。</p>
+<p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点进行解读。</p>
 <a id="more"></a>
 <h1 id="常用的架构模式"><a href="#常用的架构模式" class="headerlink" title="常用的架构模式"></a>常用的架构模式</h1><p>下图是通过阅读一些框架源码的过程总结出来的一些通用组件（或开源库）的流程图，并对每个过程进行简要分析，并不是所有的开源框架都会严格按照这个流程图里的执行步骤，但一般都会有类似的组成部分，只是个别部分的过程有些差别，一般都可以类比到这个框架中。你可以尝试用这个框架创建自己的通用库，这也是自己实现的事件总线框架<a href="https://github.com/SilenceDut/Router">Router</a>所遵循的框架。</p>
 <p><img src="http://ww1.sinaimg.cn/large/72f96cbajw1f7m5xnhbbvj20er0cljs5.jpg" alt="通用开源框架的源码解读套路"></p>
