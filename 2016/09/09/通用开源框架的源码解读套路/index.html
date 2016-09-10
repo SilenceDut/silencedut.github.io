@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/72f96cbajw1f7m5xnhbbvj20er0cljs5.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006y8lVajw1f7n4qs9lixj30gi06gmxn.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006y8lVajw1f7n4qvghfhj30gg06fmy7.jpg">
-<meta property="og:updated_time" content="2016-09-09T10:27:37.000Z">
+<meta property="og:updated_time" content="2016-09-10T02:57:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用开源框架的源码解读套路">
 <meta name="twitter:description" content="在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:
@@ -278,7 +278,6 @@ bitmap = BitmapFactory.decodeStream(fis);
 <p>在Android中任务执行的结果一般需要传递到UI线程，而Android中与UI线程的交互过程基本上就是通过Handler了。</p>
 <h2 id="并发控制和内存泄露预防"><a href="#并发控制和内存泄露预防" class="headerlink" title="并发控制和内存泄露预防"></a>并发控制和内存泄露预防</h2><p>由于涉及到多个线程的读取过程，所以需要相应的并发控制，常用的并发工具有synchronized,volatile,ConcurrentHashMap,CopyOnArrayList,Aomtic等，详细的介绍可参考<a href="http://www.silencedut.com/2016/06/03/并发的学习与使用/">并发的学习与使用</a>.<br>由于Cache的管理过程，所以需要对不需要的引用及时去除，如及时取消注册释放内存，或者使用弱引用等。为了避免Cache过大导致内存溢出，也需要一些缓存算法LRU等。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面提到的这些就是开源框架常用的套路，在上面提到的几个开源库里都能找到对应的实现，在一些其他类似的库里应该也能找到。可能需要多个步骤组合而成，夹杂相应的设计模式，所以需要有一定的知识积累，这里只是这些开源框架的大概框架，为了方便快速的对框架有个全面的认识，如果想知道更多的细节可以或者想学习一些设计技巧可以去好好研究一下相应的代码。当然你也可以用类似的框架实现一个常用的开源库，就会发现可能也没想象中的那么难。</p>
-<p>当然可以参考<a href="https://github.com/SilenceDut/Router">Router</a>的实现方式，实现一个简单的事件总线库。还有就是<a href="https://github.com/SilenceDut/Router">Router</a>真的很好用O(∩_∩)O~~😉</p>
 
       
     </div>
