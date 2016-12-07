@@ -4,18 +4,30 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>从0到上线搭建Android项目的实践 | SilenceDut的代码世界</title>
+  <title>知天气——天气尽在掌握之中 | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="这是知天气实践中一些知识总结，建议先下载应用【应用宝，或腾讯bugly分发平台】体验下，以免浪费你的时间O(∩_∩)O~~。">
+  <meta name="description" content="这是知天气实践中一些知识总结，建议先下载应用【应用宝，或腾讯bugly分发平台】体验下，以免浪费你的时间O(∩_∩)O~~。
+关于知天气已经有那么多的天气应用了，这个项目有什么不一样的地方吗？为什么还要做这个项目呢？
+
+第一个目的是熟悉项目从0到上线的过程，平常的工作中大部分是在做很小部分的业务开发，对项目的整体框架没机会实践。
+熟悉新的框架和技术，先进行应用，感受其优缺点，然后应用到工工作中，因">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从0到上线搭建Android项目的实践">
+<meta property="og:title" content="知天气——天气尽在掌握之中">
 <meta property="og:url" content="http://silencedut.com/2016/12/06/从0到上线搭建Android项目的实践/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
-<meta property="og:description" content="这是知天气实践中一些知识总结，建议先下载应用【应用宝，或腾讯bugly分发平台】体验下，以免浪费你的时间O(∩_∩)O~~。">
-<meta property="og:updated_time" content="2016-12-07T03:07:33.000Z">
+<meta property="og:description" content="这是知天气实践中一些知识总结，建议先下载应用【应用宝，或腾讯bugly分发平台】体验下，以免浪费你的时间O(∩_∩)O~~。
+关于知天气已经有那么多的天气应用了，这个项目有什么不一样的地方吗？为什么还要做这个项目呢？
+
+第一个目的是熟悉项目从0到上线的过程，平常的工作中大部分是在做很小部分的业务开发，对项目的整体框架没机会实践。
+熟悉新的框架和技术，先进行应用，感受其优缺点，然后应用到工工作中，因">
+<meta property="og:updated_time" content="2016-12-07T07:49:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="从0到上线搭建Android项目的实践">
-<meta name="twitter:description" content="这是知天气实践中一些知识总结，建议先下载应用【应用宝，或腾讯bugly分发平台】体验下，以免浪费你的时间O(∩_∩)O~~。">
+<meta name="twitter:title" content="知天气——天气尽在掌握之中">
+<meta name="twitter:description" content="这是知天气实践中一些知识总结，建议先下载应用【应用宝，或腾讯bugly分发平台】体验下，以免浪费你的时间O(∩_∩)O~~。
+关于知天气已经有那么多的天气应用了，这个项目有什么不一样的地方吗？为什么还要做这个项目呢？
+
+第一个目的是熟悉项目从0到上线的过程，平常的工作中大部分是在做很小部分的业务开发，对项目的整体框架没机会实践。
+熟悉新的框架和技术，先进行应用，感受其优缺点，然后应用到工工作中，因">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
   
@@ -170,7 +182,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      从0到上线搭建Android项目的实践
+      知天气——天气尽在掌握之中
     </h1>
   
 
@@ -195,6 +207,20 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>这是<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>实践中一些知识总结，建议先下载应用【<a href="http://sj.qq.com/myapp/detail.htm?apkName=com.silencedut.knowweather">应用宝</a>，或<a href="https://beta.bugly.qq.com/knowweather">腾讯bugly分发平台</a>】体验下，以免浪费你的时间O(∩_∩)O~~。</p>
+<h2 id="关于知天气"><a href="#关于知天气" class="headerlink" title="关于知天气"></a>关于知天气</h2><p>已经有那么多的天气应用了，这个项目有什么不一样的地方吗？为什么还要做这个项目呢？</p>
+<ul>
+<li>第一个目的是熟悉项目从0到上线的过程，平常的工作中大部分是在做很小部分的业务开发，对项目的整体框架没机会实践。</li>
+<li>熟悉新的框架和技术，先进行应用，感受其优缺点，然后应用到工工作中，因为很多新技术学习是需要时间的，而且其特性也是需要提前了解的，在未了解的情况直接用到公司的项目会花费时间并且可能会带来风险。</li>
+<li>想做自己想用的东西。就像去年做<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>时一样，当初是就想找一款只是纯粹的NBA资讯，新闻的应用。但找的效果都不好，于是就自己做了，顺便了解了服务器开发知识，把以前想学的python也学了。【知天气】也一样，我就想只是简单看看天气，而不是各种乱七八糟的广告，和各种通知，而且界面应该尽量美观，我找不到，所以就想着自己来做了，然后同时node.js搭建了server，通过一些开放的接口拼接成自己想要的天气信息，然后为应用提供接口（由于当初没想到要开源，所以有些天气信息没有提供，比如湿度等，后续会提供更多的信息）。</li>
+</ul>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p>首先这时一款天气应用，虽然是一个开源项目，但其体验不会比那些日活很大下载量上千万的天气应用差，而是会更好，除了作为一个天气应用该有的东西，如每天的天气信息、详情、生活指数等，通知栏，桌面小部件，定时更新天气等等，应用没有任何广告，支持县级、区级城市的天气。</p>
+<p><strong>技术上也有很多可参考的地方</strong>，就拿一个点来说，一般情况下，通知栏和桌面组件信息是一个天气应用很重要的部分，因为大多数人都想方便的看下通知栏就想了解天气的信息，而不是点开应用才能看到，而且希望能自动定时更新。就这一点上，我选取了豌豆荚上下载量<strong>上千万</strong>的几款天气应用做对比，在魅族手机上开启通知栏，退到后台后待机10来分钟，通知栏就不见了，自动更新天气更不会进行了，当然魅族手机以及一些对系统定制化比较多的手机（如小米系统等）对后台任务的处理比较严苛，可能在其他手机上通知栏会继续存在。或许这是产品经理的故意要求这样来提高每次进入应用来提高一些广告的阅读量的，点击次数，这就不得而知了。在同等条件下，知天气的通知栏活一直存在，且其保持自动更新的轮训系统一直正常运行，只要不手动杀掉进程，这个系统会一直存活，即使待机一天也没问题，而且没用到任何黑科技和强制保活手段，具体实现方式参见源码，当然你同样可以用这样方式来实现保活，起码在以严苛著称的系统上不被手动清理其轮询系统就会一直运行。</p>
+<p>大家可以下载几款应用和知天气自行对比，不保证这些应用在其他手机上的的通知栏也会被系统杀掉。</p>
+<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><p><strong>1.为什么没有用RxJava，没有用EventBus,没有第用orm库?</strong></p>
+<p>RxJava是在Android开发者中新兴热门的函数库,在处理异步任务时非常方便，在去年做<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>时已经用了RxJava，而这个项目中没有那么多的异步任务需要去做，为了几个操作而引入这么大的一个库，实在没有必要，而且做这个项目时我尽量不使用第三方库，除非我不能很好的处理相应的业务，比如应用中的各种View要么是sdk里的，要么就自己实现，因为第三方的View有时不是很好的满足自己的需要，”不要重复造轮子的前提是需要的时候自己能造轮子”。因为做项目的一个目的还是为了工作服务，工作中不是所有的项目都会接入RxJava,着的时候没了RxJava，你该怎么优雅的处理异步任务？难道要强制接入吗？</p>
+<p>事件总线库我用的自己写的<a href="https://github.com/SilenceDut/Router">Router</a>,主要是用起来更方便，而且在使用的过程中不断完善，加入了弱引用来避免在一些没有生命周期不方便接触注册时导致的内存泄露，使用EventBus时这些你需要更换实现方式来避免内存泄露。</p>
+<p>关于Orm库的问题，现在看来是当初的决策失误，应该使用第三方orm库比如realm，因为最初考虑没有太多的存储内容，但随着项目的慢慢发展，对数据库的要求会越来越高，比如这个版本本来准备加入的天气预警功能就因为存储的问题，暂时没有添加，但接口已经提供了。</p>
+<p>一个项目不是使用知名的库、知名的框架就是好项目，项目不仅仅就是库的组合，要不然就只是个会使用库会使用框架的开发者，如果公司的项目没有了这些东西，你该怎么做呢？</p>
 
       
     </div>
@@ -241,7 +267,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="从0到上线搭建Android项目的实践" data-title="从0到上线搭建Android项目的实践" data-url="http://silencedut.com/2016/12/06/从0到上线搭建Android项目的实践/"></div>
+	<div class="ds-thread" data-thread-key="从0到上线搭建Android项目的实践" data-title="知天气——天气尽在掌握之中" data-url="http://silencedut.com/2016/12/06/从0到上线搭建Android项目的实践/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
