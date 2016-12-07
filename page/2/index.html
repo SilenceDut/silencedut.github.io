@@ -98,7 +98,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/Framework/" style="font-size: 15px;">Android Framework</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 15px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Framework/" style="font-size: 13.33px;">Android Framework</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 13.33px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
 					</div>
 				</section>
 				
@@ -153,6 +153,142 @@
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-Android 应用点击图标到Activity界面显示的过程分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/" class="article-date">
+  	<time datetime="2016-08-02T12:14:17.000Z" itemprop="datePublished">2016-08-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/">Android 应用点击图标到Activity界面显示的过程分析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：</p>
+<ol>
+<li>Application是什么时候创建的，每个应用程序有几个Application</li>
+<li>应用的资源路径什么时候初始化的</li>
+<li>应用中ContextImpl的个数</li>
+<li>Application.attach(),Activity.attach()的调用时机及作用</li>
+<li>Instrumentation的重要性及具体作用</li>
+<li>点击Launcher启动Activity和应用内部启动Activity的区别</li>
+</ol>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Framework/">Android Framework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sourceCode/">源码分析</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-理解Binder框架" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/25/理解Binder框架/" class="article-date">
+  	<time datetime="2016-07-25T15:45:27.000Z" itemprop="datePublished">2016-07-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/25/理解Binder框架/">理解Binder框架</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Binder是Android系统进程间通信（IPC）最重要的方式。要想了解Android的系统原理，必须要先对Binder框架有一定的理解。Binder是什么？Binder可以理解为能在进程间进行”通信”的对象,这个通信不是指在不<br>同进程中操作同一个对象，而应理解为一种通信协议。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Framework/">Android Framework</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/25/理解Binder框架/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-正确解读ThreadLocal" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -400,141 +536,6 @@
       
         <p class="article-more-link">
           <a  href="/2016/06/15/Callable和Future、FutureTask的使用/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-显示锁（Lock）及Condition的学习与使用" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/06/12/显示锁（Lock）及Condition的学习与使用/" class="article-date">
-  	<time datetime="2016-06-11T16:33:52.000Z" itemprop="datePublished">2016-06-12</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/12/显示锁（Lock）及Condition的学习与使用/">显示锁（Lock）及Condition的学习与使用</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://www.silencedut.com//2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第三篇</p>
-<p>synchronized是不错，但它并不完美。它有一些功能性的限制，比如</p>
-<ul>
-<li>它无法中断一个正在等候获得锁的线程，也无法通过投票得到锁。多线程竞争一个锁时，其余未得到锁的线程只能不停的尝试获得锁，而不能中断。<br>高并发的情况下会导致性能下降。</li>
-<li>synchronized上是非公平的,新来的线程有可能立即获得监视器，而在等待区中等候已久的线程可能再次等待。</li>
-</ul>
-<p>而Lock的一些实现类则很好的解决了这些问题。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/">并发</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Java/">Java基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/06/12/显示锁（Lock）及Condition的学习与使用/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-通过单例模式理解synchronized,volatile以及AtomicReference " class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/06/05/通过单例模式理解synchronized,volatile以及AtomicReference /" class="article-date">
-  	<time datetime="2016-06-05T13:45:23.000Z" itemprop="datePublished">2016-06-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/05/通过单例模式理解synchronized,volatile以及AtomicReference /">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第二篇</p>
-<p>在多线程的操作中，最常用到synchronized关键字和volatile来控制线程的同步问题，要想正确的使用必须对其原理有一定的了解。接下来将通过对其原理的分析以及一些实际中的使用来具体分析它们起到的作用，以及一种可能未见过的单例模式来了解AtomicReference相关原子类的使用。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Java/">Java基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/06/05/通过单例模式理解synchronized,volatile以及AtomicReference /#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
