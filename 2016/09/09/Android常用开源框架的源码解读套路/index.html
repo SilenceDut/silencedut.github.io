@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/72f96cbajw1f7m5xnhbbvj20er0cljs5.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006y8lVajw1f7n4qs9lixj30gi06gmxn.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006y8lVajw1f7n4qvghfhj30gg06fmy7.jpg">
-<meta property="og:updated_time" content="2016-09-12T02:09:16.000Z">
+<meta property="og:updated_time" content="2016-12-14T06:53:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android常用开源框架的源码解读套路">
 <meta name="twitter:description" content="在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:
@@ -237,7 +237,7 @@
 <p>对网络库来说其主要逻辑是通过DNS解析URL,获取URL对应的主机IP和端口（一般为80端口），然后通过Socket的连接，成功后开始从服务端获取数据流，这个过程一般被封装在HttpClient、HttpURLConnection中，而OkHttp的底层并未用到这两个客户端，而是自己实现了这些部分逻辑，其中用到Okio来实现数据流的读取，它补充了java.io和java.nio的不足，以便能够更加方便，快速的访问、存储和处理你的数据。</p>
 <p>另一个主要部分是根据Http协议，把请求包装成Http请求包，格式如下</p>
 <p><img src="http://ww1.sinaimg.cn/large/006y8lVajw1f7n4qs9lixj30gi06gmxn.jpg" alt="请求包"></p>
-<p>例如请求<a href="http://www.silencedut.com">silencedut.com</a>,请求包如下：</p>
+<p>例如请求<a href="https://silencedut.github.io/">silencedut.com</a>,请求包如下：</p>
 <pre><code>Get / HTTP/1.1
 
 Cache-Control: max-age=0
@@ -272,11 +272,11 @@ bitmap = BitmapFactory.decodeStream(fis);
 <p>在当前线程执行，也就是同步任务，这个过程可能是阻塞性的，比如OkHttp中的</p>
 <pre><code>Response = Call.execute();
 </code></pre><p>直接在当前线程完成，EventBus和<a href="https://github.com/SilenceDut/Router">Router</a>中添加注解为<code>POSTING</code>    时，也是在当前线程完成，不需要借助线程池。</p>
-<p>在非当前线程执行，一般是借助线程池来完成，关于线程池的细节和使用可以参考<a href="http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>。因为常用框架中会有大量的请求进行，线程池可以避免线程的重复创建，可以重复利用线程。这种情况下，需要阻塞队列来管理请求的添加与执行顺序，阻塞队列可以用JDK提供的API中的BloackingQueue，也可以自己实现和维护一个队列。对于在线程池执行的任务，从<a href="http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>可以看到，一定是个Runnable，一般是将业务逻辑任务封装成Runnable或者在Runnable处理具体的逻辑。</p>
+<p>在非当前线程执行，一般是借助线程池来完成，关于线程池的细节和使用可以参考<a href="https://silencedut.github.io/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>。因为常用框架中会有大量的请求进行，线程池可以避免线程的重复创建，可以重复利用线程。这种情况下，需要阻塞队列来管理请求的添加与执行顺序，阻塞队列可以用JDK提供的API中的BloackingQueue，也可以自己实现和维护一个队列。对于在线程池执行的任务，从<a href="https://silencedut.github.io/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>可以看到，一定是个Runnable，一般是将业务逻辑任务封装成Runnable或者在Runnable处理具体的逻辑。</p>
 <h2 id="结果分发"><a href="#结果分发" class="headerlink" title="结果分发"></a>结果分发</h2><p>根据执行任务的情况，如果是在当前线程同步获取，可以直接得到结果，有些情况下可能是阻塞的。</p>
-<p>线程池里，一般是使用FutureTask（<a href="http://silencedut.com/2016/06/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a>）来获取线程池执行的结果。</p>
+<p>线程池里，一般是使用FutureTask（<a href="https://silencedut.github.io/2016/06/15/Callable和Future、FutureTask的使用/">Callable和Future、FutureTask的使用</a>）来获取线程池执行的结果。</p>
 <p>在Android中任务执行的结果一般需要传递到UI线程，而Android中与UI线程的交互过程基本上就是通过Handler了。</p>
-<h2 id="并发控制和内存泄露预防"><a href="#并发控制和内存泄露预防" class="headerlink" title="并发控制和内存泄露预防"></a>并发控制和内存泄露预防</h2><p>由于涉及到多个线程的读取过程，所以需要相应的并发控制，常用的并发工具有synchronized,volatile,ConcurrentHashMap,CopyOnArrayList,Aomtic等，详细的介绍可参考<a href="http://www.silencedut.com/2016/06/03/并发的学习与使用/">并发的学习与使用</a>.<br>由于Cache的管理过程，所以需要对不需要的引用及时去除，如及时取消注册释放内存，或者使用弱引用等。为了避免Cache过大导致内存溢出，也需要一些缓存算法LRU等。</p>
+<h2 id="并发控制和内存泄露预防"><a href="#并发控制和内存泄露预防" class="headerlink" title="并发控制和内存泄露预防"></a>并发控制和内存泄露预防</h2><p>由于涉及到多个线程的读取过程，所以需要相应的并发控制，常用的并发工具有synchronized,volatile,ConcurrentHashMap,CopyOnArrayList,Aomtic等，详细的介绍可参考<a href="https://silencedut.github.io/2016/06/03/并发的学习与使用/">并发的学习与使用</a>.<br>由于Cache的管理过程，所以需要对不需要的引用及时去除，如及时取消注册释放内存，或者使用弱引用等。为了避免Cache过大导致内存溢出，也需要一些缓存算法LRU等。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面提到的这些就是开源框架常用的套路，在上面提到的几个开源库里都能找到对应的实现，在一些其他类似的库里应该也能找到。可能需要多个步骤组合而成，夹杂相应的设计模式，所以需要有一定的知识积累，这里只是这些开源框架的大概框架，为了方便快速的对框架有个全面的认识，如果想知道更多的细节可以或者想学习一些设计技巧可以去好好研究一下相应的代码。当然你也可以用类似的框架实现一个常用的开源库，就会发现可能也没想象中的那么难。</p>
 
       
