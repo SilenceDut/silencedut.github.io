@@ -181,7 +181,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。</p>
-<h2 id="GC（Garbage-Collection）的发生时机"><a href="#GC（Garbage-Collection）的发生时机" class="headerlink" title="GC（Garbage Collection）的发生时机"></a>GC（Garbage Collection）的发生时机</h2><p>总体来说是内存使用紧张的时候会进行GC，即新对象所需<strong>连续内存（一般也就是所剩内存）</strong>比不同的内存区域大时发生。</p>
+<h2 id="GC（Garbage-Collection）的发生时机"><a href="#GC（Garbage-Collection）的发生时机" class="headerlink" title="GC（Garbage Collection）的发生时机"></a>GC（Garbage Collection）的发生时机</h2><p>总体来说是内存使用紧张的时候会进行GC，即新对象所需<strong>连续内存（一般也就是所剩内存）</strong>比剩下的内存大时发生。</p>
 <ol>
 <li>young GC：当young gen中的eden区分配满的时候触发。注意young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高。</li>
 <li>full GC：当准备要触发一次young GC时，如果发现统计数据说之前young GC的平均晋升大小比目前old gen剩余的空间大，则不会触发young GC而是转为触发full GC（因为HotSpot VM的GC里，除了CMS的concurrent collection之外，其它能收集old gen的GC都会同时收集整个GC堆，包括young gen，所以不需要事先触发一次单独的young GC）；或者，如果有perm gen的话，要在perm gen分配空间但已经没有足够空间时，也要触发一次full GC；或者System.gc()、heap dump带GC，默认也是触发full GC。</li>
