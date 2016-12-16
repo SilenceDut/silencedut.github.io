@@ -4,17 +4,21 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>SilenceDut的代码世界</title>
+  <title>关于Java GC的理解 | SilenceDut的代码世界</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="SilenceDut">
-<meta property="og:type" content="website">
-<meta property="og:title" content="SilenceDut的代码世界">
-<meta property="og:url" content="http://silencedut.com/index.html">
+  <meta name="description" content="关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。
+##GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时候会进行GC，即新对象所需连续内存（一般也就是所剩内存）比不同的内存区域大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Java GC的理解">
+<meta property="og:url" content="http://silencedut.com/2016/12/14/关于Java GC的理解/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
-<meta property="og:description" content="SilenceDut">
+<meta property="og:description" content="关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。
+##GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时候会进行GC，即新对象所需连续内存（一般也就是所剩内存）比不同的内存区域大">
+<meta property="og:updated_time" content="2016-12-16T02:25:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SilenceDut的代码世界">
-<meta name="twitter:description" content="SilenceDut">
+<meta name="twitter:title" content="关于Java GC的理解">
+<meta name="twitter:description" content="关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。
+##GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时候会进行GC，即新对象所需连续内存（一般也就是所剩内存）比不同的内存区域大">
   
     <link rel="alternative" href="/atom.xml" title="SilenceDut的代码世界" type="application/atom+xml">
   
@@ -152,9 +156,7 @@
 	</div>
 </nav>
 
-      <div class="body-wrap">
-  
-    <article id="post-关于Java GC的理解" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-关于Java GC的理解" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/12/14/关于Java GC的理解/" class="article-date">
@@ -170,12 +172,27 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/14/关于Java GC的理解/">关于Java GC的理解</a>
+    <h1 class="article-title" itemprop="name">
+      关于Java GC的理解
     </h1>
   
 
       </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/JVM/">JVM</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
       
     
     <div class="article-entry" itemprop="articleBody">
@@ -244,376 +261,68 @@
       
     </div>
     
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/JVM/">JVM</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/12/06/知天气——天气尽在掌握之中/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">知天气——天气尽在掌握之中</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
   
 </article>
 
 
-
-
-
-
-
-
-
-  
-    <article id="post-知天气——天气尽在掌握之中" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/12/06/知天气——天气尽在掌握之中/" class="article-date">
-  	<time datetime="2016-12-06T14:55:29.000Z" itemprop="datePublished">2016-12-06</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/06/知天气——天气尽在掌握之中/">知天气——天气尽在掌握之中</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>已经有那么多的天气应用了，这个项目有什么不一样的地方吗？为什么还要做这个项目呢？</p>
-<ul>
-<li>第一个目的是熟悉项目从0到上线的过程，平常的工作中大部分是在做很小部分的业务开发，对项目的整体框架没机会实践。</li>
-<li>熟悉新的框架和技术，先进行应用，感受其优缺点，然后应用到工工作中，因为很多新技术学习是需要时间的，而且其特性也是需要提前了解的，在未了解的情况直接用到公司的项目会花费时间并且可能会带来风险。</li>
-<li>想做自己想用的东西。就像去年做<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>时一样，当初是就想找一款只是纯粹的NBA资讯，新闻的应用。但找的效果都不好，于是就自己做了，顺便了解了服务器开发知识，把以前想学的python也学了。【知天气】也一样，我就想只是简单看看天气，而不是各种乱七八糟的广告，和各种通知，而且界面应该尽量美观，我找不到，所以就想着自己来做了，然后同时node.js搭建了server，通过一些开放的接口拼接成自己想要的天气信息，然后为应用提供接口（由于当初没想到要开源，所以有些天气信息没有提供，比如湿度等，后续会提供更多的信息）。</li>
-</ul>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/OpenSourceProject/">开源项目</a>
-	</div>
 
 
-      
-        <p class="article-more-link">
-          <a  href="/2016/12/06/知天气——天气尽在掌握之中/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
 
 
 
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="关于Java GC的理解" data-title="关于Java GC的理解" data-url="http://silencedut.com/2016/12/14/关于Java GC的理解/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
 
 
 
 
-
-
-  
-    <article id="post-根据实际项目浅谈Android项目中的框架搭建" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/" class="article-date">
-  	<time datetime="2016-12-05T14:55:29.000Z" itemprop="datePublished">2016-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/">根据实际项目浅谈Android项目中的框架搭建</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这是<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>实践中的架构搭建方式，建议先下载应用【<a href="http://sj.qq.com/myapp/detail.htm?apkName=com.silencedut.knowweather">应用宝</a>，或<a href="https://beta.bugly.qq.com/knowweather">腾讯bugly分发平台</a>】体验下，以免浪费你的时间O(∩_∩)O~~。</p>
-<p>项目的构架搭建过程包括MVP的使用，MVP使用中P层的组织，Model层的管理，以及划分P层和Model层的理解。除了项目的框架部分，结构分包方式也很重要，一个好的分包方式能让项目更加清晰，开发过程也会更有效率。除此之外，再加上一些第三方开源框架就能很好的搭建出一个Android应用了。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/OpenSourceProject/">开源项目</a><a class="article-category-link" href="/categories/OpenSourceProject/架构/">架构</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Android常用开源框架的源码解读套路" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/09/Android常用开源框架的源码解读套路/" class="article-date">
-  	<time datetime="2016-09-09T15:27:12.000Z" itemprop="datePublished">2016-09-09</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/09/Android常用开源框架的源码解读套路/">Android常用开源框架的源码解读套路</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:</p>
-<ul>
-<li>明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的考虑的重点；</li>
-<li>厘清一个框架的核心点和辅助点；</li>
-<li>最重要的是总结相似框架的架构模式与习惯，慢慢的就会有一套自己的阅读套路。</li>
-</ul>
-<p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点进行解读。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/OpenSourceProject/">开源项目</a><a class="article-category-link" href="/categories/OpenSourceProject/源码分析/">源码分析</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/09/Android常用开源框架的源码解读套路/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Router—一个高效，使用方便，基于动态代理实现的Android事件总线库" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" class="article-date">
-  	<time datetime="2016-09-04T11:55:29.000Z" itemprop="datePublished">2016-09-04</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/">Router—一个高效，使用方便，基于动态代理实现的Android事件总线库</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>项目地址：<a href="https://github.com/SilenceDut/Router">Router</a></p>
-<p><a href="https://silencedut.github.io/2016/08/12/代理模式的学习与应用">代理模式的学习与应用</a>介绍了代理模式的原理及简单使用方式，<a href="https://github.com/SilenceDut/Router">Router</a>就是基于此实现了一个Android间组件、线程间方便通信的库。</p>
-<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>在Android中的，EventBus是开源最流行的事件总线库，大大简化了应用程序内各组件间、组件与后台线程间的通信。之前的个人项目<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>也是使用EventBus来简化开发，但在使用过程中有一些问题。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源项目/">开源项目</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-代理模式的学习与应用" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/08/12/代理模式的学习与应用/" class="article-date">
-  	<time datetime="2016-08-12T12:45:29.000Z" itemprop="datePublished">2016-08-12</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/12/代理模式的学习与应用/">代理模式的学习与应用</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前段时间在研究插件化，其中主要看了任玉刚动态加载框架——<a href="https://github.com/singwhatiwanna/dynamic-load-apk">dynamic-load-apk</a>，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。</p>
-<p>本篇主要讲静态代理和JDK的动态代理的原理，也是<a href="https://github.com/SilenceDut/Router">Router</a>——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java基础/">Java基础</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/designpattern/">设计模式</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/08/12/代理模式的学习与应用/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </div>
       <footer id="footer">
   <div class="outer">
@@ -637,8 +346,8 @@
 		fancybox: true,
 		mathjax: true,
 		animate: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
