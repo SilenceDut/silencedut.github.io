@@ -16,7 +16,7 @@
 关于Asnynck有很多的源码解读，但一些解读现在看来已经不在适用了，比如AsyncTask类必须在UI Thread当中加载，AsyncTask的对象必须在UI Thread当中实例化等一些结论都是基于以前版本的代码来解读的，现在看来已经不是这样的了。同时分析了在AsyncTask的使用中存在的以及以及应该注意的问题，基于一些实际存在的问题尤其是并行串行问题，写了一">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcgw1f79jvx6kmzj307v07274o.jpg">
-<meta property="og:updated_time" content="2016-08-29T03:10:16.000Z">
+<meta property="og:updated_time" content="2017-01-05T04:53:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面">
 <meta name="twitter:description" content="并发的学习与使用系列 第六篇
@@ -222,7 +222,7 @@
 <p><img src="http://ww1.sinaimg.cn/large/006tKfTcgw1f79jw7ifuvj306b0503ys.jpg" style="display:block;margin:auto"/></p>
 <p>所以应该在相应的生命周期如onDestory调用cancel取消任务，上面的问题就不会发生了，所有这个锅不应该AsyncTask来背。</p>
 <p><strong>2. cancel不能正常取消的问题</strong></p>
-<p>首先调用cancel终止AsyncTask的原理是对执行异步任务的线程调用interrupt()函数。每个线程内部都有一个boolean型变量表示线程的中断状态，true代表线程处于中断状态，false表示未处于中断状态。<br>而interrupt()方法的作用只是用来改变线程的中断状态(把线程的中断状态改为true,即被中断)。因此interrupt()方法代表着外界希望中断此线程，只是希望，具体怎么处理还是线程内部来做，一般情况下interrupt()方法可以使处于阻塞状态的线程抛出InterruptedException从而结束阻塞状态或则判断Thread.interrupted()来处理逻辑。</p>
+<p>首先调用cancel终止AsyncTask的原理是对执行异步任务的线程调用interrupt()函数。每个线程内部都有一个boolean型变量表示线程的中断状态，true代表线程处于中断状态，false表示未处于中断状态。<br>而interrupt()方法的作用只是用来改变线程的中断状态(把线程的中断状态改为true,即被中断)。Thread.interrupt()只在Object.wait() .Object.join(), Object.sleep()几个方法会主动抛出InterruptedException异常，从而结束阻塞状态。而在其他的时候，只是通过设置了Thread的一个标志位信息，需要程序自我进行处理。</p>
 <p>所以如果你的AsyncTask后台任务有未做中断的处理肯定会一直执行这个线程。所以这需要你自己在doInbackground里进行中断处理，即使你认为这是个缺陷也应该是Thread类的缺陷，因为要用到线程处理异步任务，AsyncTask无法选择其他方式，而且调用cancel后onPostExecute也不会在执行了，不会导致UI线程的问题，所以这个锅也不应该AsyncTask来背。</p>
 <p><strong>3. Activity意外重启，状态消失问题</strong><br>比如当用户旋转屏幕的时候Activity就会重新启动，如果之前有AsyncTask正在异步加载处理数据，那么之前的数据就会消失，而新的AsyncTask重新创建，这的却是个问题，但你用其他的方式进行请求同样会发生这个问题啊。</p>
 <p>其实可能是我们的要求太多了，AsyncTask只是一个处理异步任务的工具，很多逻辑上的东西需要我们自己来处理，就像使用Handler和Thread，不正确处理同样会出现上述问题，这些总得来说就是异步带来的问题，这是一个时间和性能的选择问题，AsyncTask就是简化了包装了Handler的处理步骤而已。上面的这些更应该是一些重要的注意事项，而不是AsyncTask的问题</p>
@@ -341,7 +341,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2016 SilenceDut
+    		&copy; 2017 SilenceDut
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
