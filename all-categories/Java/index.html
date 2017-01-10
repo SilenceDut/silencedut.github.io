@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="SilenceDut的代码世界">
-    <title>Category: Android - SilenceDut的代码世界</title>
+    <title>Category: Java - SilenceDut的代码世界</title>
     <meta name="author" content="SilenceDut">
     
     
@@ -14,7 +14,7 @@
     <meta name="description" content="SilenceDut">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="SilenceDut的代码世界">
-<meta property="og:url" content="http://silencedut.com/categories/Java/Android/index.html">
+<meta property="og:url" content="http://silencedut.com/all-categories/Java/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="SilenceDut">
 <meta name="twitter:card" content="summary">
@@ -166,21 +166,21 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2016/06/03/并发的学习与使用/">
-                            并发的学习与使用
+                        <a class="link-unstyled" href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/">
+                            由ReentrantLock分析JUC的核心AQS
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-06-03T22:27:12+08:00">
+    <time itemprop="datePublished" datetime="2017-01-09T22:21:29+08:00">
 	
-		    6月 03, 2016
+		    1月 09, 2017
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/Java/">Java基础</a>, <a class="category-link" href="/categories/Java/Android/">Android</a>
+    <a class="category-link" href="/all-categories/Java/">Java</a>
 
 
     
@@ -189,21 +189,10 @@
             </div>
             
                 <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><strong>不论什么时候，只要您将修改的变量接下来可能被另一个线程读取，或者您将读取的变量最后是被另一个线程写入的，那么您必须考虑并发问题，并采取合适的同步方式。</strong></p>
-<p>我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。</p>
-<p>接下来将对常见的并发知识进行知识梳理总结：</p>
-<ul>
-<li>并发的一些基础概念（本篇）</li>
-<li><a href="https://silencedut.github.io/2016/06/05/通过单例模式理解synchronized,volatile以及AtomicReference%20">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a></li>
-<li><a href="https://silencedut.github.io/2016/06/12/显示锁（Lock）及Condition的学习与使用">显示锁（Lock）及Condition的学习与使用</a></li>
-<li><a href="https://silencedut.github.io/2016/06/15/Callable和Future、FutureTask的使用">Callable和Future、FutureTask的使用</a></li>
-<li><a href="https://silencedut.github.io/2016/06/25/从使用到原理学习Java线程池">从使用到原理学习Java线程池</a></li>
-<li><a href="https://silencedut.github.io/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面">基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面</a></li>
-<li><a href="https://silencedut.github.io/2016/07/18/正确解读ThreadLocal">正确解读ThreadLocal</a></li>
-<li><a href="https://silencedut.github.io/2017/01/09/由ReentrantLock分析JUC的核心AQS">由ReentrantLock分析JUC的核心AQS</a></li>
-</ul>
+                    <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第八篇</p>
+<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，这里通过ReentrantLock来分析下AQS的实现原理。</p>
                     
-                        <a href="/2016/06/03/并发的学习与使用/" class="postShorten-excerpt_link link">
+                        <a href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" class="postShorten-excerpt_link link">
                             Continue reading
                         </a>
                         

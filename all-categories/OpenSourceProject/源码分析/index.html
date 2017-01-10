@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="SilenceDut的代码世界">
-    <title>Category: 架构 - SilenceDut的代码世界</title>
+    <title>Category: 源码分析 - SilenceDut的代码世界</title>
     <meta name="author" content="SilenceDut">
     
     
@@ -14,7 +14,7 @@
     <meta name="description" content="SilenceDut">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="SilenceDut的代码世界">
-<meta property="og:url" content="http://silencedut.com/categories/OpenSourceProject/架构/index.html">
+<meta property="og:url" content="http://silencedut.com/all-categories/OpenSourceProject/源码分析/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="SilenceDut">
 <meta name="twitter:card" content="summary">
@@ -166,21 +166,21 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/">
-                            根据实际项目浅谈Android项目中的框架搭建
+                        <a class="link-unstyled" href="/2016/09/09/Android常用开源框架的源码解读套路/">
+                            Android常用开源框架的源码解读套路
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-05T22:55:29+08:00">
+    <time itemprop="datePublished" datetime="2016-09-09T23:27:12+08:00">
 	
-		    12月 05, 2016
+		    9月 09, 2016
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/OpenSourceProject/">开源项目</a>, <a class="category-link" href="/categories/OpenSourceProject/架构/">架构</a>
+    <a class="category-link" href="/all-categories/OpenSourceProject/">开源项目</a>, <a class="category-link" href="/all-categories/OpenSourceProject/源码分析/">源码分析</a>
 
 
     
@@ -189,10 +189,15 @@
             </div>
             
                 <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>这是<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>实践中的架构搭建方式，建议先下载应用【<a href="http://sj.qq.com/myapp/detail.htm?apkName=com.silencedut.knowweather">应用宝</a>，或<a href="https://beta.bugly.qq.com/knowweather">腾讯bugly分发平台</a>】体验下，以免浪费你的时间O(∩_∩)O~~。</p>
-<p>项目的构架搭建过程包括MVP的使用，MVP使用中P层的组织，Model层的管理，以及划分P层和Model层的理解。除了项目的框架部分，结构分包方式也很重要，一个好的分包方式能让项目更加清晰，开发过程也会更有效率。除此之外，再加上一些第三方开源框架就能很好的搭建出一个Android应用了。</p>
+                    <p>在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:</p>
+<ul>
+<li>明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的考虑的重点；</li>
+<li>厘清一个框架的核心点和辅助点；</li>
+<li>最重要的是总结相似框架的架构模式与习惯，慢慢的就会有一套自己的阅读套路。</li>
+</ul>
+<p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点进行解读。</p>
                     
-                        <a href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/" class="postShorten-excerpt_link link">
+                        <a href="/2016/09/09/Android常用开源框架的源码解读套路/" class="postShorten-excerpt_link link">
                             Continue reading
                         </a>
                         
