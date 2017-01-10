@@ -15,7 +15,7 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
 <meta property="og:description" content="并发的学习与使用系列 第八篇
 AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006y8lVajw1fblbiaodhcj30qo046wei.jpg">
-<meta property="og:updated_time" content="2017-01-10T08:44:02.000Z">
+<meta property="og:updated_time" content="2017-01-10T08:46:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由ReentrantLock分析JUC的核心AQS">
 <meta name="twitter:description" content="并发的学习与使用系列 第八篇
@@ -211,7 +211,7 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
 <p>compareAndSetState(0, 1)是一个原子操作，其代表的是如果原来的值是0那就将其设为1，并且返回ture。那这个原来的值是指的谁的值呢？从compareAndSetState中并看不出来。那就从整体来看，在AQS中有个表示当前锁的状态的int值state,当state等于0时，表示锁可用，否则表示锁定状态，是否可用还需考虑其他情况如可重入性。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> state;</div></pre></td></tr></table></figure>
 <p>可以想到compareAndSetState(0, 1)应该就是设置这个state的状态，其实现原理是通过Unsafe类可直接操作内存的特性来实现的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Unsafe unsafe =Unsafe.getUnsafe(）;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> stateOffset;</div><div class="line"></div><div class="line">stateOffset = unsafe.objectFieldOffset(</div><div class="line">AbstractQueuedSynchronizer.class</div><div class="line">.getDeclaredField(<span class="string">"state"</span>));</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Unsafe unsafe =Unsafe.getUnsafe(）;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> stateOffset;</div><div class="line"></div><div class="line">stateOffset = unsafe.objectFieldOffset(AbstractQueuedSynchronizer.class</div><div class="line">					.getDeclaredField(<span class="string">"state"</span>));</div></pre></td></tr></table></figure>
 <p>所以这样就很好理解了，通过Unsafe直接得到state的内存地址然后直接错作内存，因为直接可以控制内存值，这也是Unsafe类名字的来源，后面还会介绍其改进。</p>
 <p>在回来分析lock()，如果设置状态成功，也就是成功获取了锁，接下来是</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">setExclusiveOwnerThread(Thread.currentThread());</div><div class="line"></div><div class="line">AQS类中</div><div class="line">exclusiveOwnerThread = thread;</div></pre></td></tr></table></figure>
