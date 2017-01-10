@@ -1,93 +1,20 @@
-<!doctype html>
 
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-  
-  
-  
-  
-
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="SilenceDut的代码世界">
+    <title>Android常用开源框架的源码解读套路 - SilenceDut的代码世界</title>
+    <meta name="author" content="SilenceDut">
     
     
-  
-
-  
-
-  
-
-  
-
-  
-
-  
     
-    
-    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-  
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Android," />
-
-
-
-
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
-
-
-
-
-
-
-<meta name="description" content="在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:
+    <meta name="description" content="在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:
 
 明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的">
-<meta property="og:type" content="article">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="Android常用开源框架的源码解读套路">
 <meta property="og:url" content="http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
@@ -104,261 +31,170 @@
 
 明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/72f96cbajw1f7m5xnhbbvj20er0cljs5.jpg">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    sidebar: {"position":"left","display":"post"},
-    fancybox: true,
-    motion: true,
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/"/>
-
-
-
-
-
-  <title> Android常用开源框架的源码解读套路 | SilenceDut的代码世界 </title>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://silencedut.com/assets/images/source/_images/avatar.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-
-
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
 
 
-
-
-
-
-
-
-  
-  
     
-  
-
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
-
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">SilenceDut的代码世界</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
+        
+            
+        
     
-      <p class="site-subtitle">Talk is cheap , here's my blog</p>
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">SilenceDut的代码世界</a>
+    </h1>
     
-</div>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            Startseite
-          </a>
-        </li>
-      
+            <a  class="header-right-picture "
+                href="#about">
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            Archiv
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
+            <img class="header-picture" src="/assets/images/source/_images/avatar.png"/>
+        
+        </a>
+    
+</header>
 
-      
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/source/_images/avatar.png"/>
+            </a>
+            <span class="sidebar-profile-name">SilenceDut</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
     </ul>
-  
-
-  
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/SilenceDut" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+    </ul>
+    
 </nav>
 
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Android常用开源框架的源码解读套路
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2016-09-09T23:27:12+08:00">
+	
+		    9月 09, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/OpenSourceProject/">开源项目</a>, <a class="category-link" href="/categories/OpenSourceProject/源码分析/">源码分析</a>
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="SilenceDut">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="SilenceDut的代码世界">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="SilenceDut的代码世界" src="">
-    </span>
-  </span>
 
     
-      <header class="post-header">
+</div>
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                Android常用开源框架的源码解读套路
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-09T23:27:12+08:00">
-                2016-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenSourceProject/" itemprop="url" rel="index">
-                    <span itemprop="name">开源项目</span>
-                  </a>
-                </span>
-
-                
-                
-                  . 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenSourceProject/源码分析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码分析</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
+</div>
     
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:</p>
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:</p>
 <ul>
 <li>明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的考虑的重点；</li>
 <li>厘清一个框架的核心点和辅助点；</li>
@@ -433,332 +269,213 @@ bitmap = BitmapFactory.decodeStream(fis);
 <h2 id="并发控制和内存泄露预防"><a href="#并发控制和内存泄露预防" class="headerlink" title="并发控制和内存泄露预防"></a>并发控制和内存泄露预防</h2><p>由于涉及到多个线程的读取过程，所以需要相应的并发控制，常用的并发工具有synchronized,volatile,ConcurrentHashMap,CopyOnArrayList,Aomtic等，详细的介绍可参考<a href="https://silencedut.github.io/2016/06/03/并发的学习与使用/">并发的学习与使用</a>.<br>由于Cache的管理过程，所以需要对不需要的引用及时去除，如及时取消注册释放内存，或者使用弱引用等。为了避免Cache过大导致内存溢出，也需要一些缓存算法LRU等。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面提到的这些就是开源框架常用的套路，在上面提到的几个开源库里都能找到对应的实现，在一些其他类似的库里应该也能找到。可能需要多个步骤组合而成，夹杂相应的设计模式，所以需要有一定的知识积累，这里只是这些开源框架的大概框架，为了方便快速的对框架有个全面的认识，如果想知道更多的细节可以或者想学习一些设计技巧可以去好好研究一下相应的代码。当然你也可以用类似的框架实现一个常用的开源库，就会发现可能也没想象中的那么难。</p>
 
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/Android/" rel="tag"># Android</a>
-          
+            
         </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" rel="next" title="Router—一个高效，使用方便，基于动态代理实现的Android事件总线库">
-                <i class="fa fa-chevron-left"></i> Router—一个高效，使用方便，基于动态代理实现的Android事件总线库
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/" rel="prev" title="根据实际项目浅谈Android项目中的框架搭建">
-                根据实际项目浅谈Android项目中的框架搭建 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </article>
-
-
-
-    <div class="post-spread">
-      
     </div>
-  </div>
-
-          
-          </div>
-          
-
-
-          
-  <div class="comments" id="comments">
-    
-  </div>
-
-
-        </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a>
 
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Inhaltsverzeichnis
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Übersicht
-          </li>
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/"  data-tooltip="根据实际项目浅谈Android项目中的框架搭建">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" data-tooltip="Router—一个高效，使用方便，基于动态代理实现的Android事件总线库">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
         </ul>
-      
-
-      <section class="site-overview sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/avatar.gif"
-               alt="SilenceDut" />
-          <p class="site-author-name" itemprop="name">SilenceDut</p>
-          <p class="site-description motion-element" itemprop="description">SilenceDut</p>
-        </div>
-        <nav class="site-state motion-element">
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
         
-          
-            <div class="site-state-item site-state-posts">
-              <a href="/archives">
-                <span class="site-state-item-count">17</span>
-                <span class="site-state-item-name">Artikel</span>
-              </a>
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-categories">
-              
-                <span class="site-state-item-count">9</span>
-                <span class="site-state-item-name">Kategorien</span>
-              
-            </div>
-          
-
-          
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">9</span>
-                <span class="site-state-item-name">Tags</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-        
-        
-
-        
-        
-
-        
-
-
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
+        <li class="post-action">
             
-              
+                <a class="post-action-btn btn btn--default" href="#">
             
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
 
+
+        
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的架构模式"><span class="nav-number">1.</span> <span class="nav-text">常用的架构模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">2.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新的请求"><span class="nav-number">3.</span> <span class="nav-text">新的请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调度器"><span class="nav-number">4.</span> <span class="nav-text">调度器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#缓存"><span class="nav-number">4.0.1.</span> <span class="nav-text">缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#业务逻辑任务"><span class="nav-number">4.0.2.</span> <span class="nav-text">业务逻辑任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务的执行过程"><span class="nav-number">4.0.3.</span> <span class="nav-text">任务的执行过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结果分发"><span class="nav-number">5.</span> <span class="nav-text">结果分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发控制和内存泄露预防"><span class="nav-number">6.</span> <span class="nav-text">并发控制和内存泄露预防</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
+        
     </div>
-  </aside>
+</article>
 
 
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 SilenceDut. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/05/根据实际项目浅谈Android项目中的框架搭建/"  data-tooltip="根据实际项目浅谈Android项目中的框架搭建">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" data-tooltip="Router—一个高效，使用方便，基于动态代理实现的Android事件总线库">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
         
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">SilenceDut</span>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
 </div>
 
 
-<div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2016/09/09/Android常用开源框架的源码解读套路/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
 </div>
-
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Muse
-  </a>
-</div>
-
-
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
         
 
-        
-      </div>
-    </footer>
 
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/source/_images/avatar.png"/>
+        
+            <h4 id="about-card-name">SilenceDut</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                广东，广州
+            </h5>
+        
     </div>
-  </div>
+</div>
 
-  
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
+    
 
 
 
-
-
-
-
-
-
-  
-
-
-
-
-  
-  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  
-  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
-
-
-
-  
-
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-      <!-- UY BEGIN -->
-      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
-      <!-- UY END -->
-  
-
-
-
-
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-
-</body>
 </html>
