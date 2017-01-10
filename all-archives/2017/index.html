@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="SilenceDut的代码世界">
-    <title>Archives: 2016/9 - SilenceDut的代码世界</title>
+    <title>Archives: 2017 - SilenceDut的代码世界</title>
     <meta name="author" content="SilenceDut">
     
     
@@ -14,7 +14,7 @@
     <meta name="description" content="SilenceDut">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="SilenceDut的代码世界">
-<meta property="og:url" content="http://silencedut.com/archives/2016/09/index.html">
+<meta property="og:url" content="http://silencedut.com/all-archives/2017/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="SilenceDut">
 <meta name="twitter:card" content="summary">
@@ -166,21 +166,21 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2016/09/09/Android常用开源框架的源码解读套路/">
-                            Android常用开源框架的源码解读套路
+                        <a class="link-unstyled" href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/">
+                            由ReentrantLock分析JUC的核心AQS
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-09-09T23:27:12+08:00">
+    <time itemprop="datePublished" datetime="2017-01-09T22:21:29+08:00">
 	
-		    9月 09, 2016
+		    1月 09, 2017
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/OpenSourceProject/">开源项目</a>, <a class="category-link" href="/categories/OpenSourceProject/源码分析/">源码分析</a>
+    <a class="category-link" href="/categories/Java/">Java</a>
 
 
     
@@ -189,60 +189,10 @@
             </div>
             
                 <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>在学习Android过程中，会使用到很多开源框架，而使用时对框架的实现方式应有一定的了解，这个过程最好的方式就是阅读源码，毕竟源码说明一切。但开源框架很多，不时会有新的出现，而且对一些通用框架来说，一般代码量非常庞大，所以正确的阅读姿势很重要。一般来说有下面几个要点:</p>
-<ul>
-<li>明确阅读源码的目的是对整体有个了解而非细节，对开源框架来说就是先找这个框架的特点，其他相同业务框架相比的优点和不足，这也是选择的考虑的重点；</li>
-<li>厘清一个框架的核心点和辅助点；</li>
-<li>最重要的是总结相似框架的架构模式与习惯，慢慢的就会有一套自己的阅读套路。</li>
-</ul>
-<p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点进行解读。</p>
+                    <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第八篇</p>
+<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，这里通过ReentrantLock来分析下AQS的实现原理。</p>
                     
-                        <a href="/2016/09/09/Android常用开源框架的源码解读套路/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/">
-                            Router—一个高效，使用方便，基于动态代理实现的Android事件总线库
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-09-04T19:55:29+08:00">
-	
-		    9月 04, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Android/">Android</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>项目地址：<a href="https://github.com/SilenceDut/Router">Router</a></p>
-<p><a href="https://silencedut.github.io/2016/08/12/代理模式的学习与应用">代理模式的学习与应用</a>介绍了代理模式的原理及简单使用方式，<a href="https://github.com/SilenceDut/Router">Router</a>就是基于此实现了一个Android间组件、线程间方便通信的库。</p>
-<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>在Android中的，EventBus是开源最流行的事件总线库，大大简化了应用程序内各组件间、组件与后台线程间的通信。之前的个人项目<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>也是使用EventBus来简化开发，但在使用过程中有一些问题。</p>
-                    
-                        <a href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" class="postShorten-excerpt_link link">
+                        <a href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" class="postShorten-excerpt_link link">
                             Continue reading
                         </a>
                         
