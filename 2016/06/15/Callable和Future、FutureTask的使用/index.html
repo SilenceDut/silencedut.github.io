@@ -10,6 +10,8 @@
     <meta name="author" content="SilenceDut">
     
     
+        <link rel="icon" href="http://silencedut.com/assets/images/avatar.png">
+    
     
     <meta name="description" content="并发的学习与使用系列 第四篇
 在Java中，开启一个线程的唯一方式是，是通过Thread的start方法，并且在线程中执行的Runnable的run方法。无论是线程池还是接下来要介绍的Callable，Future还是线程池，最核心最根本的还是调用到Thread.start()–&amp;gt;Runnable.run()，其他的类的出现可以认为是更方便的使用Thread和Runnable，以此为核心会更">
@@ -31,6 +33,8 @@
         
     
     
+        <meta property="og:image" content="http://silencedut.com/assets/images/source/assets/images/avatar.png"/>
+    
     
     
     
@@ -47,6 +51,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -59,6 +67,8 @@
                 href="#about">
         
         
+            <img class="header-picture" src="/assets/images/source/assets/images/avatar.png"/>
+        
         </a>
     
 </header>
@@ -66,7 +76,18 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/source/assets/images/avatar.png"/>
+            </a>
+            <span class="sidebar-profile-name">SilenceDut</span>
+        </div>
     
     
         <ul class="sidebar-buttons">
@@ -79,7 +100,7 @@
                     >
                 
                     <i class="sidebar-button-icon fa fa-lg fa-home"></i>
-                    <span class="sidebar-button-desc">ホーム</span>
+                    <span class="sidebar-button-desc">Home</span>
                 </a>
         </li>
         
@@ -91,7 +112,7 @@
                     >
                 
                     <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
-                    <span class="sidebar-button-desc">カテゴリー</span>
+                    <span class="sidebar-button-desc">Categories</span>
                 </a>
         </li>
         
@@ -103,7 +124,7 @@
                     >
                 
                     <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
-                    <span class="sidebar-button-desc">タグ</span>
+                    <span class="sidebar-button-desc">Tags</span>
                 </a>
         </li>
         
@@ -115,7 +136,7 @@
                     >
                 
                     <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
-                    <span class="sidebar-button-desc">アーカイブ</span>
+                    <span class="sidebar-button-desc">Archives</span>
                 </a>
         </li>
         
@@ -154,11 +175,11 @@
     <div class="post-meta">
     <time itemprop="datePublished" datetime="2016-06-15T23:15:29+08:00">
 	
-		    2016/06/15
+		    6月 15, 2016
     	
     </time>
     
-        <span>カテゴリー </span>
+        <span>in </span>
         
     <a class="category-link" href="/all-categories/Java/">Java基础</a>
 
@@ -218,7 +239,7 @@ Thread-0::useThread运行结果124750
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">タグ</span><br/>
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/concurrent/">并发</a>
 
@@ -232,14 +253,14 @@ Thread-0::useThread运行结果124750
                     <a class="post-action-btn btn btn--default tooltip--top" href="/2016/06/25/从使用到原理学习Java线程池/"  data-tooltip="从使用到原理学习Java线程池">
                 
                     <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">前</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     <a class="post-action-btn btn btn--default tooltip--top" href="/2016/06/12/显示锁（Lock）及Condition的学习与使用/" data-tooltip="显示锁（Lock）及Condition的学习与使用">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">次</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -303,14 +324,14 @@ Thread-0::useThread运行结果124750
                     <a class="post-action-btn btn btn--default tooltip--top" href="/2016/06/25/从使用到原理学习Java线程池/"  data-tooltip="从使用到原理学习Java线程池">
                 
                     <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">前</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     <a class="post-action-btn btn btn--default tooltip--top" href="/2016/06/12/显示锁（Lock）及Condition的学习与使用/" data-tooltip="显示锁（Lock）及Condition的学习与使用">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">次</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -354,17 +375,17 @@ Thread-0::useThread运行结果124750
     <ul class="share-options">
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2016/06/15/Callable和Future、FutureTask的使用/">
-                <i class="fa fa-google-plus"></i><span class="">Google Plusで共有</span>
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2016/06/15/Callable和Future、FutureTask的使用/">
-                <i class="fa fa-facebook-official"></i><span>Facebookで共有</span>
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2016/06/15/Callable和Future、FutureTask的使用/">
-                <i class="fa fa-twitter"></i><span>Twitterで共有</span>
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>
     </ul>
@@ -375,11 +396,17 @@ Thread-0::useThread运行结果124750
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-remove"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/source/assets/images/avatar.png"/>
         
             <h4 id="about-card-name">SilenceDut</h4>
         
@@ -405,7 +432,7 @@ Thread-0::useThread运行结果124750
 </div>
 
         
-<div id="cover" style="background-image:url('/undefined/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
     </body>
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
