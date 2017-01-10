@@ -14,7 +14,7 @@ GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时
 <meta property="og:site_name" content="SilenceDut的代码世界">
 <meta property="og:description" content="关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。
 GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时候会进行GC，即新对象所需连续内存（一般也就是所剩内存）比剩下的内存大时发生。">
-<meta property="og:updated_time" content="2016-12-16T07:25:25.000Z">
+<meta property="og:updated_time" content="2017-01-09T15:03:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Java GC的理解">
 <meta name="twitter:description" content="关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。
@@ -102,7 +102,7 @@ GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Framework/" style="font-size: 13.33px;">Android Framework</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 13.33px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Framework/" style="font-size: 13.33px;">Android Framework</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 13.33px;">源码分析</a> <a href="/tags/源码解读/" style="font-size: 10px;">源码解读</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
 					</div>
 				</section>
 				
@@ -202,9 +202,11 @@ GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时
 <ol>
 <li>young GC：当young gen中的eden区分配满的时候触发。注意young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高。</li>
 <li>full GC：当准备要触发一次young GC时，如果发现统计数据说之前young GC的平均晋升大小比目前old gen剩余的空间大，则不会触发young GC而是转为触发full GC（因为HotSpot VM的GC里，除了CMS的concurrent collection之外，其它能收集old gen的GC都会同时收集整个GC堆，包括young gen，所以不需要事先触发一次单独的young GC）；或者，如果有perm gen的话，要在perm gen分配空间但已经没有足够空间时，也要触发一次full GC；或者System.gc()、heap dump带GC，默认也是触发full GC。</li>
-<li>并发GC的触发条件就不太一样。以CMS GC为例，它主要是定时去检查old gen的使用量，当使用量超过了触发比例就会启动一次CMS GC，对old gen做并发收集。</li>
 </ol>
 <a id="more"></a>
+<ol>
+<li>并发GC的触发条件就不太一样。以CMS GC为例，它主要是定时去检查old gen的使用量，当使用量超过了触发比例就会启动一次CMS GC，对old gen做并发收集。</li>
+</ol>
 <h2 id="标记的过程"><a href="#标记的过程" class="headerlink" title="标记的过程"></a>标记的过程</h2><h3 id="Stop-the-world"><a href="#Stop-the-world" class="headerlink" title="Stop the world"></a>Stop the world</h3><p>VM thread在进行GC前，必须要让所有的Java线程阻塞，从而stop the world，开始标记，不管什么算法的收集器，都需要有这个标记的过程，只是时间长短的问题。这一步是非常关键的一步，关于这个部分的内容的介绍也比较少。</p>
 <h3 id="How-Stop-the-world"><a href="#How-Stop-the-world" class="headerlink" title="How Stop the world"></a>How Stop the world</h3><p>说起来很轻松，但虚拟机Stop the World的过程并不简单，因为发生GC的时刻是不确定的，而不同时刻虚拟机中堆内存中的对象，不同线程里JVM栈的栈帧中的局部变量表里的有效的局部变量（局部变量有作用域）所引用的对象处于不同的状态，而要让所有的线程在一个时间点全部停止，并且在这个时刻能得到线程里对象的状态，需要合理的规划。</p>
 <p>这里采用的是安全点（safe point）和安全区域（safe region）的概念，safepoint安全点顾名思义是指一些特定的位置或时刻，当线程运行到这些位置时，线程的一些状态可以被确定，这里的状态确定是指在这个点虚拟机可以得到一些对象的确定状态，比如记录<strong>OopMap</strong>(一会会介绍OopMap)的状态，从而确定GC Root的信息，使JVM可以安全的进行一些操作。</p>
@@ -264,6 +266,15 @@ GC（Garbage Collection）的发生时机总体来说是内存使用紧张的时
   
     
 <nav id="article-nav">
+  
+    <a href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          由ReentrantLock分析JUC的核心AQS
+        
+      </div>
+    </a>
   
   
     <a href="/2016/12/06/知天气——天气尽在掌握之中/" id="article-nav-older" class="article-nav-link-wrap">

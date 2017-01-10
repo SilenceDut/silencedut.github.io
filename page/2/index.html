@@ -98,7 +98,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Framework/" style="font-size: 13.33px;">Android Framework</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 13.33px;">源码分析</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Framework/" style="font-size: 13.33px;">Android Framework</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java基础/" style="font-size: 10px;">Java基础</a> <a href="/tags/concurrent/" style="font-size: 20px;">并发</a> <a href="/tags/开源项目/" style="font-size: 10px;">开源项目</a> <a href="/tags/sourceCode/" style="font-size: 13.33px;">源码分析</a> <a href="/tags/源码解读/" style="font-size: 10px;">源码解读</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
 					</div>
 				</section>
 				
@@ -153,6 +153,71 @@
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-代理模式的学习与应用" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/12/代理模式的学习与应用/" class="article-date">
+  	<time datetime="2016-08-12T12:45:29.000Z" itemprop="datePublished">2016-08-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/12/代理模式的学习与应用/">代理模式的学习与应用</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前段时间在研究插件化，其中主要看了任玉刚动态加载框架——<a href="https://github.com/singwhatiwanna/dynamic-load-apk">dynamic-load-apk</a>，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。</p>
+<p>本篇主要讲静态代理和JDK的动态代理的原理，也是<a href="https://github.com/SilenceDut/Router">Router</a>——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java基础/">Java基础</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/designpattern/">设计模式</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/08/12/代理模式的学习与应用/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-Android视图框架Activity,Window,View,ViewRootImpl理解" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -471,74 +536,6 @@
       
         <p class="article-more-link">
           <a  href="/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-从使用到原理学习Java线程池" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/06/25/从使用到原理学习Java线程池/" class="article-date">
-  	<time datetime="2016-06-25T15:45:29.000Z" itemprop="datePublished">2016-06-25</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/25/从使用到原理学习Java线程池/">从使用到原理学习Java线程池</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第五篇</p>
-<h1 id="线程池的技术背景"><a href="#线程池的技术背景" class="headerlink" title="线程池的技术背景"></a>线程池的技术背景</h1><hr>
-<p>在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。</p>
-<p>所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资源”技术产生的原因。</p>
-<p>例如Android中常见到的很多通用组件一般都离不开”池”的概念
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sourceCode/">源码分析</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Java/">Java基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/06/25/从使用到原理学习Java线程池/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
