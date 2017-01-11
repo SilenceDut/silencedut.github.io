@@ -147,6 +147,54 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/14/关于Java GC的理解/">
+                            关于Java GC的理解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-14T20:55:29+08:00">
+	
+		    12月 14, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/JVM/">JVM</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>关于Java垃圾回收机制，网上介绍的资料很多，一般都是一些固定的知识，这些在书上都能找到相应的出处，这里希望讲一些更加细节的问题。如果你对Java虚拟机的知识不了解，建议先去了解一下，这里都是一些概念上的理解，主要基于HotSpot虚拟机。</p>
+<h2 id="GC（Garbage-Collection）的发生时机"><a href="#GC（Garbage-Collection）的发生时机" class="headerlink" title="GC（Garbage Collection）的发生时机"></a>GC（Garbage Collection）的发生时机</h2><p>总体来说是内存使用紧张的时候会进行GC，即新对象所需<strong>连续内存（一般也就是所剩内存）</strong>比剩下的内存大时发生。</p>
+<ol>
+<li>young GC：当young gen中的eden区分配满的时候触发。注意young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高。</li>
+<li>full GC：当准备要触发一次young GC时，如果发现统计数据说之前young GC的平均晋升大小比目前old gen剩余的空间大，则不会触发young GC而是转为触发full GC（因为HotSpot VM的GC里，除了CMS的concurrent collection之外，其它能收集old gen的GC都会同时收集整个GC堆，包括young gen，所以不需要事先触发一次单独的young GC）；或者，如果有perm gen的话，要在perm gen分配空间但已经没有足够空间时，也要触发一次full GC；或者System.gc()、heap dump带GC，默认也是触发full GC。</li>
+</ol>
+                    
+                        <a href="/2016/12/14/关于Java GC的理解/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/08/12/代理模式的学习与应用/">
                             代理模式的学习与应用
                         </a>
@@ -174,6 +222,53 @@
 <p>本篇主要讲静态代理和JDK的动态代理的原理，也是<a href="https://github.com/SilenceDut/Router">Router</a>——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。</p>
                     
                         <a href="/2016/08/12/代理模式的学习与应用/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/06/25/从使用到原理学习Java线程池/">
+                            从使用到原理学习Java线程池
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-06-25T23:45:29+08:00">
+	
+		    6月 25, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Java/">Java基础</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第五篇</p>
+<h1 id="线程池的技术背景"><a href="#线程池的技术背景" class="headerlink" title="线程池的技术背景"></a>线程池的技术背景</h1><hr>
+<p>在面向对象编程中，创建和销毁对象是很费时间的，因为创建一个对象要获取内存资源或者其它更多资源。在Java中更是如此，虚拟机将试图跟踪每一个对象，以便能够在对象销毁后进行垃圾回收。</p>
+<p>所以提高服务程序效率的一个手段就是尽可能减少创建和销毁对象的次数，特别是一些很耗资源的对象创建和销毁。如何利用已有对象来服务就是一个需要解决的关键问题，其实这就是一些”池化资源”技术产生的原因。</p>
+<p>例如Android中常见到的很多通用组件一般都离不开”池”的概念
+                    
+                        <a href="/2016/06/25/从使用到原理学习Java线程池/" class="postShorten-excerpt_link link">
                             阅读全文
                         </a>
                         
