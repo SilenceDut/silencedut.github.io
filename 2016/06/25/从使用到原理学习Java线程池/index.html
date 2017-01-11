@@ -437,7 +437,7 @@
         </li>
         
             <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
                     <i class="fa fa-comment-o"></i>
                 </a>
             </li>
@@ -455,9 +455,10 @@
 
         
             
-                <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <div id="ds-thread" class="ds-thread" data-thread-key="2016/06/25/从使用到原理学习Java线程池/"
+     data-title="从使用到原理学习Java线程池" data-url="http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/">
 </div>
+
             
         
     </div>
@@ -518,7 +519,7 @@
         </li>
         
             <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
                     <i class="fa fa-comment-o"></i>
                 </a>
             </li>
@@ -603,20 +604,15 @@
 <!--SCRIPTS END-->
 
     
-        <script>
-             var disqus_config = function () {
-                 this.page.url = 'http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/';
-                 
-                    this.page.identifier = '2016/06/25/从使用到原理学习Java线程池/';
-                                  
-             };
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:'SilenceDut'};
             (function() {
-                var d = document, s = d.createElement('script');
-                var disqus_shortname = 'SilenceDut';
-                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                || document.getElementsByTagName('body')[0]).appendChild(ds);
             })();
         </script>
     

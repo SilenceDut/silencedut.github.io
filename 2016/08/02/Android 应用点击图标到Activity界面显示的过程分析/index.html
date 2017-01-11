@@ -292,7 +292,7 @@ Application.attach(),Activity.at">
         </li>
         
             <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
                     <i class="fa fa-comment-o"></i>
                 </a>
             </li>
@@ -310,9 +310,10 @@ Application.attach(),Activity.at">
 
         
             
-                <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <div id="ds-thread" class="ds-thread" data-thread-key="2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/"
+     data-title="Android 应用点击图标到Activity界面显示的过程分析" data-url="http://silencedut.com/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/">
 </div>
+
             
         
     </div>
@@ -373,7 +374,7 @@ Application.attach(),Activity.at">
         </li>
         
             <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
                     <i class="fa fa-comment-o"></i>
                 </a>
             </li>
@@ -458,20 +459,15 @@ Application.attach(),Activity.at">
 <!--SCRIPTS END-->
 
     
-        <script>
-             var disqus_config = function () {
-                 this.page.url = 'http://silencedut.com/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/';
-                 
-                    this.page.identifier = '2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/';
-                                  
-             };
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:'SilenceDut'};
             (function() {
-                var d = document, s = d.createElement('script');
-                var disqus_shortname = 'SilenceDut';
-                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                || document.getElementsByTagName('body')[0]).appendChild(ds);
             })();
         </script>
     

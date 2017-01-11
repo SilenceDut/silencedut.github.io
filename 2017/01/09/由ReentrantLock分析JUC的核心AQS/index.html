@@ -276,7 +276,7 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
         </li>
         
             <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
                     <i class="fa fa-comment-o"></i>
                 </a>
             </li>
@@ -294,9 +294,10 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
 
         
             
-                <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <div id="ds-thread" class="ds-thread" data-thread-key="2017/01/09/由ReentrantLock分析JUC的核心AQS/"
+     data-title="由ReentrantLock分析JUC的核心AQS" data-url="http://silencedut.com/2017/01/09/由ReentrantLock分析JUC的核心AQS/">
 </div>
+
             
         
     </div>
@@ -357,7 +358,7 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
         </li>
         
             <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
                     <i class="fa fa-comment-o"></i>
                 </a>
             </li>
@@ -442,20 +443,15 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
 <!--SCRIPTS END-->
 
     
-        <script>
-             var disqus_config = function () {
-                 this.page.url = 'http://silencedut.com/2017/01/09/由ReentrantLock分析JUC的核心AQS/';
-                 
-                    this.page.identifier = '2017/01/09/由ReentrantLock分析JUC的核心AQS/';
-                                  
-             };
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:'SilenceDut'};
             (function() {
-                var d = document, s = d.createElement('script');
-                var disqus_shortname = 'SilenceDut';
-                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                || document.getElementsByTagName('body')[0]).appendChild(ds);
             })();
         </script>
     
