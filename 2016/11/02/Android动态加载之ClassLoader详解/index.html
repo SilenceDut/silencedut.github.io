@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-02477cd3b979124e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-3d593e4ef60d0548.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1437930-d09c1c5cff1d8ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-01-13T06:26:48.000Z">
+<meta property="og:updated_time" content="2017-01-13T06:31:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android动态加载之ClassLoader详解">
 <meta name="twitter:description" content="Dalvik虚拟机如同其他Java虚拟机一样，在运行程序时首先需要将对应的类加载到内存中。而在Java标准的虚拟机中，类加载可以从class文件中读取，也可以是其他形式的二进制流。因此，我们常常利用这一点，在程序运行时手动加载Class，从而达到代码动态加载执行的目的。只不过Android平台上虚拟机运行的是Dex字节码,一种对class文件优化的产物,传统Class文件是一个Java源码文件会生">
@@ -191,14 +191,12 @@
         <div class="main-content-wrap">
             <p>Dalvik虚拟机如同其他Java虚拟机一样，在运行程序时首先需要将对应的类加载到内存中。而在Java标准的虚拟机中，类加载可以从class文件中读取，也可以是其他形式的二进制流。因此，我们常常利用这一点，在程序运行时手动加载Class，从而达到代码动态加载执行的目的。<br>只不过Android平台上虚拟机运行的是Dex字节码,一种对class文件优化的产物,传统Class文件是一个Java源码文件会生成一个.class文件，而Android是把所有Class文件进行合并，优化，然后生成一个最终的class.dex,目的是把不同class文件重复的东西只需保留一份,如果我们的Android应用不进行分dex处理,最后一个应用的apk只会有一个dex文件。</p>
 <a id="more"></a>
-<p>###Android平台的ClassLoader</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1437930-bb9d359f4c7e9935.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Android中的ClassLoader"></p>
+<h3 id="Android平台的ClassLoader"><a href="#Android平台的ClassLoader" class="headerlink" title="Android平台的ClassLoader"></a>Android平台的ClassLoader</h3><p><img src="http://upload-images.jianshu.io/upload_images/1437930-bb9d359f4c7e9935.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Android中的ClassLoader"></p>
 <p>Android中类加载器有BootClassLoader,URLClassLoader,<br>PathClassLoader,DexClassLoader,BaseDexClassLoader,等都最终继承自java.lang.ClassLoader。</p>
 <ul>
-<li>####ClassLoader<br>java.lang.ClassLoader是所有ClassLoader的最终父类。构造方法主要以下两种</li>
-</ul>
-<p>1.传入一个父类构造器<br><img src="http://upload-images.jianshu.io/upload_images/1437930-8512d80cf0776a1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="实际构造器">2.无参默认构造法<br><img src="http://upload-images.jianshu.io/upload_images/1437930-d548f3ae256ba002.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-d03620c47f2a1116.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-ac7b4f9cc3865a50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="无参构造器">可以看出ClassLoader主要就是传入一个父构造器，而且一般父构造器不能为空，不像java虚拟机里父构造器为空时默认的父构造器为Bootstrap ClassLoader。Android中默认无父构造器传入的情况下，默认父构造器为一个PathClassLoader且此PathClassLoader父构造器为BootClassLoader。<br>ClassLoader中重要的方法是loadClass(String name)，其他的子类都继承了此方法且没有进行复写。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-2086c57c0e4941c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="laodClass.png">可以看出在加载类时首先判断这个类是否之前被加载过，如果有则直接返回，如果没有则首先尝试让parent ClassLoader进行加载,加载不成功才在自己的<strong>findClass</strong>中进行加载。这和java虚拟机中常见的双亲委派模型一致的，这种模型并不是一个强制性的约束模型，比如你可以继承ClassLoader复写loadCalss方法来破坏这种模型，只不过双亲委派模是一种被推荐的实现类加载器的方式，而且jdk1.2以后已经不提倡用户在覆盖loadClass方法，而应该把自己的类加载逻辑写到findClass中。</p>
-<ul>
+<li><h4 id="ClassLoader"><a href="#ClassLoader" class="headerlink" title="ClassLoader"></a>ClassLoader</h4><p>  java.lang.ClassLoader是所有ClassLoader的最终父类。构造方法主要以下两种</p>
+<p>  1.传入一个父类构造器<br><img src="http://upload-images.jianshu.io/upload_images/1437930-8512d80cf0776a1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="实际构造器">2.无参默认构造法<br><img src="http://upload-images.jianshu.io/upload_images/1437930-d548f3ae256ba002.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-d03620c47f2a1116.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-ac7b4f9cc3865a50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="无参构造器">可以看出ClassLoader主要就是传入一个父构造器，而且一般父构造器不能为空，不像java虚拟机里父构造器为空时默认的父构造器为Bootstrap ClassLoader。Android中默认无父构造器传入的情况下，默认父构造器为一个PathClassLoader且此PathClassLoader父构造器为BootClassLoader。<br>ClassLoader中重要的方法是loadClass(String name)，其他的子类都继承了此方法且没有进行复写。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-2086c57c0e4941c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="laodClass.png">可以看出在加载类时首先判断这个类是否之前被加载过，如果有则直接返回，如果没有则首先尝试让parent ClassLoader进行加载,加载不成功才在自己的<strong>findClass</strong>中进行加载。这和java虚拟机中常见的双亲委派模型一致的，这种模型并不是一个强制性的约束模型，比如你可以继承ClassLoader复写loadCalss方法来破坏这种模型，只不过双亲委派模是一种被推荐的实现类加载器的方式，而且jdk1.2以后已经不提倡用户在覆盖loadClass方法，而应该把自己的类加载逻辑写到findClass中。</p>
+</li>
 <li><h4 id="BootClassLoader"><a href="#BootClassLoader" class="headerlink" title="BootClassLoader"></a>BootClassLoader</h4><p>  和java虚拟机中不同的是BootClassLoader是ClassLoader内部类,由java代码实现而不是c++实现,是Android平台上所有ClassLoader的最终parent,这个内部类是包内可见,所以我们没法使用。</p>
 </li>
 <li><h4 id="URLClassLoader"><a href="#URLClassLoader" class="headerlink" title="URLClassLoader"></a>URLClassLoader</h4><p>  只能用于加载jar文件，但是由于 dalvik 不能直接识别jar，所以在 Android 中无法使用这个加载器。</p>
