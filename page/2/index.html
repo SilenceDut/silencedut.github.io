@@ -95,6 +95,18 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
                          href="/all-tags"
                         
                     >
@@ -138,6 +150,100 @@
                 
 
 <section class="postShorten-group main-content-wrap">
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/">
+                            Android 应用点击图标到Activity界面显示的过程分析
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-08-02T20:14:17+08:00">
+	
+		    8月 02, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Android/">Android</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：</p>
+<ol>
+<li>Application是什么时候创建的，每个应用程序有几个Application</li>
+<li>应用的资源路径什么时候初始化的</li>
+<li>应用中ContextImpl的个数</li>
+<li>Application.attach(),Activity.attach()的调用时机及作用</li>
+<li>Instrumentation的重要性及具体作用</li>
+<li>点击Launcher启动Activity和应用内部启动Activity的区别</li>
+</ol>
+                    
+                        <a href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/07/25/理解Binder框架/">
+                            理解Binder框架
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-07-25T23:45:27+08:00">
+	
+		    7月 25, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Android/">Android</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>Binder是Android系统进程间通信（IPC）最重要的方式。要想了解Android的系统原理，必须要先对Binder框架有一定的理解。Binder是什么？Binder可以理解为能在进程间进行”通信”的对象,这个通信不是指在不<br>同进程中操作同一个对象，而应理解为一种通信协议。</p>
+                    
+                        <a href="/2016/07/25/理解Binder框架/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
     
     
     <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">

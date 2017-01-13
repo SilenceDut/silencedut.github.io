@@ -95,6 +95,18 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
                          href="/all-tags"
                         
                     >
@@ -152,7 +164,7 @@
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-01-09T22:21:29+08:00">
+    <time itemprop="datePublished" datetime="2017-01-09T21:22:24+08:00">
 	
 		    1月 09, 2017
     	
@@ -316,6 +328,188 @@
                             阅读全文
                         </a>
                         
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/11/02/Android动态加载之ClassLoader详解/">
+                            Android动态加载之ClassLoader详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-11-02T23:19:10+08:00">
+	
+		    11月 02, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Android/">Android</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>Dalvik虚拟机如同其他Java虚拟机一样，在运行程序时首先需要将对应的类加载到内存中。而在Java标准的虚拟机中，类加载可以从class文件中读取，也可以是其他形式的二进制流。因此，我们常常利用这一点，在程序运行时手动加载Class，从而达到代码动态加载执行的目的。<br>只不过Android平台上虚拟机运行的是Dex字节码,一种对class文件优化的产物,传统Class文件是一个Java源码文件会生成一个.class文件，而Android是把所有Class文件进行合并，优化，然后生成一个最终的class.dex,目的是把不同class文件重复的东西只需保留一份,如果我们的Android应用不进行分dex处理,最后一个应用的apk只会有一个dex文件。</p>
+<p>###Android平台的ClassLoader</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1437930-bb9d359f4c7e9935.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Android中的ClassLoader"></p>
+<p>Android中类加载器有BootClassLoader,URLClassLoader,<br>PathClassLoader,DexClassLoader,BaseDexClassLoader,等都最终继承自java.lang.ClassLoader。</p>
+<ul>
+<li>####ClassLoader<br>java.lang.ClassLoader是所有ClassLoader的最终父类。构造方法主要以下两种</li>
+</ul>
+<p>1.传入一个父类构造器<br><img src="http://upload-images.jianshu.io/upload_images/1437930-8512d80cf0776a1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="实际构造器">2.无参默认构造法<br><img src="http://upload-images.jianshu.io/upload_images/1437930-d548f3ae256ba002.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-d03620c47f2a1116.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1437930-ac7b4f9cc3865a50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="无参构造器">可以看出ClassLoader主要就是传入一个父构造器，而且一般父构造器不能为空，不像java虚拟机里父构造器为空时默认的父构造器为Bootstrap ClassLoader。Android中默认无父构造器传入的情况下，默认父构造器为一个PathClassLoader且此PathClassLoader父构造器为BootClassLoader。<br>ClassLoader中重要的方法是loadClass(String name)，其他的子类都继承了此方法且没有进行复写。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-2086c57c0e4941c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="laodClass.png">可以看出在加载类时首先判断这个类是否之前被加载过，如果有则直接返回，如果没有则首先尝试让parent ClassLoader进行加载,加载不成功才在自己的<strong>findClass</strong>中进行加载。这和java虚拟机中常见的双亲委派模型一致的，这种模型并不是一个强制性的约束模型，比如你可以继承ClassLoader复写loadCalss方法来破坏这种模型，只不过双亲委派模是一种被推荐的实现类加载器的方式，而且jdk1.2以后已经不提倡用户在覆盖loadClass方法，而应该把自己的类加载逻辑写到findClass中。</p>
+<ul>
+<li><h4 id="BootClassLoader"><a href="#BootClassLoader" class="headerlink" title="BootClassLoader"></a>BootClassLoader</h4><p>  和java虚拟机中不同的是BootClassLoader是ClassLoader内部类,由java代码实现而不是c++实现,是Android平台上所有ClassLoader的最终parent,这个内部类是包内可见,所以我们没法使用。</p>
+</li>
+<li><h4 id="URLClassLoader"><a href="#URLClassLoader" class="headerlink" title="URLClassLoader"></a>URLClassLoader</h4><p>  只能用于加载jar文件，但是由于 dalvik 不能直接识别jar，所以在 Android 中无法使用这个加载器。</p>
+</li>
+<li><h4 id="BaseDexClassLoader"><a href="#BaseDexClassLoader" class="headerlink" title="BaseDexClassLoader"></a>BaseDexClassLoader</h4><p>  PathClassLoader和DexClassLoader都继承自BaseDexClassLoader,其中的主要逻辑都是在BaseDexClassLoader完成的。这些源码在<a href="https://android.googlesource.com/platform/libcore-snapshot/+/ics-mr1/dalvik/src/main/java/dalvik/system">java/dalvik/system</a>中。<br>先看下BaseDexClassLoader的构造方式：<br><img src="http://upload-images.jianshu.io/upload_images/1437930-cf2a377e79b44447.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="BaseDexClassLoader.png"><br>BaseDexClassLoader的构造函数包含四个参数，分别为：</p>
+<ul>
+<li>dexPath,指目标类所在的APK或jar文件的路径,类装载器将从该路径中寻找指定的目标类,该类必须是APK或jar的全路径.如果要包含多个路径,路径之间必须使用特定的分割符分隔,特定的分割符可以使用System.getProperty(“path.separtor”)获得。上面”<strong>支持加载APK、DEX和JAR，也可以从SD卡进行加载</strong>“指的就是这个路径，最终做的是将dexPath路径上的文件ODEX优化到内部位置optimizedDirectory，然后，再进行加载的。</li>
+<li>File optimizedDirectory,由于dex文件被包含在APK或者Jar文件中,因此在装载目标类之前需要先从APK或Jar文件中解压出dex文件,该参数就是制定解压出的dex 文件存放的路径。这也是对apk中dex根据平台进行ODEX优化的过程。其实APK是一个程序压缩包，里面包含dex文件，ODEX优化就是把包里面的执行程序提取出来，就变成ODEX文件，因为你提取出来了，系统第一次启动的时候就不用去解压程序压缩包的程序，少了一个解压的过程。这样的话系统启动就加快了。为什么说是第一次呢？是因为DEX版本的也只有第一次会解压执行程序到 /data/dalvik-cache（针对PathClassLoader）或者optimizedDirectory(针对DexClassLoader）目录，之后也是直接读取目录下的的dex文件，所以第二次启动就和正常的差不多了。当然这只是简单的理解，实际生成的ODEX还有一定的优化作用。ClassLoader只能加载内部存储路径中的dex文件，所以这个路径必须为内部路径。</li>
+<li>libPath,指目标类中所使用的C/C++库存放的路径</li>
+<li>classload,是指该装载器的父装载器,一般为当前执行类的装载器，例如在Android中以context.getClassLoader()作为父装载器。</li>
+</ul>
+</li>
+<li>####DexClassLoader<br>在看下DexClassLoader和PathClassLoader的构造器：<br><img src="http://upload-images.jianshu.io/upload_images/1437930-7e59de0fe00e618e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DexClassLoader">DexClassLoader支持加载APK、DEX和JAR，也可以从SD卡进行加载。<br>上面说dalvik不能直接识别jar,DexClassLoader却可以加载jar文件,这难道不矛盾吗?其实在BaseDexClassLoader里对”.jar”,”.zip”,”.apk”,”.dex”后缀的文件最后都会生成一个对应的dex文件,所以最终处理的还是dex文件,而URLClassLoader并没有做类似的处理。<br>一般我们都是用这个DexClassLoader来作为动态加载的加载器。</li>
+<li>####PathClassLoader<br><img src="http://upload-images.jianshu.io/upload_images/1437930-02477cd3b979124e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="PathClassLoader"><img src="http://upload-images.jianshu.io/upload_images/1437930-3d593e4ef60d0548.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="optimized_dexFilepath"><br>很简单明了，可以看出PathClassLoader没有将optimizedDirectory置为Null,也就是没设置优化后的存放路径。其实optimizedDirectory为null时的默认路径就是/data/dalvik-cache 目录。<br>PathClassLoader是用来加载Android系统类和应用的类，并且不建议开发者使用。<br><img src="http://upload-images.jianshu.io/upload_images/1437930-d09c1c5cff1d8ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="advice">很多博客里说PathClassLoader只能加载已安装的apk的dex，其实这说的应该是在dalvik虚拟机上，在art虚拟机上<strong>PathClassLoader可以加载未安装的apk的dex</strong>（在art平台上已验证），然而在/data/dalvik-cache 确未找到相应的dex文件，怀疑是art虚拟机判断apk未安装，所以只是将apk优化后的odex放在内存中，之后进行释放，这只是个猜想，希望有知道的可以告知一下。因为dalvik上无法使用，所以我们也没法使用。</li>
+</ul>
+<p>###ClassLoader加载class的过程</p>
+<pre><code>BaseDexClassLoader.java
+
+@Override
+protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException { 
+    Class clazz = pathList.findClass(name);
+    if (clazz == null) { 
+        throw new ClassNotFoundException(name); 
+    } 
+    return clazz;
+}
+
+DexPathList.java
+
+public Class findClass(String name) { 
+    for (Element element : dexElements) { 
+        DexFile dex = element.dexFile;
+        if (dex != null) { 
+            Class clazz = dex.loadClassBinaryName(name, definingContext); 
+          if (clazz != null) { 
+              return clazz; 
+          } 
+        } 
+    } 
+    return null;
+}
+
+DexFile.java
+
+public Class loadClassBinaryName(String name, ClassLoader loader) { 
+    return defineClass(name, loader, mCookie);
+}
+private native static Class defineClass(String name, ClassLoader loader, int cookie);
+</code></pre><p>可以看出，BaseDexClassLoader中有个pathList对象，pathList中包含一个DexFile的数组dexElements，由上面分析知道，dexPath传入的原始dex(.apk,.zip,.jar等)文件在optimizedDirectory文件夹中生成相应的优化后的odex文件，dexElements数组就是这些odex文件的集合，如果不分包一般这个数组只有一个Element元素，也就只有一个DexFile文件，而对于类加载呢，就是遍历这个集合，通过DexFile去寻找。最终调用native方法的defineClass。</p>
+<p>###ART虚拟机的兼容性问题<br><strong>Android Runtime</strong>（缩写为ART），在<a href="https://zh.wikipedia.org/wiki/Android_5.0">Android 5.0</a>及后续Android版本中作为正式的运行时库取代了以往的<a href="https://zh.wikipedia.org/wiki/Dalvik%E8%99%9A%E6%8B%9F%E6%9C%BA">Dalvik虚拟机</a>。ART能够把应用程序的<a href="https://zh.wikipedia.org/wiki/%E5%AD%97%E8%8A%82%E7%A0%81">字节码</a>转换为<a href="https://zh.wikipedia.org/wiki/%E6%A9%9F%E5%99%A8%E7%A2%BC">机器码</a>，是Android所使用的一种新的<a href="https://zh.wikipedia.org/wiki/%E8%99%9A%E6%8B%9F%E6%9C%BA">虚拟机</a>。它与Dalvik的主要不同在于：Dalvik采用的是<a href="https://zh.wikipedia.org/wiki/JIT">JIT</a>技术，字节码都需要通过即时编译器（just in time ，JIT）转换为机器码，这会拖慢应用的运行效率，而ART采用<a href="https://en.wikipedia.org/wiki/Ahead-of-time_compilation">Ahead-of-time</a>（AOT）技术，应用在第一次安装的时候，字节码就会预先编译成机器码，这个过程叫做预编译。ART同时也改善了性能、<a href="https://zh.wikipedia.org/wiki/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6_(%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8">垃圾回收</a>)（Garbage Collection）、应用程序除错以及性能分析。但是请注意，运行时内存占用空间较少同样意味着编译二进制需要更高的存储。<br>ART模式相比原来的Dalvik，会在安装APK的时候，使用Android系统自带的<strong>dex2oat工具</strong>把APK里面的.dex文件转化成OAT文件，OAT文件是一种Android私有ELF文件格式，它不仅包含有从DEX文件翻译而来的本地机器指令，还包含有原来的DEX文件内容。这使得我们无需重新编译原有的APK就可以让它正常地在ART里面运行，也就是我们不需要改变原来的APK编程接口。ART模式的系统里，同样存在DexClassLoader类，包名路径也没变，只不过它的具体实现与原来的有所不同，但是接口是一致的。实际上，ART运行时就是和Dalvik虚拟机一样，实现了一套完全兼容Java虚拟机的接口。</p>
+<p>参考：<br>【<a href="https://segmentfault.com/a/1190000004062952">Android动态加载入门 简单加载模式-作者：<a href="https://github.com/kaedea">kaedea</a></a>】</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/11/02/Android动态加载之ClassLoader详解/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/10/06/常见的设计模式学习/">
+                            常见的设计模式学习
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-10-06T17:22:29+08:00">
+	
+		    10月 06, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Java/">Java</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>##OO基础</p>
+<ul>
+<li>抽象</li>
+<li>封装</li>
+<li>多态</li>
+<li>继承</li>
+</ul>
+<p>##面向对象的六大原则</p>
+<ul>
+<li>单一职责原则:一个类中应该是一组相关性很高的函数、数据的封装。</li>
+<li>开闭原则 : 软件中的对象（类、模块、函数等）应该对扩展开放,对修改关闭。</li>
+<li>里氏替换原则 : 所有引用基类的地方必须能透明地使用其子类对象</li>
+<li>依赖倒置原则 : 模块间的依赖通过抽象产生,实现类之间不发生直接的依赖关系,其依赖关系是通过接口或抽象类产生的。</li>
+<li>接口隔离原则 : 客户端不应该依赖它不需要的接口,类之间的依赖关系应建立在最小的接口上。</li>
+<li>最少知识原则 : 一个对象应该对其他对象有最少的了解。<br>上述原则是一种理想化的情况,实际开发中应朝着这个方向去做。以上原则会在接下来的模式中实践</li>
+</ul>
+<p>##具体模式</p>
+<p>学习的demo在GitHub中</p>
+<ul>
+<li>封装可以互换的行为,并使用委托来决定要使用哪一个——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/behavioral_patterns/strategy/design_rules.md"><strong>StrategyPattern(策略模式)</strong></a> </li>
+<li>让对象能够在改变时被通知——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/behavioral_patterns/observer/design_rules.md"><strong>ObserverPattern(观察者模式)</strong></a></li>
+<li>包装一个对象,以提供新的行为——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/structural_patterns/decorate/design_rules.md"><strong>DecoratePattern(装饰者模式)</strong></a></li>
+<li>由子类决定创建的类是哪一个——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/creational_patterns/factory/design_rules.md"><strong>FactoryMethodPattern(工厂方法模式)</strong></a></li>
+<li>封装对象，提供不同的接口——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/structural_patterns/adapter/design_rules.md"><strong>AdapterPattern(适配器模式)</strong></a></li>
+<li>简化一群类的接口——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/structural_patterns/facade/design_rules.md"><strong>FacadePattern(外观模式模式)</strong></a></li>
+<li>封装构建过程——<a href="https://github.com/SilenceDut/DesignPatterns/blob/master/src/com/silencedut/creational_patterns/builder/design_rules.md"><strong>BuilderPattern(构造者模式)</strong></a></li>
+<li>持续更新</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/10/06/常见的设计模式学习/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
                     
                 </div>
             
@@ -499,100 +693,6 @@
 <p>这两种方式背后的实现是怎样的,有什么区别?</p>
                     
                         <a href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/">
-                            Android 应用点击图标到Activity界面显示的过程分析
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-08-02T20:14:17+08:00">
-	
-		    8月 02, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/Android/">Android</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>分析这个过程不是单纯为跟一遍函数调用的流程，而是更好的理解平常用到的一些方法、对象的初始化时间，对象创建的个数，方法的先后顺序，以及每个类，方法背后的作用和目的。主要是一下几个问题：</p>
-<ol>
-<li>Application是什么时候创建的，每个应用程序有几个Application</li>
-<li>应用的资源路径什么时候初始化的</li>
-<li>应用中ContextImpl的个数</li>
-<li>Application.attach(),Activity.attach()的调用时机及作用</li>
-<li>Instrumentation的重要性及具体作用</li>
-<li>点击Launcher启动Activity和应用内部启动Activity的区别</li>
-</ol>
-                    
-                        <a href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/07/25/理解Binder框架/">
-                            理解Binder框架
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-07-25T23:45:27+08:00">
-	
-		    7月 25, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/Android/">Android</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>Binder是Android系统进程间通信（IPC）最重要的方式。要想了解Android的系统原理，必须要先对Binder框架有一定的理解。Binder是什么？Binder可以理解为能在进程间进行”通信”的对象,这个通信不是指在不<br>同进程中操作同一个对象，而应理解为一种通信协议。</p>
-                    
-                        <a href="/2016/07/25/理解Binder框架/" class="postShorten-excerpt_link link">
                             阅读全文
                         </a>
                         
