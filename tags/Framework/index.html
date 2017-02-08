@@ -269,7 +269,8 @@
             </div>
             
                 <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>Binder是Android系统进程间通信（IPC）最重要的方式。要想了解Android的系统原理，必须要先对Binder框架有一定的理解。Binder是什么？Binder可以理解为能在进程间进行”通信”的对象,这个通信不是指在不<br>同进程中操作同一个对象，而应理解为一种通信协议。</p>
+                    <p>Binder是Android系统进程间通信（IPC）最重要的方式。要想了解Android的系统原理，必须要先对Binder框架有一定的理解。Binder是什么？Binder可以理解为能在进程间进行”通信”的对象,这个通信不是指在不同进程中操作同一个对象，而应理解为一种通信协议。</p>
+<h2 id="Binder的引入背景"><a href="#Binder的引入背景" class="headerlink" title="Binder的引入背景"></a>Binder的引入背景</h2><p>传统的进程间通信方式有管道，消息队列，共享内存等，其中管道，消息队列采用存储-转发方式，即数据先从发送方缓存区拷贝到内核开辟的缓存区中，然后再从内核缓存区拷贝到接收方缓存区，至少有两次拷贝过程。共享内存虽然无需拷贝，但控制复杂，难以使用。socket作为一款通用接口，其传输效率低，开销大，主要用在跨网络的进程间通信和本机上进程间的低速通信。Binder通过内存映射的方式，使数据只需要在内存进行一次读写过程。 </p>
                     
                         <a href="/2016/07/25/理解Binder框架/" class="postShorten-excerpt_link link">
                             阅读全文
