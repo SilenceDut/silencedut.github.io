@@ -171,7 +171,7 @@
             
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第八篇</p>
-<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，这里通过ReentrantLock来分析下AQS的实现原理。之前的文章<a href="http://www.silencedut.com/2016/06/12/显示锁（Lock）及Condition的学习与使用">并发的学习与使用系列</a>提到里Lock的实现类ReentrantLock是一个可重入的，可实现公平的锁。下面通过ReentrantLock的源码来看看其是怎么实现的。</p>
+<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，之前的文章<a href="http://www.silencedut.com/2016/06/12/显示锁（Lock）及Condition的学习与使用">并发的学习与使用系列</a>提到里Lock的实现类ReentrantLock是一个可重入的，可实现公平的锁。下面通过ReentrantLock的源码来看看其是怎么实现的。</p>
                     
                         <a href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" class="postShorten-excerpt_link link">
                             阅读全文

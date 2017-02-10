@@ -22,7 +22,7 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
 <meta property="og:description" content="并发的学习与使用系列 第八篇
 AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006y8lVajw1fblbiaodhcj30qo046wei.jpg">
-<meta property="og:updated_time" content="2017-02-10T02:28:54.000Z">
+<meta property="og:updated_time" content="2017-02-10T02:31:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由ReentrantLock分析JUC的核心AQS">
 <meta name="twitter:description" content="并发的学习与使用系列 第八篇
@@ -171,7 +171,7 @@ AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurre
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
             <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第八篇</p>
-<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，这里通过ReentrantLock来分析下AQS的实现原理。之前的文章<a href="http://www.silencedut.com/2016/06/12/显示锁（Lock）及Condition的学习与使用">并发的学习与使用系列</a>提到里Lock的实现类ReentrantLock是一个可重入的，可实现公平的锁。下面通过ReentrantLock的源码来看看其是怎么实现的。</p>
+<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，之前的文章<a href="http://www.silencedut.com/2016/06/12/显示锁（Lock）及Condition的学习与使用">并发的学习与使用系列</a>提到里Lock的实现类ReentrantLock是一个可重入的，可实现公平的锁。下面通过ReentrantLock的源码来看看其是怎么实现的。</p>
 <a id="more"></a>
 <h3 id="AbstractQueuedSynchronizer"><a href="#AbstractQueuedSynchronizer" class="headerlink" title="AbstractQueuedSynchronizer"></a>AbstractQueuedSynchronizer</h3><p>AbstractQueuedSynchronizer是一个抽象类，其他类主要通过重载其tryAcquire(int arg)来获取锁通过tryRealese()来释放锁。</p>
 <h3 id="非公平锁获取锁的过程"><a href="#非公平锁获取锁的过程" class="headerlink" title="非公平锁获取锁的过程"></a>非公平锁获取锁的过程</h3><p>ReentrantLock的默认构造函数</p>
