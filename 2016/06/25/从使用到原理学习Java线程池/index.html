@@ -26,7 +26,7 @@
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/006tKfTcjw1f78gmws5bkj30kh0ib77o.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcjw1f78hxvv1kmj30nm09c75z.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/006tKfTcgw1f79ope94y3j30nm0egdif.jpg">
-<meta property="og:updated_time" content="2017-02-06T08:28:33.000Z">
+<meta property="og:updated_time" content="2017-02-16T01:35:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从使用到原理学习Java线程池">
 <meta name="twitter:description" content="并发的学习与使用系列 第五篇
@@ -295,6 +295,7 @@
 
     <span class="comment">// 活动线程数 &gt;= corePoolSize</span>
     <span class="comment">// runState为RUNNING &amp;&amp; 队列未满</span>
+    <span class="comment">// workQueue.offer(command)表示添加到队列，如果添加成功返回true，否则返回false</span>
     <span class="keyword">if</span> (isRunning(c) &amp;&amp; workQueue.offer(command)) {
         <span class="keyword">int</span> recheck = ctl.get();
         <span class="comment">// 再次检验是否为RUNNING状态</span>
