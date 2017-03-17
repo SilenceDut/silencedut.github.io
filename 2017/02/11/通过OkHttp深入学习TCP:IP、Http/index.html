@@ -6,22 +6,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="SilenceDut的代码世界">
-    <title>归档: 2017 - SilenceDut的代码世界</title>
+    <title>通过OkHttp全面深入的学习TCP/IP、HTTP - SilenceDut的代码世界</title>
     <meta name="author" content="SilenceDut">
     
     
         <link rel="icon" href="http://silencedut.com/assets/images/avatar.png">
     
     
-    <meta name="description" content="SilenceDut">
+    <meta name="description" content="一直以来对网络编程只停留在API的调用，简单的网络应用层框架的源码分析，最深入也就是的Socket的使用，但没有完成由点到面的整体把握，这里通过对OkHttp（Java 平台上的新一代HTTP客户端）源码的分析，来深入学习TCP/IP、HTTP等一些网络知识的基本概念，同时学习优秀应用层框架的搭建技巧。
+接下来将对涉及到的网络知识进行梳理总结：
+
+TCP/IP、Socket的基础知识(本篇)
+HT">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="SilenceDut的代码世界">
-<meta property="og:url" content="http://silencedut.com/all-archives/2017/index.html">
+<meta property="og:title" content="通过OkHttp全面深入的学习TCP/IP、HTTP">
+<meta property="og:url" content="http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/index.html">
 <meta property="og:site_name" content="SilenceDut的代码世界">
-<meta property="og:description" content="SilenceDut">
+<meta property="og:description" content="一直以来对网络编程只停留在API的调用，简单的网络应用层框架的源码分析，最深入也就是的Socket的使用，但没有完成由点到面的整体把握，这里通过对OkHttp（Java 平台上的新一代HTTP客户端）源码的分析，来深入学习TCP/IP、HTTP等一些网络知识的基本概念，同时学习优秀应用层框架的搭建技巧。
+接下来将对涉及到的网络知识进行梳理总结：
+
+TCP/IP、Socket的基础知识(本篇)
+HT">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022163737342-747643308.png">
+<meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNbRwgy1fdllmuzx3qg30en06ba9x.gif">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022171154685-1217302726.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022172139701-514265966.png">
+<meta property="og:image" content="https://w4.sanwen8.cn/mmbiz_jpg/vn0LnRqaEX87DodVBtJbUg6nsdOxpK6skpbpanVn7kRxfB7sLDDzy4kNy4ibggN3jACWlkCXApaRm88wKh122sw/0?wx_fmt=jpeg">
+<meta property="og:image" content="https://w4.sanwen8.cn/mmbiz_jpg/vn0LnRqaEX87DodVBtJbUg6nsdOxpK6sO2PKaR2WtPReCoC0ItZVOrXSPr1fWVmXEe6LibbeSQnBSxb7wdQhhqQ/0?wx_fmt=jpeg">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022174526248-423737591.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022180656826-1218970572.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022180947451-1370030868.png">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022182052888-909546184.png">
+<meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNbRwgy1fdnys4ocfdj310y09wwfg.jpg">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161023140159451-370668709.png">
+<meta property="og:updated_time" content="2017-03-15T15:58:29.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SilenceDut的代码世界">
-<meta name="twitter:description" content="SilenceDut">
+<meta name="twitter:title" content="通过OkHttp全面深入的学习TCP/IP、HTTP">
+<meta name="twitter:description" content="一直以来对网络编程只停留在API的调用，简单的网络应用层框架的源码分析，最深入也就是的Socket的使用，但没有完成由点到面的整体把握，这里通过对OkHttp（Java 平台上的新一代HTTP客户端）源码的分析，来深入学习TCP/IP、HTTP等一些网络知识的基本概念，同时学习优秀应用层框架的搭建技巧。
+接下来将对涉及到的网络知识进行梳理总结：
+
+TCP/IP、Socket的基础知识(本篇)
+HT">
+<meta name="twitter:image" content="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022163737342-747643308.png">
     
     
         
@@ -44,7 +70,7 @@
             <!-- Define author's picture -->
 
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">SilenceDut的代码世界</a>
@@ -68,7 +94,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -131,125 +157,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/02/18/OkHttp的整体了解/">
-                            OkHttp的整体了解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-02-18T21:22:24+08:00">
-	
-		    2月 18, 2017
-    	
-    </time>
+        <div class="post-header main-content-wrap text-left">
     
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/网络编程/">网络编程</a>
-
-
+        <h1 class="post-title" itemprop="headline">
+            通过OkHttp全面深入的学习TCP/IP、HTTP
+        </h1>
     
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h3 id="OkHttp的基本概念"><a href="#OkHttp的基本概念" class="headerlink" title="OkHttp的基本概念"></a>OkHttp的基本概念</h3><p>在OkHttp的介绍中提到其是<strong>Java平台上的新一代HTTP客户端</strong>,所以其不止能在Android中使用，还能在在Java后台中使用。这是一个很重要的概念，在Android开发过程中，很多人经常将其与一些其他网络库如Volley，AsyncHttp等知名开源库进行对比，我认为这是概念上的错误，其对应的应该是Apache HttpClient或者HttpURLConnection，是一种Http客户端，Http客户端是为了隐藏底层的Socket连接，更方便的使用Http协议等而封装的关于Http使用、解析的库，称为客户端的原因其封装的是Socket，相对于ServerSocket来说不用处理多个连接的问题，所以一般的轻量级的客户端如Apache HttpClient，HttpURLConnection等都只是处理底层的Socket连接部分，封装Http协议，然后提供简单的使用API，不涉及并发等概念。</p>
-<p>客户端进行使用时一般应用中不可能只有一个网络请求，所以需要使用者在对Http Client进行二次封装，提供一些线程池，缓存处理，重连设置等，这也是Android中Volley，AsyncHttp等知名开源库的目的，而OkHttp比较特殊一点，其不仅提供了一般Http客户端的Socket连接，Http协议解析等功能，还对其进行了进一步的封装，提供线程池用于并发请求，缓存策略来减少重复请求，以及一些底层的优化如使用非阻塞IO——Okio来优化性能等等，让使用者可以直接使用而不必考虑二次封装等问题，</p>
-<p>但在Android平台上由于对UI操作只能在主线程，所以经常需要对OkHttp进行稍微的封装使用，但是属于极其轻量级的。当然也可以使用专门为其定制的<a href="http://square.github.io/retrofit/">Retrofit</a>来更优雅的处理这个问题。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/02/18/OkHttp的整体了解/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/02/16/Http协议/">
-                            Http协议
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-02-16T20:19:24+08:00">
-	
-		    2月 16, 2017
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/网络编程/">网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/02/16/Http协议/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
-                            通过OkHttp全面深入的学习TCP/IP、HTTP
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2017-02-11T21:22:24+08:00">
 	
 		    2月 11, 2017
@@ -264,10 +186,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>一直以来对网络编程只停留在API的调用，简单的网络应用层框架的源码分析，最深入也就是的Socket的使用，但没有完成由点到面的整体把握，这里通过对<a href="http://square.github.io/okhttp/">OkHttp</a>（<strong>Java 平台上的新一代HTTP客户端</strong>）源码的分析，来深入学习TCP/IP、HTTP<br>等一些网络知识的基本概念，同时学习优秀应用层框架的搭建技巧。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>一直以来对网络编程只停留在API的调用，简单的网络应用层框架的源码分析，最深入也就是的Socket的使用，但没有完成由点到面的整体把握，这里通过对<a href="http://square.github.io/okhttp/">OkHttp</a>（<strong>Java 平台上的新一代HTTP客户端</strong>）源码的分析，来深入学习TCP/IP、HTTP<br>等一些网络知识的基本概念，同时学习优秀应用层框架的搭建技巧。</p>
 <p>接下来将对涉及到的网络知识进行梳理总结：</p>
 <ul>
 <li>TCP/IP、Socket的基础知识(本篇)</li>
@@ -322,75 +245,88 @@
 <h4 id="端口号的定义"><a href="#端口号的定义" class="headerlink" title="端口号的定义"></a>端口号的定义</h4><p>数据链路和IP中的地址，分别指的是MAC地址和IP地址，前者用来识别同一链路中的不同计算机，后者用于识别TCP/IP网络互连的主机和路由器。在传输层中也有这种类似与地址的概念——端口号。端口号用来识别同一台计算机中进行通信的不同应用程序，也称作程序地址。</p>
 <p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161023140159451-370668709.png" alt=""></p>
 <h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><h3 id="Socket套接字"><a href="#Socket套接字" class="headerlink" title="Socket套接字"></a>Socket套接字</h3><h3 id="Http协议"><a href="#Http协议" class="headerlink" title="Http协议"></a>Http协议</h3><h3 id="TCP-IP、Socket以及Http之间的关系"><a href="#TCP-IP、Socket以及Http之间的关系" class="headerlink" title="TCP/IP、Socket以及Http之间的关系"></a>TCP/IP、Socket以及Http之间的关系</h3>
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/02/11/通过OkHttp深入学习TCP:IP、Http/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/">
-                            由ReentrantLock分析JUC的核心AQS
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-01-09T21:22:24+08:00">
-	
-		    1月 09, 2017
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/Java/">Java</a>
-
-
-    
-</div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Http/">Http</a> <a class="tag tag--primary tag--small t-link" href="/tags/TCP-IP/">TCP/IP</a>
 
             </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/02/16/Http协议/"  data-tooltip="Http协议">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" data-tooltip="由ReentrantLock分析JUC的核心AQS">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
             
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><a href="http://www.silencedut.com/2016/06/03/并发的学习与使用">并发的学习与使用系列</a> 第八篇</p>
-<p>AQS是AbstractQueuedSynchronizer的简称，是并发组件包java.util.concurrent也就是JUC(Java Util Concurrency)的核心，以及很多并发组件如前面几篇中介绍到的ReentrantLock，Condition,BlockingQueue以及线程池里使用的worker等都是基于其实现的，将很多复杂的，繁琐的并发控制过程封装起来，便于其他并发工具类来实现更多，方便的功能，其主要通过volatile和UnSafe类的原子操作（Atomic相关）来实现阻塞和同步，之前的文章<a href="http://www.silencedut.com/2016/06/12/显示锁（Lock）及Condition的学习与使用">并发的学习与使用系列</a>提到里Lock的实现类ReentrantLock是一个可重入的，可实现公平的锁。下面通过ReentrantLock的源码来看看其是怎么实现的。</p>
-                    
-                        <a href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
+                <a class="post-action-btn btn btn--default" href="#">
             
-        </div>
-        
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
-        
-        
-        <li class="pagination-number">第 1 页 共 1 页</li>
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+                <div id="ds-thread" class="ds-thread" data-thread-key="2017/02/11/通过OkHttp深入学习TCP:IP、Http/"
+     data-title="通过OkHttp全面深入的学习TCP/IP、HTTP" data-url="http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+</div>
+
+            
+        
+    </div>
+</article>
 
 
 
@@ -401,6 +337,89 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/02/16/Http协议/"  data-tooltip="Http协议">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/01/09/由ReentrantLock分析JUC的核心AQS/" data-tooltip="由ReentrantLock分析JUC的核心AQS">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -447,6 +466,20 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:'SilenceDut'};
+            (function() {
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                || document.getElementsByTagName('body')[0]).appendChild(ds);
+            })();
+        </script>
+    
 
 
 

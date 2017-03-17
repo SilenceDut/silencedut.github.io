@@ -140,6 +140,204 @@
 <section class="postShorten-group main-content-wrap">
     
     
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/02/18/OkHttp的整体了解/">
+                            OkHttp的整体了解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-02-18T21:22:24+08:00">
+	
+		    2月 18, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/网络编程/">网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h3 id="OkHttp的基本概念"><a href="#OkHttp的基本概念" class="headerlink" title="OkHttp的基本概念"></a>OkHttp的基本概念</h3><p>在OkHttp的介绍中提到其是<strong>Java平台上的新一代HTTP客户端</strong>,所以其不止能在Android中使用，还能在在Java后台中使用。这是一个很重要的概念，在Android开发过程中，很多人经常将其与一些其他网络库如Volley，AsyncHttp等知名开源库进行对比，我认为这是概念上的错误，其对应的应该是Apache HttpClient或者HttpURLConnection，是一种Http客户端，Http客户端是为了隐藏底层的Socket连接，更方便的使用Http协议等而封装的关于Http使用、解析的库，称为客户端的原因其封装的是Socket，相对于ServerSocket来说不用处理多个连接的问题，所以一般的轻量级的客户端如Apache HttpClient，HttpURLConnection等都只是处理底层的Socket连接部分，封装Http协议，然后提供简单的使用API，不涉及并发等概念。</p>
+<p>客户端进行使用时一般应用中不可能只有一个网络请求，所以需要使用者在对Http Client进行二次封装，提供一些线程池，缓存处理，重连设置等，这也是Android中Volley，AsyncHttp等知名开源库的目的，而OkHttp比较特殊一点，其不仅提供了一般Http客户端的Socket连接，Http协议解析等功能，还对其进行了进一步的封装，提供线程池用于并发请求，缓存策略来减少重复请求，以及一些底层的优化如使用非阻塞IO——Okio来优化性能等等，让使用者可以直接使用而不必考虑二次封装等问题，</p>
+<p>但在Android平台上由于对UI操作只能在主线程，所以经常需要对OkHttp进行稍微的封装使用，但是属于极其轻量级的。当然也可以使用专门为其定制的<a href="http://square.github.io/retrofit/">Retrofit</a>来更优雅的处理这个问题。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/02/18/OkHttp的整体了解/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/02/16/Http协议/">
+                            Http协议
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-02-16T20:19:24+08:00">
+	
+		    2月 16, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/网络编程/">网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/02/16/Http协议/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/02/11/通过OkHttp深入学习TCP:IP、Http/">
+                            通过OkHttp全面深入的学习TCP/IP、HTTP
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-02-11T21:22:24+08:00">
+	
+		    2月 11, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/网络编程/">网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>一直以来对网络编程只停留在API的调用，简单的网络应用层框架的源码分析，最深入也就是的Socket的使用，但没有完成由点到面的整体把握，这里通过对<a href="http://square.github.io/okhttp/">OkHttp</a>（<strong>Java 平台上的新一代HTTP客户端</strong>）源码的分析，来深入学习TCP/IP、HTTP<br>等一些网络知识的基本概念，同时学习优秀应用层框架的搭建技巧。</p>
+<p>接下来将对涉及到的网络知识进行梳理总结：</p>
+<ul>
+<li>TCP/IP、Socket的基础知识(本篇)</li>
+<li>HTTP协议(待完成)</li>
+<li>OkHttp 的整体了解（待完成）</li>
+<li>应用层的关键思想——拦截器（责任链模式）</li>
+<li>Socket连接池复用原理</li>
+<li>缓存策略——GZIP 压缩和 HTTP 响应缓存</li>
+<li>Https，代理</li>
+<li>非阻塞IO——Okio</li>
+<li>封装使用</li>
+</ul>
+<h2 id="TCP-IP——网际协议族"><a href="#TCP-IP——网际协议族" class="headerlink" title="TCP/IP——网际协议族"></a>TCP/IP——网际协议族</h2><p><strong>TCP/IP为什么那么重要？</strong> “互联网”，是指将多个网络连接使其构成一个更大的网络，互联网进行通信时，需要相应的通信协议，TCP/IP就是为使用互联网开发定制的协议族，互联网的协议就是TCP/IP，因此TCP/IP就是互联网的协议。</p>
+<p>TCP（Transmission Control Protocol）和 IP(Internet Protocol) 是互联网众多通信协议中最为著名的，从字面意义上讲，可能有人会认为TCP/IP是指TCP和IP两种协议，实际中有时也确实就是指这两种协议（如OkHttp就是）。然而很多情况下，它只是利用IP进行通信时所必须用到的协议群的统称。具体来说，IP或者ICMP、TCP或UDP、FTP以及HTTP等都属于TCP/IP协议。由于IP和TCP协议最为常用，所以一般用TCP/IP泛指这些协议，因此也称TCP/IP为网际协议族。</p>
+<p>不同于ISO模型的七个分层</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022163737342-747643308.png" alt=""></p>
+<p>TCP/IP协议参考模型把所有的TCP/IP系列协议归类到四个抽象层中。</p>
+<p><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fdllmuzx3qg30en06ba9x.gif" alt=""></p>
+<p><strong>网络接口层也就是数据链路层一般指的是通信设备的传输规范以及一些硬件的驱动软件，一般由设备商提供，网络层和传输层的功能通常由操作系统提供，而HTTP等应用层协议就需要应用程序自己来保证了。</strong></p>
+<p>先总体看下，在TCP/IP模型下中一次模拟通信的过程：</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022171154685-1217302726.png" alt=""></p>
+<p>分组数据包经过以太网的数据链路时的大致流程如下图所示：</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022172139701-514265966.png" alt=""></p>
+<p>这时一种分层处理思想，减少没一层的厚度，便于扩展和维护，而OkHttp中重要的责任链模式其实也是这种思想，这样看来，面向对象的很多东西都是相通的。</p>
+<h2 id="网络接口层——物理、数据链路层"><a href="#网络接口层——物理、数据链路层" class="headerlink" title="网络接口层——物理、数据链路层"></a>网络接口层——物理、数据链路层</h2><p>如果没有物理设备和数据链路，基于TCP/TP的协议也就无从谈起。数据链路层的协议定义了通过通信媒介互联设备之间传输的规范。通信媒介包括双绞线电缆、同轴电缆、光线、电波等介质，此外各个设备之间也会通过交换机、网桥、中继器等中转数据。</p>
+<p>计算机以二进制0、1表示信息，物理层的责任是将实际的通信媒介之间的电压信号的高低、光的闪灭以及电波的强弱等信号转化为二进制0、1的序列，数据链路层再将这些0、1序列集合成一个<strong>“桢”</strong>的块，然后在进行传输。</p>
+<p>在数据链路中通过MAC地址来识别互连的节点，所以同一个数据链路中不能有相同的MAC地址。</p>
+<p>MAC（Media Access Control或者Medium Access Control）地址，或称为物理地址、硬件地址，用来定义网络设备的位置。在OSI模型中，第三层网络层负责 IP地址，第二层数据链路层则负责MAC地址。因此一个主机会有一个MAC地址，而每个网络位置会有一个专属于它的IP地址。</p>
+<p>MAC地址是网卡决定的，是固定的。</p>
+<p>由数据链路层的作用是在互连同一种数据链路的节点之间进行包传递。而一旦跨越多种数据链路就需要借助<strong>网络层——IP</strong>，来实现不在同一链路上的两端节点之间的数据包传递。</p>
+<h2 id="网络层——IP协议（非可靠性传输协议）"><a href="#网络层——IP协议（非可靠性传输协议）" class="headerlink" title="网络层——IP协议（非可靠性传输协议）"></a>网络层——IP协议（非可靠性传输协议）</h2><h4 id="IP地址的定义"><a href="#IP地址的定义" class="headerlink" title="IP地址的定义"></a>IP地址的定义</h4><p>在TCP/IP通信时，用IP地址识别主机和路由器，在互联网通信中，IP地址TCP/IP的基础。</p>
+<p>IP地址（IPv4）为32位正整数表示，TCP/IP通信要求将这样的IP地址分配给每个参与通信的主机(其实是网卡，一个网卡可以配置多个IP地址)，IP地址在计算机内以二进制方式处理，但使用时转化为10进制，每8位为一组，以’.’隔开，例如：</p>
+<pre><code>10101100    00010100    00000001    00000001  (二进制)
+172.        20.            1.            1          (十进制)
+</code></pre><p>IP地址由“网络标识（网络地址）” 和 “主机标识(主机地址)”组成：</p>
+<p>192.168.128.10/24 中的24表示从第一位开始到24位属于网络标识，因此192.168.128之前都是该IP的网络地址。我们可以理解为不同的网络标识代表不在一个局域网内，通信需要借助路由器。</p>
+<p><img src="https://w4.sanwen8.cn/mmbiz_jpg/vn0LnRqaEX87DodVBtJbUg6nsdOxpK6skpbpanVn7kRxfB7sLDDzy4kNy4ibggN3jACWlkCXApaRm88wKh122sw/0?wx_fmt=jpeg" alt=""></p>
+<h4 id="IP寻址和路由控制"><a href="#IP寻址和路由控制" class="headerlink" title="IP寻址和路由控制"></a>IP寻址和路由控制</h4><p>在计算机通信中，为了识别通信段，必须要有一个类似于地址的识别码进行标识。而在数据链路层，使用MAC地址来标识同一个链路中不同计算机的一种识别码。在网络层，则叫做IP地址。路由控制是指将分组数据发送到对应IP地址的功能，而实现这个功能的设备就是路由器。路由器通过上面提到的网络地址来进行寻址过程。</p>
+<p><img src="https://w4.sanwen8.cn/mmbiz_jpg/vn0LnRqaEX87DodVBtJbUg6nsdOxpK6sO2PKaR2WtPReCoC0ItZVOrXSPr1fWVmXEe6LibbeSQnBSxb7wdQhhqQ/0?wx_fmt=jpeg" alt=""></p>
+<p>为了将数据包发送给目标主机，所有<strong>主机</strong>都维护者一张路由控制表（Routing Table），该表记录IP数据在下一步应该发给哪一个路由器。IP包将根据这个路由表在各个数据链路上传输。</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022174526248-423737591.png" alt=""></p>
+<p>IP面向无连接，即在发包之前，不需要建立与对端目标地址之间的连接。不具有重发机制，即使分组数据包未能到达对端主机也不会重发，因此属于非可靠性传输协议。为了提高可靠性，上一层的TCP采用面向连接的通信。</p>
+<h4 id="IP与域名——DNS"><a href="#IP与域名——DNS" class="headerlink" title="IP与域名——DNS"></a>IP与域名——DNS</h4><p>IP地址不便于记忆和传播，DNS系统就是用来管理主机名和IP地址之间的对应关系的系统。DNS的查询机制如下：</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022180656826-1218970572.png" alt=""></p>
+<h4 id="IP地址与MAC地址——ARP"><a href="#IP地址与MAC地址——ARP" class="headerlink" title="IP地址与MAC地址——ARP"></a>IP地址与MAC地址——ARP</h4><p>在数据链路层中不使用IP地址，以太网情况下只使用MAC地址传输数据包。而实际上将众多IP数据包在网络上传送的就是数据链路本身，找到相应的IP地址后，所以如何让IP和MAC地址对应是ARP要解决的事情，ARP是一种解决地址问题的协议，以目标地址为线索，用来定位下一个应该接收数据分包的网络设备对应的MAC地址。不过，ARP只适用于IPv4，不适用于IPv6。</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022180947451-1370030868.png" alt=""></p>
+<p><strong>RARP</strong>则是将ARP反过来，从MAC地址定位IP地址的一种协议。</p>
+<h4 id="处理IPv4地址的枯竭——NAT技术"><a href="#处理IPv4地址的枯竭——NAT技术" class="headerlink" title="处理IPv4地址的枯竭——NAT技术"></a>处理IPv4地址的枯竭——NAT技术</h4><p>将32位IP地址数字进行计算：2的32次方计算可知，最多可允许43亿计算机连接到网络，这显然是不够的，而IPv6没有普及，NAT（Network Address Translator）用于在本地网络中使用私有地址，在连接互联网时转而使用全局IP地址的技术。</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161022182052888-909546184.png" alt=""></p>
+<h2 id="传输层—TCP-UDP"><a href="#传输层—TCP-UDP" class="headerlink" title="传输层—TCP/UDP"></a>传输层—TCP/UDP</h2><p>由于IP协议是非可靠行协议，TCP提供可靠的通信传输，UDP让广播和细节控制交给应用的通信传输。TCP/IP或UDP/IP通信中通常采用5个信息来识别一个通信：“源IP地址”、“目标IP地址”、“协议号”、“源端口号”、“目标端口号”。</p>
+<p><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fdnys4ocfdj310y09wwfg.jpg" alt=""></p>
+<h4 id="端口号的定义"><a href="#端口号的定义" class="headerlink" title="端口号的定义"></a>端口号的定义</h4><p>数据链路和IP中的地址，分别指的是MAC地址和IP地址，前者用来识别同一链路中的不同计算机，后者用于识别TCP/IP网络互连的主机和路由器。在传输层中也有这种类似与地址的概念——端口号。端口号用来识别同一台计算机中进行通信的不同应用程序，也称作程序地址。</p>
+<p><img src="http://images2015.cnblogs.com/blog/381412/201610/381412-20161023140159451-370668709.png" alt=""></p>
+<h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><h3 id="Socket套接字"><a href="#Socket套接字" class="headerlink" title="Socket套接字"></a>Socket套接字</h3><h3 id="Http协议"><a href="#Http协议" class="headerlink" title="Http协议"></a>Http协议</h3><h3 id="TCP-IP、Socket以及Http之间的关系"><a href="#TCP-IP、Socket以及Http之间的关系" class="headerlink" title="TCP/IP、Socket以及Http之间的关系"></a>TCP/IP、Socket以及Http之间的关系</h3>
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/02/11/通过OkHttp深入学习TCP:IP、Http/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
     <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
@@ -457,143 +655,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/">
-                            Router—一个高效，使用方便，基于动态代理实现的Android事件总线库
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-09-04T19:55:29+08:00">
-	
-		    9月 04, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/Android/">Android</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>项目地址：<a href="https://github.com/SilenceDut/Router">Router</a></p>
-<p><a href="https://silencedut.github.io/2016/08/12/代理模式的学习与应用">代理模式的学习与应用</a>介绍了代理模式的原理及简单使用方式，<a href="https://github.com/SilenceDut/Router">Router</a>就是基于此实现了一个Android间组件、线程间方便通信的库。</p>
-<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>在Android中的，EventBus是开源最流行的事件总线库，大大简化了应用程序内各组件间、组件与后台线程间的通信。之前的个人项目<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>也是使用EventBus来简化开发，但在使用过程中有一些问题。</p>
-                    
-                        <a href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/08/12/代理模式的学习与应用/">
-                            代理模式的学习与应用
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-08-12T20:45:29+08:00">
-	
-		    8月 12, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/designpattern/">设计模式</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>前段时间在研究插件化，其中主要看了任玉刚动态加载框架——<a href="https://github.com/singwhatiwanna/dynamic-load-apk">dynamic-load-apk</a>，其Activity的注册问题主要是通过静态代理的方式来完成，之前了解过代理模式，但具体没使用过，这次看到了具体的使用，于是更深入的去学习静态代理，以及动态代理。</p>
-<p>本篇主要讲静态代理和JDK的动态代理的原理，也是<a href="https://github.com/SilenceDut/Router">Router</a>——一种Android中使用的高效、方便的事件总线解耦库实现的主要原理。</p>
-                    
-                        <a href="/2016/08/12/代理模式的学习与应用/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/">
-                            Android视图框架Activity,Window,View,ViewRootImpl理解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-08-10T22:52:19+08:00">
-	
-		    8月 10, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/Android/">Android</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：</p>
-<p>1 . 在Activity里调用  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WindowManager.LayoutParams wl = <span class="keyword">new</span> WindowManager.LayoutParams();  </div><div class="line">getWindowManager().addView(mView,wl)；</div></pre></td></tr></table></figure>
-<p>和  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">LayoutParams wmParams =...    </div><div class="line">addContentView(mView,wmParams); <span class="comment">//activity里的方法</span></div></pre></td></tr></table></figure>
-<p>这两种方式背后的实现是怎样的,有什么区别?</p>
-                    
-                        <a href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -605,7 +666,7 @@
             </a>
         </li>
         
-        <li class="pagination-number">第 1 页 共 2 页</li>
+        <li class="pagination-number">第 1 页 共 3 页</li>
     </ul>
 </div>
 
