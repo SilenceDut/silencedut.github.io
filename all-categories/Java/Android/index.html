@@ -141,27 +141,27 @@
 <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/08/12/一种基于接口化、清晰易读的路由框架——Hub/">
-                            一种基于接口化、清晰直观的模块间通信框架——Hub
+                        <a class="link-unstyled" href="/2016/06/03/并发的学习与使用/">
+                            并发的学习与使用
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-08-12T21:22:24+08:00">
+    <time itemprop="datePublished" datetime="2016-06-03T22:27:12+08:00">
 	
-		    8月 12, 2018
+		    6月 03, 2016
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/all-categories/Java/">Java</a>, <a class="category-link" href="/all-categories/Java/Android/">Android</a>, <a class="category-link" href="/all-categories/Java/Android/OpenSourceProject/">OpenSourceProject</a>, <a class="category-link" href="/all-categories/Java/Android/OpenSourceProject/designpattern/">designpattern</a>
+    <a class="category-link" href="/all-categories/Java/">Java基础</a>, <a class="category-link" href="/all-categories/Java/Android/">Android</a>
 
 
     
@@ -169,47 +169,25 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h3 id="Hub库的由来"><a href="#Hub库的由来" class="headerlink" title="Hub库的由来"></a><a href="https://github.com/SilenceDut/Hub">Hub</a>库的由来</h3><p>在准备重构<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>时，决定使用谷歌推出的<br><a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>架构，同时借鉴<a href="https://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=2649286672&amp;idx=1&amp;sn=4d9db00c496fcafd1d3e01d69af083f9">微信Android模块化架构重构实践</a>的模块化的思想，抛弃之前的MVP,单一模块的方式对项目进行重构，同时积累一些经验来对工作中的项目进行优化。AAC和模块化的优点就不多介绍了，AAC很容易引入，谷歌在Android的API层面提供了大量的支持，模块化主要的难点就是模块间没有直接引用，如何通信的问题(以下用module来代替模块，也就是Android开发中的nodule),了解到的有主要以下几种思想：</p>
-<ol>
-<li>建立一个公共的module，每个功能module需要暴露的接口放到公共的module，实现类在各个module里，在公共module里存在一个接口管理类，一般是一个map，在初始化的时候，每个module将自己的的接口和实现类放到map（接口注册），每个module需要其他module的功能时，通过接口拿到实现类进行功能调用（接口访问）。这就像一种“SDK”的方式，公共module为各功能module提供接口和数据结构，这种方式是最容易想到的，也是早期的很多项目使用的一种方式，接口化的方式优点是结构清晰直观，调用链易追踪，对IDE更友好（可在IDE中直接跳转），协议变化直接反映在编译上，维护接口也简单。但缺点是由于注册初始化，要严格按照调用的先后顺序注册，设计正确的生命周期，相互依赖的关系链也需要花时间设计，而这个过程是“危险”的,各种借口依赖也是易变的。</li>
-<li>Event通知类型的，如使用EventBus或者RxBus等事件总线的方式，这种方式虽然可以完成相应的跨module，解耦，但是却是最不推荐的方式，每种次通信都要定义一种类型，繁琐，从本质上来讲也不适合，EventBus或者RxBus更应该偏向于通知的思想，一对多，而且返回值也不好处理。而module间通信更倾向于功能提供，一般是一对一的，有时同步返回值，所以Event事件总线方式应该是最不合适的。</li>
-<li>使用路由框架，常用的开源库有ARouter,ActivityRouter等，通过Url来实现页面间的跳转，降低页面间的耦合,同时ARouter也支持提供服务的功能，这种模式可能也是现在很多项目使用的一种方式，但是我觉得这种路由的框架可能更偏重于页面跳转的场景，大部分的项目只需要能实现module间的接口提供和简单的页面跳转就足够了，同时因为都是通过字符串来代表协议，和接口的形式比起来不是那么直观。</li>
-</ol>
-<p><strong><a href="https://github.com/SilenceDut/Hub">Hub</a>是主要基于以上第1种方式，同时提取其他两种方式的优点实现的一个module间服务提供（非service概念）、页面跳转的简洁框架，主要特点：</strong></p>
-<ol>
-<li>通过控制反转实现module间服务提供、Activity跳转，Activity支持参数自动处理传递的参数，不需要繁琐的注解标注</li>
-<li>多接口支持。优点在于不必要暴露所有接口,只需将需要的接口暴露，比如一个服务可能支持多个功能，但是有些功能只需要再module内使用，有些需要提供给其他module，这样就可以抽离出多个接口，只需要将需要暴露的放到基础module里。</li>
-<li>支持<strong>多进程Activity跳转</strong>的参数自动处理</li>
-<li>接口化的通信方式类似于“SDK”+数据结构，面向接口编程，更清晰直观， 对IDE更友好（可在IDE中直接跳转），协议变化直接反映在编译上，维护接口也简单</li>
-<li>不需要繁琐的判空处理，服务的实现类或者路径的Activity不存在时不会崩溃。Activity跳转失败可以通过方法返回值来感知，做一些异常处理</li>
-<li><strong>Less is more, simple is better!使用简单，功能强大</strong></li>
-</ol>
-<h3 id="简单的使用方式"><a href="#简单的使用方式" class="headerlink" title="简单的使用方式"></a>简单的使用方式</h3><p>见<a href="https://github.com/SilenceDut/Hub">Hub文档</a></p>
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p><img src="https://ws2.sinaimg.cn/large/0069RVTdgy1fuan0lqq4yj31kw0o6te6.jpg" alt=""></p>
-<p>上图是<a href="https://github.com/SilenceDut/Hub">Hub</a>库的总体框架图，代码主要包括4个部分，Annotation主要是注解部分，Compiler是在编译期处理注解，控制反转主要是在这里实现，Hub是提供接口和运行期逻辑控制中心，还有就是通过apt在编译期生成的类，这些类的功能时帮助运行期通过接口和其他信息来找到相应的实现。</p>
-<p>主要的处理部分是在ImpHub和ActivityHub里，这部分就是通过传入的接口，找到Compiler里生成的一定规则命名的Helper类，继而得到接口的具体实现类或者跳转到相应的页面，源码都很容易理解，更多细节可以通过源码来了解，其中处理逻辑中用到了动态代理的思想，不熟悉的可以参考之前写的这篇文章<a href="http://www.silencedut.com/2016/08/12/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%BA%94%E7%94%A8/">代理模式的学习与应用</a>。</p>
-<h3 id="技术特点"><a href="#技术特点" class="headerlink" title="技术特点"></a>技术特点</h3><ol>
-<li>尽量少的生成类和反射，实现<a href="https://github.com/SilenceDut/Hub">Hub</a>的过程中为了减少运行期反射的使用，尽可能少的生成一些帮助类，在通过接口得到服务类的时候直接返回对象而不是Class，这样可以尽量避免反射生成对象的所带来的消耗。<br>生成类文件很少<img src="https://ws3.sinaimg.cn/large/0069RVTdgy1fuanzixqidj30lo066js5.jpg" alt=""><br><img src="https://ws4.sinaimg.cn/large/0069RVTdgy1fuanur9qkkj30u80u477s.jpg" alt=""><br>在查找Activity的跳转路径时，具体的Activity和参数赋值只需要一个class文件就能完成所有的功能，这个跳转赋值过程中也只需一次 Class.forName过程。<br><img src="https://ws1.sinaimg.cn/large/0069RVTdgy1fuanukaoh6j31kw0xg44x.jpg" alt=""></li>
-</ol>
-<ol>
-<li><p>初始化不消耗性能，不占据时间，不存在时序问题，如果不需要Activity的跳转，初始化都不要，App启动过程无消耗<br><img src="https://ws2.sinaimg.cn/large/0069RVTdgy1fuao2ldzw9j30ro04kaal.jpg" alt=""></p>
-</li>
-<li><p>可扩展性很强大，可自由定制。接口的方式看似局限性很大，但实际上动态代理的方式可扩展性很强，方式又及其简单，不需要经过中间过多的转换和包装，因为方法和接口上可以通过注解的来传递任何你想自定义的信息。</p>
-</li>
-</ol>
-<p>这个库最初是在<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>重构过程中产生的，当初的目的也很纯粹，就是想要一种能在module间方便使用的通信框架，在对比各种已存在的解决方案的情况下选择自己来实现，不是为了重复造轮子，而是为了更适合自己项目，以及自己以及团队的开发习惯，尽量的简洁易用已经够用，后续这个库就被用在了公司的项目中，已经有较多的线上使用过程。</p>
-<p><strong>Less is more, simple is better! 合适的才是最好的</strong></p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p><strong>不论什么时候，只要您将修改的变量接下来可能被另一个线程读取，或者您将读取的变量最后是被另一个线程写入的，那么您必须考虑并发问题，并采取合适的同步方式。</strong></p>
+<p>我们可能并没有多少机会写并发的东西,或者在非常精通之前最好还是优先使用最熟悉的,起码应该保证正确性才能讨论性能问题,所以很多概念是理解性的。但理解这些概念会帮助我们理解优秀源码（要不然别人的代码都看不懂(・ε・)）以及者写程序时会有更多的思考。</p>
+<p>接下来将对常见的并发知识进行知识梳理总结：</p>
+<ul>
+<li>并发的一些基础概念（本篇）</li>
+<li><a href="https://silencedut.github.io/2016/06/05/通过单例模式理解synchronized,volatile以及AtomicReference%20">通过单例模式理解synchronized,volatile以及原子类AtomicReference</a></li>
+<li><a href="https://silencedut.github.io/2016/06/12/显示锁（Lock）及Condition的学习与使用">显示锁（Lock）及Condition的学习与使用</a></li>
+<li><a href="https://silencedut.github.io/2016/06/15/Callable和Future、FutureTask的使用">Callable和Future、FutureTask的使用</a></li>
+<li><a href="https://silencedut.github.io/2016/06/25/从使用到原理学习Java线程池">从使用到原理学习Java线程池</a></li>
+<li><a href="https://silencedut.github.io/2016/07/08/基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面">基于最新版本的AsyncTask源码解读及AsyncTask的黑暗面</a></li>
+<li><a href="https://silencedut.github.io/2016/07/18/正确解读ThreadLocal">正确解读ThreadLocal</a></li>
+<li><a href="https://silencedut.github.io/2017/01/09/由ReentrantLock分析JUC的核心AQS">由ReentrantLock分析JUC的核心AQS</a></li>
+</ul>
                     
+                        <a href="/2016/06/03/并发的学习与使用/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-                    
-                    
-                        <p>
-                            <a href="/2018/08/12/一种基于接口化、清晰易读的路由框架——Hub/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
                     
                 </div>
             
