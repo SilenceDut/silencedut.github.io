@@ -147,6 +147,54 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/">
+                            Android视图框架Activity,Window,View,ViewRootImpl理解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-08-10T22:52:19+08:00">
+	
+		    8月 10, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Android/">Android</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>关于Activity,Window,View的关系一直有个模糊的印象,看别人的分析一般都这么理解Activity是管理Window,Window用来承载View,View是最终的视图,也有说Window的作用可有可无的,作用并不大的,并不是说这些观点有问题,而是看了这么多后,会更迷惑,管理是怎么管理的,承载是怎么实现的,如果不自己根据源码看一些,这些概念会一直是抽象的,遇到问题还是没法理解，例如：</p>
+<p>1 . 在Activity里调用  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WindowManager.LayoutParams wl = <span class="keyword">new</span> WindowManager.LayoutParams();  </div><div class="line">getWindowManager().addView(mView,wl)；</div></pre></td></tr></table></figure>
+<p>和  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">LayoutParams wmParams =...    </div><div class="line">addContentView(mView,wmParams); <span class="comment">//activity里的方法</span></div></pre></td></tr></table></figure>
+<p>这两种方式背后的实现是怎样的,有什么区别?</p>
+                    
+                        <a href="/2016/08/10/Android视图框架Activity,Window,View,ViewRootImpl理解/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/08/02/Android 应用点击图标到Activity界面显示的过程分析/">
                             Android 应用点击图标到Activity界面显示的过程分析
                         </a>
