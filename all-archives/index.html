@@ -154,27 +154,27 @@
 <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/08/12/一种基于接口化、清晰易读的路由框架——Hub/">
-                            一种基于接口、简洁易用的通信框架——Hub
+                        <a class="link-unstyled" href="/2018/11/26/优雅的使用Handler,避免内存泄漏和页面崩溃/">
+                            通过LifecycleOwner,优雅的使用Handler
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-08-12T21:22:24+08:00">
+    <time itemprop="datePublished" datetime="2018-11-26T21:22:24+08:00">
 	
-		    8月 12, 2018
+		    11月 26, 2018
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/all-categories/Java/">Java</a>, <a class="category-link" href="/all-categories/Java/Android/">Android</a>, <a class="category-link" href="/all-categories/Java/Android/OpenSourceProject/">OpenSourceProject</a>, <a class="category-link" href="/all-categories/Java/Android/OpenSourceProject/designpattern/">designpattern</a>
+    <a class="category-link" href="/all-categories/Android/">Android</a>, <a class="category-link" href="/all-categories/Android/OpenSourceProject/">OpenSourceProject</a>
 
 
     
@@ -182,13 +182,33 @@
 
             </div>
             
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <h3 id="Hub库的由来"><a href="#Hub库的由来" class="headerlink" title="Hub库的由来"></a><a href="https://github.com/SilenceDut/Hub">Hub</a>库的由来</h3><p>在准备重构<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>时，决定使用谷歌推出的<br><a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>架构，同时借鉴<a href="https://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=2649286672&amp;idx=1&amp;sn=4d9db00c496fcafd1d3e01d69af083f9">微信Android模块化架构重构实践</a>的模块化的思想，抛弃之前的MVP,单一模块的方式对项目进行重构，同时积累一些经验来对工作中的项目进行优化。AAC和模块化的优点就不多介绍了，AAC很容易引入，谷歌在Android的API层面提供了大量的支持，模块化主要的难点就是模块间没有直接引用，如何通信的问题(以下用module来代替模块，也就是Android开发中的nodule),了解到的有主要以下几种思想：</p>
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h3 id="目前的问题"><a href="#目前的问题" class="headerlink" title="目前的问题"></a>目前的问题</h3><p>Handler的使用在Android日常开发中占用很大的比重，尤其在界面开发中，经常被用来做一些延迟执行的任务。但Handler带来的问题也很多，最常见的比如页面退出未执行的任务没有被移除导致内存泄漏，以及可能的由于界面已不存在而导致的崩溃。如下，如果不及时移除就可能造成上述问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mHander.postDelayed(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="comment">//do something</span></div><div class="line">    &#125;</div><div class="line">&#125;,<span class="number">1000</span>);</div></pre></td></tr></table></figure>
+<p>这些问题一般都比较容易想到，也容易解决，常用的方式是缓存一个Runnable变量在使用的类中，然后在页面生命周期结束移除</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">类变量：</div><div class="line">Runnable mDelayedRunnable;</div><div class="line"></div><div class="line">初始化：</div><div class="line">mDelayedRunnable = <span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="comment">//do something</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">mHander.postDelayed(mDelayedRunnable,<span class="number">1000</span>);</div><div class="line"></div><div class="line">...</div><div class="line">生命周期结束（Activity,Fragment）</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">onDestroy</span> <span class="params">()</span> </span>&#123;</div><div class="line">	mHander.removeCallbacks(mDelayedRunnable);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的这种做法可以解决Handler的不当使用带来的问题，但是有个比较恶心的问题，太不优雅，太多的行数，要非常小心remove的问题，浪费时间精力在这样的无技术含量的代码上让人苦恼。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>使用support 27包下，Android提供了LifecycleOwner的实现，提供一种可对Activity,Fragment的生命周期监听的一种实现方式，从基础api层面做了很好的支持，<a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>架构(包括LiveData,ViewModel等）也是主要基于此来完成的，不熟悉AAC的可以参考下之前的开源项目<br><a href="https://github.com/SilenceDut/KnowWeather">KnowWeather</a>。</p>
+<p>实现方式是对原Runnable进行代理，然后对LifecycleOwner的生命周期进行监听，GenericLifecycleObserver是api里提供的一个接口，会在实现了LifecycleOwner的实现类的一些关键生命周期里回调，不限于onDestory，如果任务在然后在Lifecycle.Event.ON_DESTROY事件前被执行，移除监听，反之在GenericLifecycleObserver的Lifecycle.Event.ON_DESTROY事件调时移除未执行的任务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LifecycleRunnableWrapper</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Runnable mOriginRunnable;</div><div class="line">    <span class="keyword">private</span> LifecycleOwner mLifecycleOwner;</div><div class="line">    <span class="keyword">private</span> GenericLifecycleObserver mLifecycleObserver;</div><div class="line"></div><div class="line">    LifecycleRunnableWrapper(LifecycleOwner lifecycleOwner, <span class="keyword">final</span> Handler handler,<span class="keyword">final</span> Runnable originRunnable) &#123;</div><div class="line">        <span class="keyword">if</span>(originRunnable == <span class="keyword">null</span> || lifecycleOwner == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">this</span>.mLifecycleOwner = lifecycleOwner;</div><div class="line">        <span class="keyword">this</span>.mOriginRunnable = originRunnable;</div><div class="line">        mLifecycleObserver = <span class="keyword">new</span> GenericLifecycleObserver() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStateChanged</span><span class="params">(LifecycleOwner source, Lifecycle.Event event)</span> </span>&#123;</div><div class="line"></div><div class="line">                <span class="keyword">if</span>(event == Lifecycle.Event.ON_DESTROY) &#123;</div><div class="line">                    <span class="keyword">if</span>(mLifecycleOwner!=<span class="keyword">null</span> ) &#123;</div><div class="line">                        mLifecycleOwner.getLifecycle().removeObserver(<span class="keyword">this</span>);</div><div class="line">                    &#125;</div><div class="line">                    handler.removeCallbacks(LifecycleRunnableWrapper.<span class="keyword">this</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">        mLifecycleOwner.getLifecycle().addObserver(mLifecycleObserver);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(mOriginRunnable!=<span class="keyword">null</span> &amp;&amp; mLifecycleOwner!=<span class="keyword">null</span>) &#123;</div><div class="line">            mOriginRunnable.run();</div><div class="line">            mLifecycleOwner.getLifecycle().removeObserver(mLifecycleObserver);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果每次使用Runnable都是要上面的封装方式看起来也很麻烦，在<a href="https://github.com/SilenceDut/TaskScheduler">TaskScheduler</a>已经对上述内容作了封装，可以很方便的使用</p>
+<p>默认onDestory移除未执行的任务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">TaskScheduler.runOnUIThread(<span class="keyword">this</span>,<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"LifeFragment"</span>,<span class="string">"runTask with life"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;,<span class="number">5000</span>);</div></pre></td></tr></table></figure>
+<p>可指定在特定生命周期移除未执行任务，如onStop</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">TaskScheduler.runOnUIThread(<span class="keyword">this</span>, Lifecycle.Event.ON_STOP, <span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"LifeFragment"</span>,<span class="string">"runTask with life on Stop"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;,<span class="number">5000</span>);</div></pre></td></tr></table></figure>
+<p>可外部传入Handler</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> TaskScheduler.runLifecycleRunnable(<span class="keyword">this</span>, TaskScheduler.ioHandler(), <span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"LifeFragment"</span>,<span class="string">"io thread runTask with life"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;,<span class="number">5000</span>);</div></pre></td></tr></table></figure>
+<p>更多使用方式，请查看<a href="https://github.com/SilenceDut/TaskScheduler">TaskScheduler</a>源码实现。</p>
+
                     
-                        <a href="/2018/08/12/一种基于接口化、清晰易读的路由框架——Hub/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
                         
+                    
+                    
+                        <p>
+                            <a href="/2018/11/26/优雅的使用Handler,避免内存泄漏和页面崩溃/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
                     
                 </div>
             
@@ -236,6 +256,49 @@
                                 注释和共享
                             </a>
                         </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/08/12/一种基于接口化、清晰易读的路由框架——Hub/">
+                            一种基于接口、简洁易用的通信框架——Hub
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-08-12T21:22:24+08:00">
+	
+		    8月 12, 2018
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Java/">Java</a>, <a class="category-link" href="/all-categories/Java/Android/">Android</a>, <a class="category-link" href="/all-categories/Java/Android/OpenSourceProject/">OpenSourceProject</a>, <a class="category-link" href="/all-categories/Java/Android/OpenSourceProject/designpattern/">designpattern</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h3 id="Hub库的由来"><a href="#Hub库的由来" class="headerlink" title="Hub库的由来"></a><a href="https://github.com/SilenceDut/Hub">Hub</a>库的由来</h3><p>在准备重构<a href="https://github.com/SilenceDut/KnowWeather">知天气</a>时，决定使用谷歌推出的<br><a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>架构，同时借鉴<a href="https://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=2649286672&amp;idx=1&amp;sn=4d9db00c496fcafd1d3e01d69af083f9">微信Android模块化架构重构实践</a>的模块化的思想，抛弃之前的MVP,单一模块的方式对项目进行重构，同时积累一些经验来对工作中的项目进行优化。AAC和模块化的优点就不多介绍了，AAC很容易引入，谷歌在Android的API层面提供了大量的支持，模块化主要的难点就是模块间没有直接引用，如何通信的问题(以下用module来代替模块，也就是Android开发中的nodule),了解到的有主要以下几种思想：</p>
+                    
+                        <a href="/2018/08/12/一种基于接口化、清晰易读的路由框架——Hub/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
                     
                 </div>
             
@@ -551,51 +614,6 @@
 <p>这里主要通过常用的网络请求库OkHttp，图片加载库Picasso，事件总线库EventBus等对上面提到的几点进行解读。</p>
                     
                         <a href="/2016/09/09/Android常用开源框架的源码解读套路/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/">
-                            Router—一个高效，使用方便，基于动态代理实现的Android事件总线库
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-09-04T19:55:29+08:00">
-	
-		    9月 04, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/all-categories/Android/">Android</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>项目地址：<a href="https://github.com/SilenceDut/Router">Router</a></p>
-<p><a href="https://silencedut.github.io/2016/08/12/代理模式的学习与应用">代理模式的学习与应用</a>介绍了代理模式的原理及简单使用方式，<a href="https://github.com/SilenceDut/Router">Router</a>就是基于此实现了一个Android间组件、线程间方便通信的库。</p>
-<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>在Android中的，EventBus是开源最流行的事件总线库，大大简化了应用程序内各组件间、组件与后台线程间的通信。之前的个人项目<a href="https://github.com/SilenceDut/NBAPlus">NBAPlus</a>也是使用EventBus来简化开发，但在使用过程中有一些问题。</p>
-                    
-                        <a href="/2016/09/04/Router—一个高效，使用方便，基于动态代理实现的Android事件总线库/" class="postShorten-excerpt_link link">
                             阅读全文
                         </a>
                         
