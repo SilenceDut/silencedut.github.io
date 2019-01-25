@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fzbiv9fcc5j30gq19ywq2.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg">
-<meta property="og:updated_time" content="2019-01-25T08:23:01.853Z">
+<meta property="og:updated_time" content="2019-01-25T08:33:57.949Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优雅的实现一个高效、高性能、异步数据实时刷新的列表">
 <meta name="twitter:description" content="Android的业务开发中。列表需求很很常见也很重要的部分，列表承载的信息多，涉及的的协议多，布局也多，尤其一些复杂的列表，不管是用ListView还是RecyclerView，使用不当会带来很多的性能问题和后期的维护问题，形成一套规范的，高性能的列表开发模式很有必要。
@@ -220,8 +220,9 @@
 <h2 id="不易增、删、更新的列表"><a href="#不易增、删、更新的列表" class="headerlink" title="不易增、删、更新的列表"></a>不易增、删、更新的列表</h2><p>以更新列表为例：</p>
 <p><strong>类似需要异步请求数据的</strong><br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg" alt=""></p>
 <p><strong>类似通知更新数据的：</strong><br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg" alt=""></p>
+<p>实现更新的方式可能有很多种方式，但需要注意:</p>
 <ol>
-<li><p>实现更新的方式可能有很多种方式，但需要注意:<br>不要在Holder里监听数据变化，不管是类似EventBus的广播还是LiveData，虽然如果项目里用到LiveData，可能在holder里通过<code>livedate.observer(context,Observer)</code>很方便监听回调，但是因为Holder的没有明显的生命周期，可能会频繁被复用以及Holder的回收不可见等状态不可控，如果是使用LiveData，导致被频繁绑定observer，或者出现内存泄漏等各种难以定位的问题。下面是Google关于列表View的使用建议</p>
+<li><p>不要在Holder里监听数据变化，不管是类似EventBus的广播还是LiveData，虽然如果项目里用到LiveData，可能在holder里通过<code>livedate.observer(context,Observer)</code>很方便监听回调，但是因为Holder的没有明显的生命周期，可能会频繁被复用以及Holder的回收不可见等状态不可控，如果是使用LiveData，导致被频繁绑定observer，或者出现内存泄漏等各种难以定位的问题。下面是Google关于列表View的使用建议</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">* When the async code is done, you should update the data, not the views. </div><div class="line">* After updating the data, tell the adapter that the data changed. </div><div class="line">* The RecyclerView gets note of this and re-renders your view.</div><div class="line">* When working with recycling views (ListView or RecyclerView), </div><div class="line">* you cannot know what item a view is representing. In your case, </div><div class="line">* that view gets recycled before the async work is done and</div><div class="line">*  is assigned to a different item of your data.</div><div class="line">* So never modify the view. Always modify the data and notify the adapter. </div><div class="line">* bindView should be the place where you treat these cases.</div></pre></td></tr></table></figure>
 <p> 简单来说就是<strong>异步数据结果回来不应该在Holder里直接改变view的状态，而是应该改变数据，然后通过adapter来改变View。</strong> 主要原因还是上面说的Holder创建与销毁，可见不可见等状态很难控制</p>
 </li>
@@ -231,15 +232,15 @@
 <ul>
 <li><p>一种是局部刷新：</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adapter.notifyItemChanged(updateItemIdex);</div></pre></td></tr></table></figure>
-<p>直接刷新单个Item很容易出现<a href="#jump1">不同线程同时处理数据带来的崩溃问题等</a>，再具体点这种情况是此时有类似mAdapter.setDatas(mDatas)刷新全量列表的行为，而此时的新的列表的长度和原来的不同，就有可能出现上述的崩溃。全量和局部可能都是基于通知或异步数据的结果所有很难控制先后顺序。</p>
+<p>直接刷新单个Item很容易出现<a href="#jump1">不同线程同时处理数据带来的崩溃问题等</a>，再具体点这种情况是此时有类似mAdapter.setDatas(mDatas)刷新全量列表的行为，而此时的新的列表的长度和原来的不同，就有可能出现上述的崩溃。全量和局部可能都是基于通知或异步数据的结果所以很难控制先后顺序。</p>
+</li>
+<li><p>还有一种是调用全量更新：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(<span class="keyword">new</span> DiffCallBack(mDatas, newDatas), <span class="keyword">true</span>);</div><div class="line"></div><div class="line">diffResult.dispatchUpdatesTo(mAdapter);</div><div class="line"></div><div class="line">mDatas = newDatas;</div><div class="line">mAdapter.setDatas(mDatas);</div></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
 </ol>
-<pre><code>* 还有一种是调用全量更新：
-
- <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(<span class="keyword">new</span> DiffCallBack(mDatas, newDatas), <span class="keyword">true</span>);</div><div class="line"></div><div class="line">diffResult.dispatchUpdatesTo(mAdapter);</div><div class="line"></div><div class="line">mDatas = newDatas;</div><div class="line">mAdapter.setDatas(mDatas);</div></pre></td></tr></table></figure>
-</code></pre><p>   使用了DiffUtil的原因，可能会觉得不会刷新所有的UI，这样性能会提高。但这样使用会出现新的问题，这种方式有个很严重的问题就是每次都要进行DiffCallBack的差分运算，虽然可以异步线程里处理，但是数据量较大，异步数据较多，更新频繁的时候会导致cpu被大量占用，从而带来更严重的界面卡顿问题。<br>    <span id = "jump2">  </p>
+<p>   使用了DiffUtil的原因，可能会觉得不会刷新所有的UI，这样性能会提高。但这样使用会出现新的问题，这种方式有个很严重的问题就是每次都要进行DiffCallBack的差分运算，虽然可以异步线程里处理，但是数据量较大，异步数据较多，更新频繁的时候会导致cpu被大量占用，从而带来更严重的界面卡顿问题。<br>    <span id = "jump2">  </p>
 <p>   还有很麻烦的地方就是一个异步结果返回更改单个Item里的数据时，这时很有可能你看不到列表的更新。StackOverflow 有类似的问题：<a href="https://stackoverflow.com/questions/46008457/update-single-item-in-recyclerview-with-diffutil">Update single item in RecyclerView with DiffUtil</a>。因为每次更新的时候你需要<strong>new一个新的对象</strong>，然后将不需要改变的内容复制，需要改变的进行赋值。而不是像上面那样找到原来的数据进行更改局部，因为原数据<strong>对象</strong>已经在源数据列表里，虽然创建新的列表，但在更新单个对象的时候因为是同一个对象所以旧的数据列表肯定同步更新，导致做差分对比的结果肯定是不需要更新UI(因为是同一个对象)，所以只能创建新的对象，这对更新频繁和每个Item有很多异步返回数据的列表来说是个很大的消耗，写起来也会非常非常繁琐。</p>
 <p>同样的，在一些频繁插入、删除、增加数据的列表项使用不当也有容易出现各种各样的问题。</p>
 <h2 id="diffadapter：一种高效、高性能的方案"><a href="#diffadapter：一种高效、高性能的方案" class="headerlink" title="diffadapter：一种高效、高性能的方案"></a>diffadapter：一种高效、高性能的方案</h2><p><a href="https://github.com/SilenceDut/diffadapter">diffadapter</a>就是根据实际项目中各种复杂的列表需求，同时为了解决DiffUtil使用不方便，容易出错而实现的一个<strong>高效，高性能的列表库，侵入性低，方便接入</strong>，致力于将列表需求的开发精力用于具体的Item Holder上，而不用花时间在一些能通用的和业务无关的地方。使用DiffUtil来做最小更新，屏蔽外部调用<strong>DiffUtil</strong>的接口。只用实现简单的数据接口和展示数据的Holder，不用自己去实现Adapter来管理数据和Holder之间的关系，不用考虑DiffUtil的实现细节,就能快速的开发出一个高性能的复杂列表需求。</p>
