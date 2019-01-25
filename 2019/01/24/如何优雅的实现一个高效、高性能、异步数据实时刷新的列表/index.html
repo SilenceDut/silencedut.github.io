@@ -28,10 +28,9 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fyxa6v140cj31eo0i6wj5.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg">
-<meta property="og:image" content="https://github.com/SilenceDut/diffadapter/blob/master/media/demo.gif">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fzbiv9fcc5j30gq19ywq2.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg">
-<meta property="og:updated_time" content="2019-01-25T04:38:25.844Z">
+<meta property="og:updated_time" content="2019-01-25T05:11:26.742Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优雅的实现一个高效、高性能、异步数据实时刷新的列表">
 <meta name="twitter:description" content="Android的业务开发中。列表需求很很常见也很重要的部分，列表承载的信息多，涉及的的协议多，布局也多，尤其一些复杂的列表，不管是用ListView还是RecyclerView，使用不当会带来很多的性能问题和后期的维护问题，形成一套规范的，高性能的列表开发模式很有必要。
@@ -197,8 +196,10 @@
 <h2 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h2><p>用一些案例说明一下吧(只是用一些App里的截图来做类比，并不知其协议类型和实现方式)<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fyx83bvbyjj30py0wu4az.jpg" alt=""></p>
 <p>类似的列表不容易解决的主要在两个方面：</p>
 <ol>
-<li>先不管列表里每个Item的具体UI,首先列表是可通过下拉刷新和广播通知变化，数据应该也只能全量下发，更新频率可能特别高，列表的长度也可能很长比如几百条（一些聊天列表或者在线用户列表可能存在数据量更大的情况）,如果过高频率的刷新很容易造成页面卡顿。<a id="more"></a></li>
-<li>从UI上看有很多特征，昵称、头像、等级、各种特权等等，而且大部分情况一条协议是无法包含所有信息，可能是很多个版本需求的迭代，涉及到多个协议，比如我们项目中这种情况大部分是只返回一些uid列表，一般先将基本的数据设置到adapter里显示，同时根据uid去查询相应的各个对应的协议，异步返回结果，然后更新对应的Item，<strong>因为都是异步的数据很难先拼接好数据再更新列表</strong>。还有些情况是Item中的一些数据可能会根据通知出现变化，比如等级升级了，离开了。或者，如下图常见的聊天列表根据通知更新数据的：<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg" alt=""><br>在线状态，最新的聊天内容，时间，未读消息数等，如果item中可变的数据太多，更新的代码写起来会很繁琐。</li>
+<li><p>先不管列表里每个Item的具体UI,首先列表是可通过下拉刷新和广播通知变化，数据应该也只能全量下发，更新频率可能特别高，列表的长度也可能很长比如几百条（一些聊天列表或者在线用户列表可能存在数据量更大的情况）,如果过高频率的刷新很容易造成页面卡顿。</p>
+</li>
+<li><p>从UI上看有很多特征，昵称、头像、等级、各种特权等等，而且大部分情况一条协议是无法包含所有信息，可能是很多个版本需求的迭代，涉及到多个协议，比如我们项目中这种情况大部分是只返回一些uid列表，一般先将基本的数据设置到adapter里显示，同时根据uid去查询相应的各个对应的协议，异步返回结果，然后更新对应的Item，<strong>因为都是异步的数据很难先拼接好数据再更新列表</strong>。还有些情况是Item中的一些数据可能会根据通知出现变化，比如等级升级了，离开了。或者，如下图常见的聊天列表根据通知更新数据的：<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg" alt=""><br>在线状态，最新的聊天内容，时间，未读消息数等，如果item中可变的数据太多，更新的代码写起来会很繁琐。</p>
+</li>
 </ol>
 <h2 id="列表的性能问题"><a href="#列表的性能问题" class="headerlink" title="列表的性能问题"></a>列表的性能问题</h2><p>使用过页面卡顿工具<a href="https://developer.android.com/studio/command-line/systrace">systrace</a>分析页面卡顿或者超时的应该有一定的经验就是如果页面存在比较复杂的列表，在一些低端机，有的甚至配置较好的手机上会出现卡顿情况，及时感觉不到卡顿，用<a href="https://developer.android.com/studio/command-line/systrace">systrace</a>应该也能看到相对其他View比较多的掉帧（也可称为Jank），谷歌根据比较多的一些app的数据也有类似的结论，列表的使用不当是很多卡顿的来源<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fyxa6v140cj31eo0i6wj5.jpg" alt=""></p>
 <p>列表容易造成卡顿主要原因是相对其他View，列表承载的内容多，更新又比较频繁，而且还有hodelr的的重建复用以及无效刷新等带来的很多的子Item View的UI刷新,列表变化频繁(如删除、移动、新增等)，动画会带来很大的UI性能消耗,根据原因主要从下面几个个方面来提高列表的性能：</p>
@@ -243,8 +244,8 @@
 <p>同样的，在一些频繁插入、删除、增加数据的列表项使用不当也有容易出现各种各样的问题。</p>
 <h2 id="diffadapter：一种高效、高性能的方案"><a href="#diffadapter：一种高效、高性能的方案" class="headerlink" title="diffadapter：一种高效、高性能的方案"></a>diffadapter：一种高效、高性能的方案</h2><p><a href="https://github.com/SilenceDut/diffadapter">diffadapter</a>就是根据实际项目中各种复杂的列表需求，同时为了解决DiffUtil使用不方便，容易出错而实现的一个<strong>高效，高性能的列表库，侵入性低，方便接入</strong>，致力于将列表需求的开发精力用于具体的Item Holder上，而不用花时间在一些能通用的和业务无关的地方。使用DiffUtil来做最小更新，屏蔽外部调用<strong>DiffUtil</strong>的接口。只用实现简单的数据接口和展示数据的Holder，不用自己去实现Adapter来管理数据和Holder之间的关系，不用考虑DiffUtil的实现细节,就能快速的开发出一个高性能的复杂列表需求。</p>
 <p>先看下demo的效果，图像url，名称，价格都是异步或者通知变化的数据。</p>
-<p>进行随机的全量刷洗，局部刷新，插入，删除等操作。</p>
-<p><img src="https://github.com/SilenceDut/diffadapter/blob/master/media/demo.gif" alt="image"></p>
+<p>进行随机的全量数显，局部刷新，插入，删除等操作。</p>
+<p><a href="https://github.com/SilenceDut/diffadapter/blob/master/media/demo.gif">demo.gif</a></p>
 <h2 id="Feature"><a href="#Feature" class="headerlink" title="Feature"></a>Feature</h2><ul>
 <li>使用DiffUtil来找出最小需要更新的Item集合，使用者无需做任何DiffUtil的配置即可实现高效的列表</li>
 <li>提供方便，稳定的更新、删、插入、查询方法，适用于各种非常频繁，复杂的场景（如因为异步或通知的原因同时出现插入，删除，全量设置的情况）</li>
