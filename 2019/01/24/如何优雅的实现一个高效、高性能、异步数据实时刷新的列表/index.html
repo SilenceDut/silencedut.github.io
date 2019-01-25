@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fzbiv9fcc5j30gq19ywq2.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg">
-<meta property="og:updated_time" content="2019-01-25T05:11:26.742Z">
+<meta property="og:updated_time" content="2019-01-25T06:47:19.014Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优雅的实现一个高效、高性能、异步数据实时刷新的列表">
 <meta name="twitter:description" content="Android的业务开发中。列表需求很很常见也很重要的部分，列表承载的信息多，涉及的的协议多，布局也多，尤其一些复杂的列表，不管是用ListView还是RecyclerView，使用不当会带来很多的性能问题和后期的维护问题，形成一套规范的，高性能的列表开发模式很有必要。
@@ -287,7 +287,7 @@
 <p><strong>Step 2 :需要重写BaseDiffViewHolder里的<code>updatePartWithPayload</code></strong></p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ItemViewHolder</span></span>(itemViewRoot: View, recyclerAdapter: DiffAdapter): BaseDiffViewHolder&lt;ItemViewData&gt;( itemViewRoot,  recyclerAdapter)&#123;</div><div class="line">     </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">updatePartWithPayload</span><span class="params">(<span class="keyword">data</span>: <span class="type">ItemViewData</span>, payload: <span class="type">Bundle</span>, position: <span class="type">Int</span>)</span></span> &#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(payload.getString(ItemViewData.KEY_BASE_INFO)!=<span class="literal">null</span>) &#123;</div><div class="line">        updateBaseInfo(<span class="keyword">data</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(payload.getString(ItemViewData.KEY_ANY)!=<span class="literal">null</span>) &#123;</div><div class="line">        updateAnyView(<span class="keyword">data</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>根据变化的标志位，更新Item中需要变化部分的View</p>
-<h2 id="More"><a href="#More" class="headerlink" title="More"></a>More</h2><p><strong>更详细，多样的使用方式和细节见<a href="https://github.com/SilenceDut/diffadapter">diffadapter</a></strong>，有详细的demo和使用说明</p>
+<h2 id="More"><a href="#More" class="headerlink" title="More"></a>More</h2><p><strong>更详细，多样的使用方式和细节见<a href="https://github.com/SilenceDut/diffadapter">diffadapter</a></strong>，有详细的demo和使用说明，demo用kotlin实现，使用了<strong>mvvm</strong>和<strong>模块化</strong>的框架方式。</p>
 <p>这种方式也是目前能想到的比较好的异步数据更新列表的方式，非常欢迎一起探讨更多的实现方式。</p>
 
             
