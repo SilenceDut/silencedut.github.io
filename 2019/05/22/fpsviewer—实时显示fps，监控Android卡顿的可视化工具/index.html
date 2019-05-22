@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="SilenceDut的代码世界">
+    <title>fpsviewer—实时显示fps，监控Android卡顿的可视化工具 - SilenceDut的代码世界</title>
+    <meta name="author" content="SilenceDut">
+    
+    
+        <link rel="icon" href="http://silencedut.com/assets/images/avatar.png">
+    
+    
+    <meta name="description" content="fpsviewer一个能实时显示fps,一段时间的平均帧率，以及帧率范围占比，并能获取卡顿堆栈的可视化工具。侵入性低，通过在异步线程采样获取堆栈，无代码侵入，性能消耗可忽略，对性能监控项的异常数据进行采集和分析，整理输出展示相应的堆栈，从而帮助开发者开发出更高质量的应用。
+常见分析、定位卡顿的方案系统工具1. TraceView
+目前一般是用现在AndroidStudio里的cpu-profile">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="fpsviewer—实时显示fps，监控Android卡顿的可视化工具">
+<meta property="og:url" content="http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/index.html">
+<meta property="og:site_name" content="SilenceDut的代码世界">
+<meta property="og:description" content="fpsviewer一个能实时显示fps,一段时间的平均帧率，以及帧率范围占比，并能获取卡顿堆栈的可视化工具。侵入性低，通过在异步线程采样获取堆栈，无代码侵入，性能消耗可忽略，对性能监控项的异常数据进行采集和分析，整理输出展示相应的堆栈，从而帮助开发者开发出更高质量的应用。
+常见分析、定位卡顿的方案系统工具1. TraceView
+目前一般是用现在AndroidStudio里的cpu-profile">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79gy1g3ag03fggbj30f007m74c.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/006tNc79gy1g3ag122ujdj30f00wiwfw.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79gy1g3afwnaze6j30f00wiab1.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79gy1g3afze991fj30f02r4jwm.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79gy1g3afz2y9tjj30f00wiabr.jpg">
+<meta property="og:updated_time" content="2019-05-22T14:11:05.856Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fpsviewer—实时显示fps，监控Android卡顿的可视化工具">
+<meta name="twitter:description" content="fpsviewer一个能实时显示fps,一段时间的平均帧率，以及帧率范围占比，并能获取卡顿堆栈的可视化工具。侵入性低，通过在异步线程采样获取堆栈，无代码侵入，性能消耗可忽略，对性能监控项的异常数据进行采集和分析，整理输出展示相应的堆栈，从而帮助开发者开发出更高质量的应用。
+常见分析、定位卡顿的方案系统工具1. TraceView
+目前一般是用现在AndroidStudio里的cpu-profile">
+<meta name="twitter:image" content="http://ww2.sinaimg.cn/large/006tNc79gy1g3ag03fggbj30f007m74c.jpg">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://silencedut.com/assets/images/avatar.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">SilenceDut的代码世界</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-avatar.png"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png"/>
+            </a>
+            <span class="sidebar-profile-name">SilenceDut</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/SilenceDut" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:silencedutchman@foxmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://www.itvincent.net/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">itvincent</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            fpsviewer—实时显示fps，监控Android卡顿的可视化工具
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2019-05-22T02:22:24+08:00">
+	
+		    5月 22, 2019
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/all-categories/Android/">Android</a>, <a class="category-link" href="/all-categories/Android/OpenSourceProject/">OpenSourceProject</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><a href="https://github.com/SilenceDut/fpsviewer/">fpsviewer</a>一个能实时显示fps,一段时间的平均帧率，以及帧率范围占比，并能获取卡顿堆栈的可视化工具。侵入性低，通过在异步线程采样获取堆栈，无代码侵入，性能消耗可忽略，对性能监控项的异常数据进行采集和分析，整理输出展示相应的堆栈，从而帮助开发者开发出更高质量的应用。</p>
+<h4 id="常见分析、定位卡顿的方案"><a href="#常见分析、定位卡顿的方案" class="headerlink" title="常见分析、定位卡顿的方案"></a>常见分析、定位卡顿的方案</h4><h5 id="系统工具"><a href="#系统工具" class="headerlink" title="系统工具"></a>系统工具</h5><p><strong>1. TraceView</strong></p>
+<p>目前一般是用现在AndroidStudio里的cpu-profile工具或者<code>TraceCompat.beginSection()</code>生成trace日志，<br>准确性高，这种分析方式只适合定性分析，因为工具很消耗cpu，有很多假jank，非常影响性能，显示耗时和实际耗时偏差很大，平常开发过程中也不易用，不可能实时开着，没法查看fps。<br><a id="more"></a><br><strong>2. <a href="https://developer.android.com/studio/profile/systrace/command-line">Systrace</a></strong><br>Systrace用来检测android系统各个组件随着时间的运行状态，并能提示该如何有效地修复问题，主要偏向于分析一段时间整个系统所处的状态，无法定位到具体代码。</p>
+<p><strong>3. 命令行adb shell dumpsys SurfaceFlinger –latency com…包名</strong><br>用来计算一段时间的帧率，无法获取卡顿栈，只能一段时间</p>
+<p>以上几种系统提供的方案一般只能在比较短的时间进行分析，平常开发过程中也很不方便。</p>
+<h5 id="第三方库方案"><a href="#第三方库方案" class="headerlink" title="第三方库方案"></a>第三方库方案</h5><ul>
+<li><p><a href="https://github.com/Tencent/matrix">Matrix-TraceCanary</a><br>微信的卡顿检测方案，采用的ASM插桩的方式，支持fps和堆栈获取的定位，但是需要自己根据asm插桩的方法id来自己分析堆栈，定位精确度高，性能消耗小，比较可惜的是目前没有界面展示，对代码有一定的侵入性。如果线上使用可以考虑。</p>
+</li>
+<li><p><a href="https://github.com/seiginonakama/BlockCanaryEx">BlockCanaryEx</a><br>主要原理是<strong>利用loop()中打印的日志</strong>，loop()中打印的日志可以看鸿洋的这篇博客<a href="https://blog.csdn.net/lmj623565791/article/details/58626355">Android UI性能优化 检测应用中的UI卡顿</a>，支持方法采样，知道主线程中所有方法的执行时间和执行次数，因为需要获取cpu以及一些系统的状态，性能消耗大，不支持fps展示，尤其检测到卡顿的时候，会让界面卡顿很久。之前我们项目用的就是这个工具。</p>
+</li>
+<li><p><a href="https://github.com/SilenceDut/fpsviewer/">fpsviewer</a><br>利用Choreographer.FrameCallback来监控卡顿和Fps的计算，异步线程进行周期采样，当前的帧耗时超过自定义的阈值时，将帧进行分析保存，不影响正常流程的进行，待需要的时候进行展示，定位。</p>
+</li>
+</ul>
+<h4 id="fpsviewer-特点"><a href="#fpsviewer-特点" class="headerlink" title="fpsviewer 特点"></a>fpsviewer 特点</h4><ol>
+<li><p>无损FPS实时显示，一段时间的平均帧率和帧率占比<br>利用Choreographer.FrameCallback的<code>fun doFrame(frameTimeNanos: Long)</code>方法回调里获取数据计算每帧消耗的时长，实时性高且不需要额外的数据获取无其他性能消耗，开启和关闭fpsviewer对帧率的影响远小于1帧。支持一段时间的平均帧率和帧率占比显示，可用于性能优化前后的对比。</p>
+</li>
+<li><p>更详细的堆栈信息，便于定位卡顿源，采样的方式或者堆栈，而不是卡顿发生的瞬间获取堆栈可能造成堆栈偏移从而影响准确性，异步线程在自定义的采样时间(一般&gt;30ms)进行堆栈获取，每次的耗时很小，只有发送卡顿才需要存储分析，也是在异步线程，对主线程无影响，对整体cpu的影响也可忽略不计。一般得到的是多个堆栈信息，按照这段时间的发生次数排序</p>
+</li>
+<li><p>支持自定义的堆栈标记，类似于<code>TraceCompat.beginSection()</code>,方便分析具体业务的卡顿，比如某个列表，某次Activity或者App的启动过程中的卡顿耗时。</p>
+</li>
+</ol>
+<h4 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h4><p><strong>[实时fps]</strong></p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79gy1g3ag03fggbj30f007m74c.jpg" alt="image"></p>
+<p><strong>[功能选择]</strong></p>
+<p><img src="http://ww4.sinaimg.cn/large/006tNc79gy1g3ag122ujdj30f00wiwfw.jpg" alt="image"></p>
+<p>点击分析图标显示：</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1g3afwnaze6j30f00wiab1.jpg" alt="image"></p>
+<p>上图折现里点击具体的卡顿点可查看详细的堆栈信息如下：<br><strong>[详细堆栈图]</strong><br><img src="http://ww1.sinaimg.cn/large/006tNc79gy1g3afze991fj30f02r4jwm.jpg" alt="image"></p>
+<p>首页或者上图点击<strong>bug</strong>图标可展示一段时间的卡顿列表<br><img src="http://ww3.sinaimg.cn/large/006tNc79gy1g3afz2y9tjj30f00wiabr.jpg" alt="image"></p>
+<p>可长按删除或者进入详细堆栈界面标记为已解决，点击可进入详细的堆栈信息界面，<strong>TestSection</strong>就是自定义的TAG。</p>
+<h4 id="Using-and-more"><a href="#Using-and-more" class="headerlink" title="Using and more"></a>Using and more</h4><p>更多细节和使用见GitHub<a href="https://github.com/SilenceDut/fpsviewer/">fpsviewer</a></p>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/卡顿/">卡顿</a> <a class="tag tag--primary tag--small t-link" href="/tags/性能/">性能</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/24/如何优雅的实现一个高效、高性能、异步数据实时刷新的列表/" data-tooltip="如何优雅的实现一个高效、高性能、异步数据实时刷新的列表">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="ds-thread" class="ds-thread" data-thread-key="2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/"
+     data-title="fpsviewer—实时显示fps，监控Android卡顿的可视化工具" data-url="http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+</div>
+
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 SilenceDut. All Rights Reserved.
+    </span>
+  	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/24/如何优雅的实现一个高效、高性能、异步数据实时刷新的列表/" data-tooltip="如何优雅的实现一个高效、高性能、异步数据实时刷新的列表">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#ds-thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://silencedut.com/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.png"/>
+        
+            <h4 id="about-card-name">SilenceDut</h4>
+        
+            <h5 id="about-card-bio"><p>talk is cheap,here are my blog</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android engineer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                广东，广州
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:'SilenceDut'};
+            (function() {
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                || document.getElementsByTagName('body')[0]).appendChild(ds);
+            })();
+        </script>
+    
+
+
+
+</html>

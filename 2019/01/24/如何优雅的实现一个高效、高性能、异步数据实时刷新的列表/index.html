@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz8y3v6fyhj30u00i2400.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fzbiv9fcc5j30gq19ywq2.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg">
-<meta property="og:updated_time" content="2019-01-26T08:55:54.603Z">
+<meta property="og:updated_time" content="2019-01-26T08:59:34.276Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优雅的实现一个高效、高性能、异步数据实时刷新的列表">
 <meta name="twitter:description" content="Android的业务开发中。列表需求很很常见也很重要的部分，列表承载的信息多，涉及的的协议多，布局也多，尤其一些复杂的列表，不管是用ListView还是RecyclerView，使用不当会带来很多的性能问题和后期的维护问题，形成一套规范的，高性能的列表开发模式很有必要。
@@ -261,7 +261,8 @@
 <p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fzbiv9fcc5j30gq19ywq2.jpg" alt=""></p>
 <h3 id="增、插入、删除、修改（更新）"><a href="#增、插入、删除、修改（更新）" class="headerlink" title="增、插入、删除、修改（更新）"></a>增、插入、删除、修改（更新）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;T extends BaseMutableData&gt; <span class="function"><span class="keyword">void</span> <span class="title">addData</span><span class="params">(T data)</span> </div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteData</span><span class="params">(BaseMutableData data)</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteData</span><span class="params">(<span class="keyword">int</span> startPosition, <span class="keyword">int</span> size)</span></div><div class="line"></div><div class="line"><span class="keyword">void</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> startPosition ,List&lt;? extends BaseMutableData&gt; datas)</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateData</span><span class="params">(BaseMutableData newData)</span></span></div></pre></td></tr></table></figure>
 <p>上述接口在调用的时机，频率都很复杂的场景下也不会引起崩溃</p>
-<p>使用updateData(BaseMutableData newData)时，newData可以是新new的对象，也可以是修改后的原对象，不会出现<a href="#jump2">使用DiffUtil更新单个数据无效</a><br>的问题</p>
+<p>使用updateData(BaseMutableData newData)时，newData可以是新new的对象，也可以是修改后的原对象，不会出现<a href="#jump2">使用DiffUtil更新单个数据无效</a>的问题</p>
+<p>基本上就提供了上述很少的几个接口，主要是为了功能更清晰，侵入性更低，你可以根据自己的需要组合更多的功能，像下拉刷新，动画等。</p>
 <h3 id="高阶用法"><a href="#高阶用法" class="headerlink" title="高阶用法"></a>高阶用法</h3><p>基本用法中<strong>Data和Holder绑定的模式并没什么特殊之处，早在两年前的项目<a href="https://github.com/SilenceDut/KnowWeather">KnowWeather</a>就已经用上这种思想，现在只是结合DiffUtil以及其他的疑难问题解决方案将其开源，diffadapter最核心的地方在于高性能和异步获取数据或者通知数据变化时列表的更新上</strong></p>
 <h4 id="多数据源异步更新"><a href="#多数据源异步更新" class="headerlink" title="多数据源异步更新"></a>多数据源异步更新</h4><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz73pvxepdj30qc046ac1.jpg" alt=""><br>以一个类似的Item为例，这里认为服务器返回的数据列表只包含uid，也就是<code>List&lt;Long&gt; uids</code>，个人资料，等级，贵族等都属于不同的协议。下面展示的是异步获取个人资料展示的头像和昵称的情况，其他的可以类比。</p>
 <p><strong>Step 1:定义ViewData</strong></p>
@@ -315,7 +316,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/"  data-tooltip="fpsviewer—实时显示fps，监控Android卡顿的可视化工具">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -399,7 +400,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/05/22/fpsviewer—实时显示fps，监控Android卡顿的可视化工具/"  data-tooltip="fpsviewer—实时显示fps，监控Android卡顿的可视化工具">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
