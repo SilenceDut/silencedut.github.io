@@ -228,7 +228,7 @@
             
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     <p>Android的业务开发中。列表需求很很常见也很重要的部分，列表承载的信息多，涉及的的协议多，布局也多，尤其一些复杂的列表，不管是用ListView还是RecyclerView，使用不当会带来很多的性能问题和后期的维护问题，形成一套规范的，高性能的列表开发模式很有必要。</p>
-<h2 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h2><p>用一些案例说明一下吧(只是用一些App里的截图来做类比，并不知其协议类型和实现方式)<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fyx83bvbyjj30py0wu4az.jpg" alt=""></p>
+<h2 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h2><p>用一些案例说明一下吧(只是用一些App里的截图来做类比，并不知其协议类型和实现方式)<br><img src="http://ww1.sinaimg.cn/large/006tNc79gy1g453n1ofwfj30b40e2wf3.jpg" alt=""></p>
 <p>类似的列表不容易解决的主要在两个方面：</p>
 <ol>
 <li>先不管列表里每个Item的具体UI,首先列表是可通过下拉刷新和广播通知变化，数据应该也只能全量下发，更新频率可能特别高，列表的长度也可能很长比如几百条（一些聊天列表或者在线用户列表可能存在数据量更大的情况），如果过高频率的刷新很容易造成页面卡顿。
